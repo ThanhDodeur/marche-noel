@@ -12,8 +12,7 @@ function NavBar({ buttons=[] }) {
         <nav className="navbar">
             {buttons.map((value, index) => {
                 return (
-                    <div key={index} className="nav-button clickable noselect" onClick={value.callBack}>
-                        <span>{value.label}</span>
+                    <div key={index} className={`nav-button clickable noselect ${value.className}`} onClick={value.callBack}>
                         <span>{value.content}</span>
                     </div>
                 )

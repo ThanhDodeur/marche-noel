@@ -2,7 +2,9 @@ import React from "react";
 
 const defaultChange = () => {};
 
-const FileInput = ({ value, label='Upload', onChange = defaultChange, ...rest }) => (
+
+const FileInput = ({ value, label='Upload', onChange = defaultChange, ...rest }) => {
+    return (
     <div>
         <label>
             <span className="clickable">{label}</span>
@@ -12,11 +14,13 @@ const FileInput = ({ value, label='Upload', onChange = defaultChange, ...rest })
                 type="file"
                 onChange={(e) => {
                     onChange([...e.target.files]);
+                    e.target.value = null;
                 }}
                 multiple
             />
         </label>
     </div>
-);
+    );
+};
 
 export default FileInput;
