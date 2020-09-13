@@ -1,35 +1,37 @@
 import React, { useState } from 'react';
-import logo from './snowflake.svg';
+import Accueil from './components/Accueil.js';
+import Marche from './components/Marche.js';
 import './App.css';
 
 function App(props) {
   const [state, setState] = useState({ open: false });
 
   function updateState(updates) {
-    setState({...state, ...updates})
+    setState({...state, ...updates});
   };
 
   function toggleApp() {
     setState({ open: !state.open });
   }
 
-  return (
+
+  return(
     <div className="page">
-      <header/>
+      <nav class="navbar">
+        <div class="nav-button clickable noselect" onClick={toggleApp}>
+          <span>{state.open ? 'Accueil' : 'Entrer'}</span>
+        </div>
+      </nav>
       {state.open ? (
-        <div>
-          <p onClick={toggleApp}>
-            retour
-          </p>
+        <div class="page">
+          <Marche/>
         </div>
       ) : (
         <div class="page">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p onClick={toggleApp}>
-            Marché de Noel
-          </p>
+          <Accueil/>
         </div>
       )}
+      
     </div>
   );
 }
