@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import "./DataBloc.css";
 
 
-function DataBloc({ data, value }) {
+
+function DataBloc({ groupName, content }) {
 
     return (
         <div className="personList">
-            <h2>{data}:</h2>
+            <h2>{groupName}:</h2>
             <div>
-                {value.map((client, index) => {
+                {content.map((client, index) => {
                     return (
                         <div key={index}>
                             {Object.entries(client).map((line, value) => {

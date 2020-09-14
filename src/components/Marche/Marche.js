@@ -60,7 +60,7 @@ class Marche extends React.Component {
     _getDay = (page) => {
         const OFFSET_HEIGHT = 1; // does not include the column titles.
         const CLIENT_COLS = 3;
-        const FOURNISSEUR_COLS = 4;
+        const FOURNISSEUR_COLS = 4; // should be equal to colNames.length - CLIENT_COLS
         const lines = page.split(/\r\n|\n/);
         for (const i of Array(OFFSET_HEIGHT)) {
             lines.shift();

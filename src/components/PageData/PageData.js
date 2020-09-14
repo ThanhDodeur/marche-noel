@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import "./PageData.css";
 
-import DataBloc from '../DataBloc/DataBloc.js';
+import DayData from '../DayData/DayData.js';
 
+/*
+ * Represents a whole page of data for all the uploaded days.
+ *
+ */
 function PageData({ days }) {
     const [state, setState] = useState({});
 
@@ -13,16 +17,7 @@ function PageData({ days }) {
     return (
         <div className="content">
             {days.map((value, dayIndex) => {
-                return (
-                    <div className="day" key={dayIndex}>
-                        <h1>Jour {dayIndex + 1}</h1>
-                        {Object.entries(value).map((line, index) => {
-                            return(
-                                <DataBloc key={index} data={line[0]} value={line[1]}/>
-                            )
-                        })}
-                    </div>
-                )
+                return(<DayData day={value} key={dayIndex} index={dayIndex}/>)
             })}
         </div>
     );
