@@ -2,7 +2,6 @@ import React from "react";
 
 const defaultChange = () => {};
 
-
 const FileInput = ({ value, label='Upload', onChange = defaultChange, ...rest }) => {
     return (
     <span>

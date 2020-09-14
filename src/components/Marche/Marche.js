@@ -36,9 +36,6 @@ class Marche extends React.Component {
         const days = this.state.days.concat(newDays);
         this.setState({ days });
     }
-
-    
-
     /*
      * Expected structure of page:
      *
@@ -48,7 +45,7 @@ class Marche extends React.Component {
      * x,x,x,x,x,x,... m-1, m,... n-1, n
      * x,x,x,x,x,x,... m-1, m,... n-1, n
      * . . .
-     * . 
+     * .
      * .
      * where:
      *  x = OFFSET_HEIGHT
@@ -86,7 +83,6 @@ class Marche extends React.Component {
                 fournisseurs.push(fournisseur);
             }
         }
-        
         return { clients, fournisseurs };
     }
 
@@ -114,10 +110,10 @@ class Marche extends React.Component {
 
     render() {
         return <div>
-            <NavBar 
+            <NavBar
                 buttons={this._getButtons()}
             />
-            {!!this.state.days.length && 
+            {!!this.state.days.length &&
                 <PageData days={this.state.days}/>
             }
         </div>

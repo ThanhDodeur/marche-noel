@@ -1,12 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import "./NavBar.css";
 
 function NavBar({ buttons=[] }) {
-    const [state, setState] = useState({});
-
-    function updateState(updates) {
-        setState({ ...state, ...updates });
-    }
 
     return (
         <nav className="navbar">
@@ -17,7 +12,6 @@ function NavBar({ buttons=[] }) {
                     </div>
                 )
             })}
-            
         </nav>
     );
 }

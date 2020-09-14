@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "./DayData.css";
 
 import DataBloc from '../DataBloc/DataBloc.js';
@@ -8,11 +8,6 @@ import DataBloc from '../DataBloc/DataBloc.js';
  *
  */
 function DayData({ day, index }) {
-    const [state, setState] = useState({});
-
-    function updateState(updates) {
-        setState({ ...state, ...updates });
-    }
 
     return (
         <div className="day" key={index}>

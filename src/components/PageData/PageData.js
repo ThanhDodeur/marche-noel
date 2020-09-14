@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "./PageData.css";
 
 import DayData from '../DayData/DayData.js';
@@ -8,11 +8,6 @@ import DayData from '../DayData/DayData.js';
  *
  */
 function PageData({ days }) {
-    const [state, setState] = useState({});
-
-    function updateState(updates) {
-        setState({ ...state, ...updates });
-    }
 
     return (
         <div className="content">
