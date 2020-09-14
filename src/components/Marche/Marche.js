@@ -14,29 +14,21 @@ class Marche extends React.Component {
             resetRequested: false,
         };
     }
-
-    _getFile = async (file) => {
+    /**
+    *
+    * @param {blob} blob
+    * @return {file}
+    */
+    _getFile = async (blob) => {
         const reader = new FileReader();
-        reader.readAsText(file);
+        reader.readAsText(blob);
         return new Promise((resolve) => {
             reader.onload = (e) => {
                 resolve(reader.result);
             };
         });
     }
-
-    onInputChange = async (files) => {
-        this.state.files = files;
-        const newDays = [];
-        for (const file of files) {
-            const page = await this._getFile(file);
-            const day = this._getDay(page);
-            newDays.push(day);
-        }
-        const days = this.state.days.concat(newDays);
-        this.setState({ days });
-    }
-    /*
+    /**
      * Expected structure of page:
      *
      * ,,,,,,... // row0
@@ -53,6 +45,8 @@ class Marche extends React.Component {
      *  m = CLIENT_COLS
      *  n - m = FOURNISSEUR_COLS
      *
+     * @param {String} page open text file
+     * @return {Object}
      */
     _getDay = (page) => {
         const OFFSET_HEIGHT = 1; // does not include the column titles.
@@ -67,44 +61,67 @@ class Marche extends React.Component {
         const fournisseurs = [];
         while (lines.length) {
             const currentLine = lines.shift().split(',');
+            // CLIENTS
             const client = {};
             for (let i of [...Array(CLIENT_COLS).keys()]) {
                 client[colNames[i]] = currentLine[i];
             }
+            // FOURNISSEURS
             const fournisseur = {};
             for (let i of [...Array(FOURNISSEUR_COLS).keys()]) {
                 const index = i + CLIENT_COLS;
                 fournisseur[colNames[index]] = currentLine[index];
             }
-            if (currentLine[0]) {
+            if (currentLine[0]) { // if no client id.
                 clients.push(client);
             }
-            if (currentLine[3]) {
+            if (currentLine[CLIENT_COLS]) { // if no fournisseur id.
                 fournisseurs.push(fournisseur);
             }
         }
         return { clients, fournisseurs };
     }
+    /**
+    * Handler for File Input onChange.
+    *
+    * @param {file[]} files
+    * @return {void}
+    */
+    onFileInputChange = async (files) => {
+        this.state.files = files;
+        const newDays = [];
+        for (const file of files) {
+            const page = await this._getFile(file);
+            const day = this._getDay(page);
+            newDays.push(day);
+        }
+        const days = this.state.days.concat(newDays);
+        this.setState({ days });
+    }
 
     resetFiles = () => {
         this.setState({days: [], pages: []});
-        this._toggleReset();
+        this.toggleReset();
     }
 
-    _toggleReset = () => {
+    toggleReset = () => {
         this.setState({ resetRequested: !this.state.resetRequested });
     }
-
+    /**
+    * Brief description of the function here.
+    *
+    * @return {Object[]} [{content, className, fa, callBack}]
+    */
     _getButtons() {
-        let resetButtons = [{content: 'Reset Files', fa: 'fa-trash', className: 'warning', callBack: this._toggleReset}]
+        let resetButtons = [{content: 'Reset Files', fa: 'fa-trash', className: 'warning', callBack: this.toggleReset}]
         if (this.state.resetRequested) {
             resetButtons = [
-                {content: 'Cancel', fa: 'fa-times', className: 'green', callBack: this._toggleReset},
+                {content: 'Cancel', fa: 'fa-times', className: 'green', callBack: this.toggleReset},
                 {content: 'Confirm', fa: 'fa-check', className: 'alert', callBack: this.resetFiles},
             ];
         }
         return [
-            {className: 'blue', fa: 'fa-upload', content: (<FileInput label={`Ajouter | jours: ${this.state.days.length}`} className="noselect" value={this.state.files} onChange={this.onInputChange} />)},
+            {className: 'blue', fa: 'fa-upload', content: (<FileInput label={`Ajouter | jours: ${this.state.days.length}`} className="noselect" value={this.state.files} onChange={this.onFileInputChange} />)},
         ].concat(resetButtons);
     }
 
