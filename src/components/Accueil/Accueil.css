@@ -5,4 +5,15 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
+  width: 30%;
+  margin: auto;
+  transition: 0.5s;
+}
+
+.accueil:active {
+  transform: scale(0.9);
+}
+
+.accueil:hover {
+  filter: brightness(150%);
 }

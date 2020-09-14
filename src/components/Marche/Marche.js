@@ -104,7 +104,7 @@ class Marche extends React.Component {
             ];
         }
         return [
-            {className: 'darker', fa: 'fa-upload', content: (<FileInput label={`Ajouter | jours: ${this.state.days.length}`} className="noselect" value={this.state.files} onChange={this.onInputChange} />)},
+            {className: 'blue', fa: 'fa-upload', content: (<FileInput label={`Ajouter | jours: ${this.state.days.length}`} className="noselect" value={this.state.files} onChange={this.onInputChange} />)},
         ].concat(resetButtons);
     }
 
