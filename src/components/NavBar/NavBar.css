@@ -15,14 +15,10 @@
   } 
   .navbar > .nav-button {
     padding: 0 5px 0 5px;
-    display: table;
+    display: flex;
+    align-items: center;
     text-align: center;
     height: 100%;
     border-right: 3px solid rgb(123, 164, 180);
     font-weight: bold;
-  }
-  
-  .nav-button > span {
-    display: table-cell;
-    vertical-align: middle;
   }

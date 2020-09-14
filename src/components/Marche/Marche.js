@@ -100,15 +100,15 @@ class Marche extends React.Component {
     }
 
     _getButtons() {
-        let resetButtons = [{content: 'Reset Files', className: 'warning', callBack: this._toggleReset}]
+        let resetButtons = [{content: 'Reset Files', fa: 'fa-trash', className: 'warning', callBack: this._toggleReset}]
         if (this.state.resetRequested) {
             resetButtons = [
-                {content: 'Cancel', className: 'green', callBack: this._toggleReset},
-                {content: 'Confirm', className: 'alert', callBack: this.resetFiles},
+                {content: 'Cancel', fa: 'fa-times', className: 'green', callBack: this._toggleReset},
+                {content: 'Confirm', fa: 'fa-check', className: 'alert', callBack: this.resetFiles},
             ];
         }
         return [
-            {className: 'darker', content: (<FileInput label={`Ajouter | jours: ${this.state.days.length}`} className="noselect" value={this.state.files} onChange={this.onInputChange} />)},
+            {className: 'darker', fa: 'fa-upload', content: (<FileInput label={`Ajouter | jours: ${this.state.days.length}`} className="noselect" value={this.state.files} onChange={this.onInputChange} />)},
         ].concat(resetButtons);
     }
 

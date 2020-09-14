@@ -29,6 +29,14 @@
   cursor: pointer;
 }
 
+.inline {
+  display: inline;
+}
+
+.spaced {
+  margin: 5px;
+}
+
 .noselect {
   -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */

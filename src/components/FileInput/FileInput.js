@@ -5,7 +5,7 @@ const defaultChange = () => {};
 
 const FileInput = ({ value, label='Upload', onChange = defaultChange, ...rest }) => {
     return (
-    <div>
+    <span>
         <label>
             <span className="clickable">{label}</span>
             <input
@@ -19,7 +19,7 @@ const FileInput = ({ value, label='Upload', onChange = defaultChange, ...rest })
                 multiple
             />
         </label>
-    </div>
+    </span>
     );
 };
 

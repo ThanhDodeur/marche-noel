@@ -13,7 +13,7 @@ function NavBar({ buttons=[] }) {
             {buttons.map((value, index) => {
                 return (
                     <div key={index} className={`nav-button clickable noselect ${value.className}`} onClick={value.callBack}>
-                        <span>{value.content}</span>
+                        <span>{value.fa && <i className={`fa ${value.fa} inline spaced`}/>}<span className="inline">{value.content}</span></span>
                     </div>
                 )
             })}
