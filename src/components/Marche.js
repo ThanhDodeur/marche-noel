@@ -43,34 +43,42 @@ class Marche extends React.Component {
      * Expected structure of page:
      *
      * ,,,,,,... // row0
-     * numeroClient,Fournisseur,achat,numeroFournisseur,numeroClient,prix,total // row1
-     * 600,65,objet,56,576,55,110 // row2
-     * x,x,x,x,x,x,
-     * x,x,x,x,x,x,
+     * numeroClient,Fournisseur,achat,numeroFournisseur,numeroClient,prix,total,... n-1, n // row x
+     * 600,65,objet,56,576,55,110,... n-1, n // row X+1
+     * x,x,x,x,x,x,... m-1, m,... n-1, n
+     * x,x,x,x,x,x,... m-1, m,... n-1, n
      * . . .
+     * . 
      * .
-     * .
+     * where:
+     *  x = OFFSET_HEIGHT
+     *  x + 1 = column names
+     *  m = CLIENT_COLS
+     *  n - m = FOURNISSEUR_COLS
      *
      */
     _getDay = (page) => {
-        const lines = page.split(/\r\n|\n/); // remove first line
-        lines.shift();
-        const rowNames = lines.shift().split(','); // removes 2nd line
+        const OFFSET_HEIGHT = 1; // does not include the column titles.
+        const CLIENT_COLS = 3;
+        const FOURNISSEUR_COLS = 4;
+        const lines = page.split(/\r\n|\n/);
+        for (const i of Array(OFFSET_HEIGHT)) {
+            lines.shift();
+        }
+        const colNames = lines.shift().split(','); // removes and saves column titles.
         const clients = [];
         const fournisseurs = [];
         while (lines.length) {
             const currentLine = lines.shift().split(',');
-            const client = {
-                [rowNames[0]]: currentLine[0],
-                [rowNames[1]]: currentLine[1],
-                [rowNames[2]]: currentLine[2],
-            };
-            const fournisseur = {
-                [rowNames[3]]: currentLine[3],
-                [rowNames[4]]: currentLine[4],
-                [rowNames[5]]: currentLine[5],
-                [rowNames[6]]: currentLine[6],
-            };
+            const client = {};
+            for (let i of [...Array(CLIENT_COLS).keys()]) {
+                client[colNames[i]] = currentLine[i];
+            }
+            const fournisseur = {};
+            for (let i of [...Array(FOURNISSEUR_COLS).keys()]) {
+                const index = i + CLIENT_COLS;
+                fournisseur[colNames[index]] = currentLine[index];
+            }
             if (currentLine[0]) {
                 clients.push(client);
             }
