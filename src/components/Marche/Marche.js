@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import './Marche.css';
 
-import NavBar from './NavBar.js';
-import PageData from './PageData.js';
-import FileInput from './FileInput.js';
+import NavBar from '../NavBar/NavBar.js';
+import PageData from '../PageData/PageData.js';
+import FileInput from '../FileInput/FileInput.js';
 
 class Marche extends React.Component {
     constructor(props) {

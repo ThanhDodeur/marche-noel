@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./PageData.css";
 
-import DataBloc from './DataBloc.js';
+import DataBloc from '../DataBloc/DataBloc.js';
 
 function PageData({ days }) {
     const [state, setState] = useState({});

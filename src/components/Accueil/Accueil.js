@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import logo from "../description/snowflake.svg";
+import logo from "../../description/snowflake.svg";
 import "./Accueil.css";
 
 function Accueil(props) {

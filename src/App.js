@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Accueil from "./components/Accueil.js";
-import Marche from "./components/Marche.js";
+import Accueil from "./components/Accueil/Accueil.js";
+import Marche from "./components/Marche/Marche.js";
 import "./App.css";
 
 function App(props) {
