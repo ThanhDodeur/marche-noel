@@ -51,7 +51,7 @@ class Marche extends React.Component {
     _getDay = (page) => {
         const OFFSET_HEIGHT = 1; // does not include the column titles.
         const CLIENT_COLS = 3;
-        const FOURNISSEUR_COLS = 4; // should be equal to colNames.length - CLIENT_COLS
+        const FOURNISSEUR_COLS = 3; // should be equal to colNames.length - CLIENT_COLS
         const lines = page.split(/\r\n|\n/);
         for (const i of Array(OFFSET_HEIGHT)) {
             lines.shift();
@@ -72,13 +72,28 @@ class Marche extends React.Component {
                 const index = i + CLIENT_COLS;
                 fournisseur[colNames[index]] = currentLine[index];
             }
-            if (currentLine[0]) { // if no client id.
+            if (currentLine[0]) { // if client id.
                 clients.push(client);
             }
-            if (currentLine[CLIENT_COLS]) { // if no fournisseur id.
+            if (currentLine[CLIENT_COLS]) { // if fournisseur id.
                 fournisseurs.push(fournisseur);
             }
         }
+        /*
+        * day structure:
+        {
+            clients: [{
+                'numero client': 453,
+                'numero fournisseur': 12,
+                'achat': 55}, {
+            }]
+            days: [{
+                'numero fournisseur': 12,
+                'numero client': 453,
+                'prix': 55}, {
+            }]
+        }
+        */
         return { clients, fournisseurs };
     }
     /**
@@ -124,7 +139,14 @@ class Marche extends React.Component {
             {className: 'blue', fa: 'fa-upload', content: (<FileInput label={`Ajouter | jours: ${this.state.days.length}`} className="noselect" value={this.state.files} onChange={this.onFileInputChange} />)},
         ].concat(resetButtons);
     }
-
+    /**
+     * add encodage popup with button toggle
+     * location salle, location bancontact et frais de transaction, assurance, papetrie, timbres, courses restaurant, traiteur, schmitz
+     * form component with callback to change state here with new data.
+     *
+     * Add full data (all prices + price computation)
+     *
+     */
     render() {
         return <div>
             <NavBar
