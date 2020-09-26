@@ -73,19 +73,19 @@
 }
 
 .green {
-  background-color: rgb(0, 83, 0);
+  background-color: rgb(48, 172, 48);
 }
 
 .blue {
-  background-color: rgb(0, 73, 168);
+  background-color: rgb(102, 168, 255);
 }
 
 .warning {
-  background-color: rgb(196, 117, 0);
+  background-color: rgb(235, 166, 64);
 }
 
 .alert {
-  background-color:rgb(119, 10, 10);
+  background-color:rgb(209, 50, 50);
 }
 
 .darker {
