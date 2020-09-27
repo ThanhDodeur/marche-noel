@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/marche-noel/static/css/main.5bc79631.chunk.css",
+    "main.css": "/marche-noel/static/css/main.b2220a3f.chunk.css",
     "main.js": "/marche-noel/static/js/main.2e9c70d7.chunk.js",
     "main.js.map": "/marche-noel/static/js/main.2e9c70d7.chunk.js.map",
     "runtime-main.js": "/marche-noel/static/js/runtime-main.29242d5b.js",
@@ -8,16 +8,16 @@
     "static/js/2.e575047b.chunk.js": "/marche-noel/static/js/2.e575047b.chunk.js",
     "static/js/2.e575047b.chunk.js.map": "/marche-noel/static/js/2.e575047b.chunk.js.map",
     "index.html": "/marche-noel/index.html",
-    "precache-manifest.405e60763687b902f3fc2e82f252e172.js": "/marche-noel/precache-manifest.405e60763687b902f3fc2e82f252e172.js",
+    "precache-manifest.a72f7996187ddaae11b2912db75578e6.js": "/marche-noel/precache-manifest.a72f7996187ddaae11b2912db75578e6.js",
     "service-worker.js": "/marche-noel/service-worker.js",
-    "static/css/main.5bc79631.chunk.css.map": "/marche-noel/static/css/main.5bc79631.chunk.css.map",
+    "static/css/main.b2220a3f.chunk.css.map": "/marche-noel/static/css/main.b2220a3f.chunk.css.map",
     "static/js/2.e575047b.chunk.js.LICENSE.txt": "/marche-noel/static/js/2.e575047b.chunk.js.LICENSE.txt",
     "static/media/snowflake.svg": "/marche-noel/static/media/snowflake.c1c98c92.svg"
   },
   "entrypoints": [
     "static/js/runtime-main.29242d5b.js",
     "static/js/2.e575047b.chunk.js",
-    "static/css/main.5bc79631.chunk.css",
+    "static/css/main.b2220a3f.chunk.css",
     "static/js/main.2e9c70d7.chunk.js"
   ]
 }
