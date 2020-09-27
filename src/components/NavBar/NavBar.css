@@ -5,21 +5,22 @@
     top: 0;
     left: 0;
     bottom: auto;
-    height: 50px;
-    color: white;
-    background-color: rgba(66, 128, 243, 0.712);
+    height: 60px;
+    color: rgba(255, 255, 255, 0.904);
+    background-color: rgba(66, 128, 243, 0);
     right: 0;
     position: fixed;
     z-index: 1000;
     font-size: 14px;
   }
   .navbar > .nav-button {
-    padding: 0 5px 0 5px;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 5px;
     display: flex;
     align-items: center;
     text-align: center;
-    height: 100%;
-    border-right: 3px solid rgb(255, 255, 255);
+    border: 1px solid rgba(0, 0, 0, 0.425);
     font-weight: bold;
   }
 
@@ -31,9 +32,9 @@
   }
 
   .navbar > .nav-button:active {
-    filter: brightness(120%);
+    transform: translateY(1px) translateX(1px);
   }
 
-  .navbar > .nav-button:hover > span {
-    padding: 3px;
+  .navbar > .nav-button:hover {
+    filter: brightness(90%);
   }

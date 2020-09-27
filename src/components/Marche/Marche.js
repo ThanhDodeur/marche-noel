@@ -134,11 +134,11 @@ class Marche extends React.Component {
     * @return {Object[]} [{content, className, fa, callBack}]
     */
     _getButtons() {
-        let resetButtons = [{content: 'Reset Files', fa: 'fa-trash', className: 'warning', callBack: this.toggleReset}]
+        let resetButtons = [{content: 'Retirer les fichiers', fa: 'fa-trash', className: 'warning', callBack: this.toggleReset}]
         if (this.state.resetRequested) {
             resetButtons = [
-                {content: 'Cancel', fa: 'fa-times', className: 'green', callBack: this.toggleReset},
-                {content: 'Confirm', fa: 'fa-check', className: 'alert', callBack: this.resetFiles},
+                {content: 'Annuler', fa: 'fa-times', className: 'green', callBack: this.toggleReset},
+                {content: 'Confirmer', fa: 'fa-check', className: 'alert', callBack: this.resetFiles},
             ];
         }
         const buttons = [
