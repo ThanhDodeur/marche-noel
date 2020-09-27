@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './Marche.css';
 
 import NavBar from '../NavBar/NavBar.js';
+import PageData from '../PageData/PageData.js';
 import FileInput from '../FileInput/FileInput.js';
 
 class Marche extends React.Component {
@@ -69,7 +70,7 @@ class Marche extends React.Component {
         const colNames = lines.shift().split(','); // removes and saves column titles.
         /*
         *
-        * customers = { clientId: { supplied , paid } }
+        * customers = { clientId: { supplied , paid, total } }
         * supplied = [ {name: 'itemName', 'price': price, 'supplierId': id } ] WHAT IS PAID
         * paid = [ {name: 'itemName', 'price': price, 'supplierId': id } ]
         *
@@ -98,7 +99,9 @@ class Marche extends React.Component {
                 customers[currentLine[0]] = customers[currentLine[0]] || {
                     supplied: [],
                     paid: [],
+                    total: 0,
                 };
+                customers[currentLine[0]].total += Number(currentLine[3].replace(',','.'));
                 // adds a line for what the customer paid
                 customers[currentLine[0]].paid.push({
                     name: currentLine[2],
@@ -205,6 +208,9 @@ class Marche extends React.Component {
             <NavBar
                 buttons={this._getButtons()}
             />
+            {!!this.state.days.length &&
+                <PageData days={this.state.days}/>
+            }
         </div>
     }
 }

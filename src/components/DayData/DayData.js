@@ -1,10 +1,10 @@
 import React from "react";
 import "./DayData.css";
-
-import DataBloc from '../DataBloc/DataBloc.js';
+import CustomerData from '../CustomerData/CustomerData.js';
+import MissedPayments from '../MissedPayments/MissedPayments.js';
 
 /*
- * Represents a single day (1 customer list, 1 vendor list).
+ * Represents a single day.
  *
  */
 function DayData({ day, index }) {
@@ -12,11 +12,8 @@ function DayData({ day, index }) {
     return (
         <div className="day" key={index}>
             <h1>Jour {index + 1}</h1>
-            {Object.entries(day).map((line, lineIndex) => {
-                return(
-                    <DataBloc key={lineIndex} groupName={line[0]} content={line[1]}/>
-                )
-            })}
+            <CustomerData customers={day.customers}/>
+            <MissedPayments missedPayments={day.missedPayments}/>
         </div>
     );
 }

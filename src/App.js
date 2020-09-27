@@ -6,10 +6,6 @@ import "./App.css";
 function App(props) {
     const [state, setState] = useState({ open: false });
 
-    function updateState(updates) {
-        setState({ ...state, ...updates });
-    }
-
     function toggleApp() {
         setState({ open: !state.open });
     }
