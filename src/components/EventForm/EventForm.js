@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import "./EventForm.css";
 
 /*
- * Represents a whole page of data for all the uploaded days.
+ * All the inputs to register the expenses of the event.
  * eventAccounting: {
         room: 0,
         transaction: 0,

@@ -18,7 +18,6 @@ class Marche extends React.Component {
             eventAccounting: {},
             supplierTotal: 0,
             costTotal: 0,
-            eventTotal: 0,
         };
     }
     /**
@@ -211,8 +210,7 @@ class Marche extends React.Component {
         await this._processFiles(this.state.files);
         let supplierTotal = 0;
         Object.values(this.state.suppliers).forEach(val => supplierTotal += val.total);
-        let eventTotal = supplierTotal - this.state.costTotal;
-        this.setState({ eventTotal, supplierTotal });
+        this.setState({ supplierTotal });
     }
     /**
     * Brief description of the function here.
@@ -220,7 +218,7 @@ class Marche extends React.Component {
     * @return {Object[]} [{content, className, fa, callBack}]
     */
     resetFiles = () => {
-        this.setState({files: [], days: [], pages: []});
+        this.setState({files: [], days: [], pages: [], supplierTotal: 0});
         this.toggleReset();
     }
     /**
@@ -250,12 +248,11 @@ class Marche extends React.Component {
             <NavBar
                 buttons={this._getButtons()}
             />
-            {!!this.state.showForm &&
+            {!!this.state.showForm ? (
                 <EventForm eventAccounting={this.state.eventAccounting} save={this.onEventFormSave}/>
-            }
-            {(!!this.state.days.length && !this.state.showForm) &&
-                <PageData days={this.state.days} costTotal={this.state.costTotal} eventTotal={this.state.eventTotal} supplierTotal={this.state.supplierTotal}/>
-            }
+            ) : (
+                <PageData days={this.state.days} costTotal={this.state.costTotal} supplierTotal={this.state.supplierTotal}/>
+            )}
         </div>
     }
 }
