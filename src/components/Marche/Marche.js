@@ -4,6 +4,7 @@ import './Marche.css';
 import NavBar from '../NavBar/NavBar.js';
 import PageData from '../PageData/PageData.js';
 import FileInput from '../FileInput/FileInput.js';
+import EventForm from '../EventForm/EventForm.js';
 
 class Marche extends React.Component {
     constructor(props) {
@@ -13,6 +14,20 @@ class Marche extends React.Component {
             days: [], // { customers, missedPayments }
             suppliers: {}, // { supplierId : { total } }
             resetRequested: false,
+            showForm: false,
+            eventAccounting: {
+                room: 0,
+                transaction: 0,
+                insurance: 0,
+                paper: 0,
+                stamps: 0,
+                groceries: 0,
+                traiteur: 0,
+                schmitz: 0,
+            },
+            supplierTotal: 0,
+            costTotal: 0,
+            eventTotal: 0,
         };
     }
     /**
@@ -31,7 +46,7 @@ class Marche extends React.Component {
     }
     _processFiles = async (files) => {
         const days = [];
-        let suppliers = Object.assign({}, this.state.suppliers);
+        let suppliers = {};
         for (const file of files) {
             const page = await this._readFile(file);
             const result = this._computeFile(page, suppliers);
@@ -163,9 +178,10 @@ class Marche extends React.Component {
         }
         const buttons = [
             {className: 'blue', fa: 'fa-upload', content: (<FileInput label={`Ajouter | jours: ${this.state.files.length}`} className="noselect" value={this.state.files} onChange={this.onFileInputChange} />)},
+            {className: ((this.state.showForm ? 'active' : '') + ' purple'), fa: 'fa-eur', content: 'Comptabilité', callBack: this.toggleEventForm},
         ].concat(resetButtons);
 
-        if (this.state.files.length) {
+        if (this.state.files.length && !this.state.showForm) {
             buttons.push({content: 'Calculer', fa: 'fa-plus', className: 'green', callBack: this.computeResults});
         }
         return buttons;
@@ -185,6 +201,15 @@ class Marche extends React.Component {
         this.setState({ files: [...this.state.files, ...files]});
     }
     /**
+    * Handler for event form.
+    */
+    onEventFormSave = async (eventAccounting) => {
+        let costTotal = 0;
+        Object.values(eventAccounting).forEach(val => costTotal += val);
+        this.setState({ eventAccounting, costTotal, showForm: false });
+        this.computeResults();
+    }
+    /**
     * Brief description of the function here.
     *
     * @return {Object[]} [{content, className, fa, callBack}]
@@ -193,6 +218,10 @@ class Marche extends React.Component {
         // add up expenses
         // add up suppliers sale totals
         await this._processFiles(this.state.files);
+        let supplierTotal = 0;
+        Object.values(this.state.suppliers).forEach(val => supplierTotal += val.total);
+        let eventTotal = supplierTotal - this.state.costTotal;
+        this.setState({ eventTotal, supplierTotal });
     }
     /**
     * Brief description of the function here.
@@ -212,6 +241,12 @@ class Marche extends React.Component {
         this.setState({ resetRequested: !this.state.resetRequested });
     }
     /**
+    *
+    */
+    toggleEventForm = () => {
+        this.setState({ showForm: !this.state.showForm });
+    }
+    /**
      * add encodage popup with button toggle
      * location salle, location bancontact et frais de transaction, assurance, papetrie, timbres, courses restaurant, traiteur, schmitz
      * form component with callback to change state here with new data.
@@ -224,8 +259,11 @@ class Marche extends React.Component {
             <NavBar
                 buttons={this._getButtons()}
             />
-            {!!this.state.days.length &&
-                <PageData days={this.state.days}/>
+            {!!this.state.showForm &&
+                <EventForm eventAccounting={this.state.eventAccounting} save={this.onEventFormSave}/>
+            }
+            {(!!this.state.days.length && !this.state.showForm) &&
+                <PageData days={this.state.days} costTotal={this.state.costTotal} eventTotal={this.state.eventTotal} supplierTotal={this.state.supplierTotal}/>
             }
         </div>
     }

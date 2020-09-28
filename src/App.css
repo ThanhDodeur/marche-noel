@@ -20,8 +20,7 @@
 }
 
 .content {
-  margin-top: 50px;
-  min-height: 100vh;
+  padding-top: 70px;
   display: flex;
 }
 
@@ -78,6 +77,10 @@
 
 .blue {
   background-color: rgb(102, 168, 255);
+}
+
+.purple {
+  background-color: rgb(123, 78, 232);
 }
 
 .warning {

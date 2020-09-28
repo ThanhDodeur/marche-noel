@@ -38,3 +38,7 @@
   .navbar > .nav-button:hover {
     filter: brightness(90%);
   }
+
+  .navbar > .nav-button.active {
+    padding: 15px;
+  }
