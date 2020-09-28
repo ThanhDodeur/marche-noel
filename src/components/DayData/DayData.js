@@ -12,7 +12,7 @@ function DayData({ day, index }) {
     return (
         <div className="day" key={index}>
             <h1>Jour {index + 1}</h1>
-            <div>Perte total: {day.dailyLoss}€</div>
+            <div>Perte totale: {day.dailyLoss}€</div>
             <CustomerData customers={day.customers}/>
             <MissedPayments missedPayments={day.missedPayments}/>
         </div>

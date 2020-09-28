@@ -93,7 +93,7 @@ class Marche extends React.Component {
             *   currentLine[7] payment - item Price
             */
 
-            if (currentLine[0]) {
+            if (currentLine[0]) { // CUSTOMER SIDE
                 // creates the customer if it doesn't already exist.
                 customers[currentLine[0]] = customers[currentLine[0]] || {
                     paid: [],
@@ -111,7 +111,7 @@ class Marche extends React.Component {
                 });
             }
 
-            if (currentLine[4] && currentLine[5]) {
+            if (currentLine[4] && currentLine[5]) { // SUPPLIER SIDE
                 customers[currentLine[5]] = customers[currentLine[5]] || {
                     paid: [],
                     paidTotal: 0,
@@ -200,7 +200,7 @@ class Marche extends React.Component {
     * @return {Object[]} [{content, className, fa, callBack}]
     */
     resetFiles = () => {
-        this.setState({days: [], pages: []});
+        this.setState({files: [], days: [], pages: []});
         this.toggleReset();
     }
     /**
