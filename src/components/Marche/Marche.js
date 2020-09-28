@@ -15,16 +15,7 @@ class Marche extends React.Component {
             suppliers: {}, // { supplierId : { total } }
             resetRequested: false,
             showForm: false,
-            eventAccounting: {
-                room: 0,
-                transaction: 0,
-                insurance: 0,
-                paper: 0,
-                stamps: 0,
-                groceries: 0,
-                traiteur: 0,
-                schmitz: 0,
-            },
+            eventAccounting: {},
             supplierTotal: 0,
             costTotal: 0,
             eventTotal: 0,

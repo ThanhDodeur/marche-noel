@@ -16,14 +16,14 @@ import "./EventForm.css";
  */
 function EventForm({ eventAccounting, save }) {
 
-    const [room, setRoom] = useState( eventAccounting.room );
-    const [transaction, setTransaction] = useState( eventAccounting.transaction );
-    const [insurance, setInsurance] = useState( eventAccounting.insurance );
-    const [paper, setPaper] = useState( eventAccounting.paper );
-    const [stamps, setStamps] = useState( eventAccounting.stamps );
-    const [groceries, setGroceries] = useState( eventAccounting.groceries );
-    const [traiteur, setTraiteur] = useState( eventAccounting.traiteur );
-    const [schmitz, setSchmitz] = useState( eventAccounting.schmitz );
+    const [room, setRoom] = useState( eventAccounting.room || 0 );
+    const [transaction, setTransaction] = useState( eventAccounting.transaction || 0 );
+    const [insurance, setInsurance] = useState( eventAccounting.insurance || 0 );
+    const [paper, setPaper] = useState( eventAccounting.paper || 0 );
+    const [stamps, setStamps] = useState( eventAccounting.stamps || 0 );
+    const [groceries, setGroceries] = useState( eventAccounting.groceries || 0 );
+    const [traiteur, setTraiteur] = useState( eventAccounting.traiteur || 0 );
+    const [schmitz, setSchmitz] = useState( eventAccounting.schmitz || 0 );
 
     function process() {
         save({
