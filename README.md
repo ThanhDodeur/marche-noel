@@ -1,5 +1,12 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## App:
+
+### `Accepted format`
+
+CSV export of [this sheet](https://docs.google.com/spreadsheets/d/1UKT38_RUa3MQ_HEGtWgaPKvedD35wYksaj7-T0sc9N8/edit?usp=sharing).
+
+
 ## Available Scripts
 
 In the project directory, you can run:
