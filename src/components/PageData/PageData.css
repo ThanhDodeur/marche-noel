@@ -2,3 +2,7 @@
     min-width: 200px;
     display: inline-block;
 }
+
+.daily-result > div > span > .icon {
+    padding: 7px;
+}
