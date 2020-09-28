@@ -1,0 +1,10 @@
+client,,,,fournisseur,,,
+numéro client,fournisseur,article,prix,numéro fournisseur,numéro client,article,prix
+675,67,livre,55,67,675,livre,55
+675,67,pomme,11,67,675,pomme,11
+41,67,chat,22,67,675,poisson,12
+41,58,tracteur,54,67,41,chat,22
+41,58,boite,22,58,41,tracteur,54
+,,,,58,41,boite,22
+,,,,,,,
+,,,,,, ,
