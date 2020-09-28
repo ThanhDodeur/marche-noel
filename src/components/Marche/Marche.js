@@ -30,15 +30,14 @@ class Marche extends React.Component {
         });
     }
     _processFiles = async (files) => {
-        const newDays = [];
+        const days = [];
         let suppliers = Object.assign({}, this.state.suppliers);
         for (const file of files) {
             const page = await this._readFile(file);
             const result = this._computeFile(page, suppliers);
             suppliers = result.suppliers;
-            newDays.push(result.day);
+            days.push(result.day);
         }
-        const days = this.state.days.concat(newDays);
         this.setState({ days, suppliers });
     }
     /**
@@ -70,7 +69,7 @@ class Marche extends React.Component {
         const colNames = lines.shift().split(','); // removes and saves column titles.
         /*
         *
-        * customers = { clientId: { supplied , paid, total } }
+        * customers = { clientId: { supplied, suppliedTotal, paid, paidTotal } }
         * supplied = [ {name: 'itemName', 'price': price, 'supplierId': id } ] WHAT IS PAID
         * paid = [ {name: 'itemName', 'price': price, 'supplierId': id } ]
         *
@@ -97,11 +96,13 @@ class Marche extends React.Component {
             if (currentLine[0]) {
                 // creates the customer if it doesn't already exist.
                 customers[currentLine[0]] = customers[currentLine[0]] || {
-                    supplied: [],
                     paid: [],
-                    total: 0,
+                    paidTotal: 0,
+                    supplied: [],
+                    suppliedTotal: 0,
                 };
-                customers[currentLine[0]].total += Number(currentLine[3].replace(',','.'));
+                // adds the total paid by the customer
+                customers[currentLine[0]].paidTotal += Number(currentLine[3].replace(',','.'));
                 // adds a line for what the customer paid
                 customers[currentLine[0]].paid.push({
                     name: currentLine[2],
@@ -112,10 +113,14 @@ class Marche extends React.Component {
 
             if (currentLine[4] && currentLine[5]) {
                 customers[currentLine[5]] = customers[currentLine[5]] || {
-                    supplied: [],
                     paid: [],
+                    paidTotal: 0,
+                    supplied: [],
+                    suppliedTotal: 0,
                 };
-                // adds a line for what the customer paid
+                // adds the total paid by the customer
+                customers[currentLine[5]].suppliedTotal += Number(currentLine[7].replace(',','.'));
+                // adds a line for what the customer recieved (not a guarantee of payment)
                 customers[currentLine[5]].supplied.push({
                     name: currentLine[6],
                     price: currentLine[7],
@@ -125,11 +130,20 @@ class Marche extends React.Component {
                 suppliers[currentLine[4]].total += Number(currentLine[7].replace(',','.'));
             }
         }
-        const missedPayments = this._computeMissedPayments(customers);
-        return {day: { customers, missedPayments }, suppliers };
+        const { missedPayments, dailyLoss } = this._computeMissedPayments(customers);
+        return {day: { customers, missedPayments, dailyLoss }, suppliers };
     }
     _computeMissedPayments = (customers) => {
-        return [];
+        const missedPayments = {};
+        let dailyLoss = 0;
+        for (const customerId of Object.keys(customers)) {
+            const balance = customers[customerId].suppliedTotal - customers[customerId].paidTotal;
+            if (balance !== 0) {
+                missedPayments[customerId] = balance;
+                dailyLoss += balance;
+            }
+        }
+        return { missedPayments, dailyLoss };
     }
     /**
     * Brief description of the function here.
@@ -145,10 +159,10 @@ class Marche extends React.Component {
             ];
         }
         const buttons = [
-            {className: 'blue', fa: 'fa-upload', content: (<FileInput label={`Ajouter | jours: ${this.state.days.length}`} className="noselect" value={this.state.files} onChange={this.onFileInputChange} />)},
+            {className: 'blue', fa: 'fa-upload', content: (<FileInput label={`Ajouter | jours: ${this.state.files.length}`} className="noselect" value={this.state.files} onChange={this.onFileInputChange} />)},
         ].concat(resetButtons);
 
-        if (this.state.days) {
+        if (this.state.files.length) {
             buttons.push({content: 'Calculer', fa: 'fa-plus', className: 'green', callBack: this.computeResults});
         }
         return buttons;
@@ -165,18 +179,17 @@ class Marche extends React.Component {
     * @return {void}
     */
    onFileInputChange = async (files) => {
-        this.state.files = files;
-        await this._processFiles(files);
+        this.setState({ files: [...this.state.files, ...files]});
     }
     /**
     * Brief description of the function here.
     *
     * @return {Object[]} [{content, className, fa, callBack}]
     */
-    computeResults = () => {
+    computeResults = async () => {
         // add up expenses
         // add up suppliers sale totals
-        return;
+        await this._processFiles(this.state.files);
     }
     /**
     * Brief description of the function here.
