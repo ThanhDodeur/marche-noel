@@ -28,16 +28,17 @@ function EventForm({ eventAccounting, save }) {
 
     function process() {
         save({
-            room,
-            transaction,
-            insurance,
-            paper,
-            stamps,
-            groceries,
-            traiteur,
-            schmitz,
-            other,
-        });
+            eventAccounting: {
+                room,
+                transaction,
+                insurance,
+                paper,
+                stamps,
+                groceries,
+                traiteur,
+                schmitz,
+                other,
+        }});
     }
     return (
         <div className="content">

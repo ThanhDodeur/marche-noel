@@ -198,7 +198,7 @@ class Marche extends React.Component {
     /**
     * Handler for event form.
     */
-    onEventFormSave = async (eventAccounting) => {
+    onEventFormSave = async ({ eventAccounting, extra }) => {
         let costTotal = 0;
         Object.values(eventAccounting).forEach(val => costTotal += val);
         this.setState({ eventAccounting, costTotal, showForm: false });
