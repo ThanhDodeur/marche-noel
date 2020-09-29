@@ -210,8 +210,7 @@ class Marche extends React.Component {
     onEventFormSave = async ({ eventAccounting, dailyAccounting, ticketPrice }) => {
         let costTotal = 0;
         Object.values(eventAccounting).forEach(val => costTotal += val);
-        this.setState({ eventAccounting, ticketPrice, dailyAccounting, costTotal, showForm: false });
-        this.computeResults();
+        this.setState({ eventAccounting, ticketPrice, dailyAccounting, costTotal });
     }
     /**
     * Brief description of the function here.
@@ -247,7 +246,11 @@ class Marche extends React.Component {
     *
     */
     toggleEventForm = () => {
-        this.setState({ showForm: !this.state.showForm });
+        const isOpen = this.state.showForm;
+        this.setState({ showForm: !isOpen });
+        if (isOpen) {
+            this.computeResults();
+        }
     }
     /**
      * add encodage popup with button toggle

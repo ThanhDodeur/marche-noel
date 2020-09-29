@@ -10,7 +10,7 @@ import MissedPayments from '../MissedPayments/MissedPayments.js';
 function DayData({ day, index, dailyAccounting }) {
 
     function getTicketSold(day) {
-        return dailyAccounting[day] && dailyAccounting[day].tombolaTickets || 0;
+        return dailyAccounting[day] && dailyAccounting[day].tombolaTickets;
     }
 
     return (

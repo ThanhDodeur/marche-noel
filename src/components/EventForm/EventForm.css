@@ -1,7 +1,8 @@
 .form > .form-button {
     padding: 10px;
-    margin: 5px;
+    margin: 20px;
     border-radius: 5px;
+    width: 105px;
     display: flex;
     align-items: center;
     text-align: center;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./EventForm.css";
 
 /*
@@ -6,35 +6,65 @@ import "./EventForm.css";
  */
 function EventForm({ eventAccounting, dailyAccounting, ticketPrice, dayList, save }) {
 
-    const [room, setRoom] = useState( eventAccounting.room || 0 );
-    const [transaction, setTransaction] = useState( eventAccounting.transaction || 0 );
-    const [insurance, setInsurance] = useState( eventAccounting.insurance || 0 );
-    const [paper, setPaper] = useState( eventAccounting.paper || 0 );
-    const [stamps, setStamps] = useState( eventAccounting.stamps || 0 );
-    const [groceries, setGroceries] = useState( eventAccounting.groceries || 0 );
-    const [traiteur, setTraiteur] = useState( eventAccounting.traiteur || 0 );
-    const [schmitz, setSchmitz] = useState( eventAccounting.schmitz || 0 );
-    const [other, setOther] = useState( eventAccounting.other || 0 );
+    const [eventAccountingState, setEventAccountingState] = useState(eventAccounting || {});
     const [ticketP, setTicketP] = useState(ticketPrice || 0);
-
     const [dailyAccountingState, setDailyAccountingState] = useState(dailyAccounting || {});
 
-    function process() {
-        save({
-            eventAccounting: {
-                room,
-                transaction,
-                insurance,
-                paper,
-                stamps,
-                groceries,
-                traiteur,
-                schmitz,
-                other,
-            },
-            ticketPrice: ticketP,
-            dailyAccounting: dailyAccountingState,
-        });
+    const EXPENSE_TYPES = ['Salle', 'Transactions', 'Assurance', 'Papeterie', 'Timbres', 'Courses', 'Traiteur', 'Schmitz', 'Autre'];
+
+    useEffect(() => {
+        // willMount
+        return () => {
+            // willUnMount
+            save({
+                eventAccounting: eventAccountingState,
+                ticketPrice: ticketP,
+                dailyAccounting: dailyAccountingState,
+            });
+        }
+    }, [eventAccountingState, ticketP, dailyAccountingState]);
+
+    function setTombolaTickets(day, value) {
+        const dailyState = Object.assign({}, dailyAccountingState);
+        if (!dailyState[day]) {
+            dailyState[day] = {};
+        }
+
+        dailyState[day].tombolaTickets = value;
+        setDailyAccountingState(dailyState);
+    }
+
+    function getTombolaTicketValue(day) {
+        if (dailyAccountingState && dailyAccountingState[day]) {
+            return dailyAccountingState[day].tombolaTickets || 0;
+        } else {
+            return 0;
+        }
+    }
+
+    function setExpense(expense, value) {
+        const accountingState = Object.assign({}, eventAccountingState);
+        accountingState[expense] = value;
+        setEventAccountingState(accountingState);
+    }
+
+    function getExpenseValue(expense) {
+        return eventAccountingState[expense] || 0;
+    }
+
+    function renderEventAccounting() {
+        return (
+            <div className="input-grid left">
+                {EXPENSE_TYPES.map(expense => {
+                    return (
+                        <div>
+                            <span className="accounting-span">{expense}: </span>
+                            <input className="accounting-input" onChange={event => { setExpense(expense, Number(event.target.value)) }} pattern="[0-9]*" type="number" value={getExpenseValue(expense)}/> €
+                        </div>
+                    )
+                })}
+            </div>
+        )
     }
 
     function renderDailyAccounting() {
@@ -57,69 +87,11 @@ function EventForm({ eventAccounting, dailyAccounting, ticketPrice, dayList, sav
         )
     }
 
-    function setTombolaTickets(day, value) {
-        const dailyState = Object.assign({}, dailyAccountingState);
-        if (!dailyState[day]) {
-            dailyState[day] = {};
-        }
-
-        dailyState[day].tombolaTickets = value;
-        setDailyAccountingState(dailyState);
-    }
-
-    function getTombolaTicketValue(day) {
-        if (dailyAccountingState && dailyAccountingState[day]) {
-            return dailyAccountingState[day].tombolaTickets || 0;
-        } else {
-            return 0;
-        }
-    }
-
     return (
         <div className="content">
             <div className="form">
-                <div className="input-grid left">
-                    <div>
-                        <span className="accounting-span">Salle: </span>
-                        <input className="accounting-input" onChange={event => { setRoom(Number(event.target.value))}} pattern="[0-9]*" type="number" value={room}/> €
-                    </div>
-                    <div>
-                        <span className="accounting-span">Transactions: </span>
-                        <input className="accounting-input" onChange={event => { setTransaction(Number(event.target.value))}} pattern="[0-9]*" type="number" value={transaction}/> €
-                    </div>
-                    <div>
-                        <span className="accounting-span">Assurance: </span>
-                        <input className="accounting-input" onChange={event => { setInsurance(Number(event.target.value))}} pattern="[0-9]*" type="number" value={insurance}/> €
-                    </div>
-                    <div>
-                        <span className="accounting-span">Papeterie: </span>
-                        <input className="accounting-input" onChange={event => { setPaper(Number(event.target.value))}} pattern="[0-9]*" type="number" value={paper}/> €
-                    </div>
-                    <div>
-                        <span className="accounting-span">Timbres: </span>
-                        <input className="accounting-input" onChange={event => { setStamps(Number(event.target.value))}} pattern="[0-9]*" type="number" value={stamps}/> €
-                    </div>
-                    <div>
-                        <span className="accounting-span">Courses: </span>
-                        <input className="accounting-input" onChange={event => { setGroceries(Number(event.target.value))}} pattern="[0-9]*" type="number" value={groceries}/> €
-                    </div>
-                    <div>
-                        <span className="accounting-span">Traiteur: </span>
-                        <input className="accounting-input" onChange={event => { setTraiteur(Number(event.target.value))}} pattern="[0-9]*" type="number" value={traiteur}/> €
-                    </div>
-                    <div>
-                        <span className="accounting-span">Schmitz: </span>
-                        <input className="accounting-input" onChange={event => { setSchmitz(Number(event.target.value))}} pattern="[0-9]*" type="number" value={schmitz}/> €
-                    </div>
-                    <div>
-                        <span className="accounting-span">Autre: </span>
-                        <input className="accounting-input" onChange={event => { setOther(Number(event.target.value))}} pattern="[0-9]*" type="number" value={other}/> €
-                    </div>
-                </div>
+                {renderEventAccounting()}
                 {renderDailyAccounting()}
-                <div className="form-button noselect clear" onClick={process}>
-                    <span>ENREGISTRER</span>
-                </div>
             </div>
         </div>
     );
