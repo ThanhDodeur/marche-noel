@@ -42,6 +42,7 @@ function EventForm({ eventAccounting, save }) {
     return (
         <div className="content">
             <div className="form">
+            <h1>Dépenses</h1>
                 <div className="input-grid">
                     <div>
                         <span>Salle: </span>

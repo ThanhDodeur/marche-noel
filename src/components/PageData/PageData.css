@@ -1,4 +1,4 @@
-.daily-result > div > span {
+.daily-result > div > span:first-of-type {
     min-width: 200px;
     display: inline-block;
 }
