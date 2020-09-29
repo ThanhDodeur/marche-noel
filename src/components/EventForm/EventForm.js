@@ -10,6 +10,7 @@ function EventForm({ eventAccounting, dailyAccounting, ticketPrice, dayList, sav
     const [ticketP, setTicketP] = useState(ticketPrice || 0);
     const [dailyAccountingState, setDailyAccountingState] = useState(dailyAccounting || {});
 
+    // the names are only relevant in this context, the parent component will just make a sum of all those expenses.
     const EXPENSE_TYPES = ['Salle', 'Transactions', 'Assurance', 'Papeterie', 'Timbres', 'Courses', 'Traiteur', 'Schmitz', 'Autre'];
 
     useEffect(() => {

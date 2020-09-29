@@ -23,3 +23,7 @@
 .global-stats > .divider {
     padding: 30px;
 }
+
+.daily-stats > div {
+    margin: 3px;
+}

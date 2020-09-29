@@ -18,7 +18,7 @@ function PageData({ days, costTotal, supplierTotal, dailyAccounting, ticketPrice
             totalCustomers += Object.keys(day.customers).length;
         }
         return (
-            <div>
+            <div className="daily-stats">
                 <div><span>Moyenne des dépenses:</span> <span>{totalSpendings / (dailyArray.length || 1)}€</span></div>
                 <div><span>Tickets de tombola Vendus:</span> <span>{getTombolaSold()}</span></div>
                 <div><span>Quantité de fiches payées:</span> <span>{totalCustomers}</span></div>
@@ -47,7 +47,9 @@ function PageData({ days, costTotal, supplierTotal, dailyAccounting, ticketPrice
                 <div><span>{getTombolaSold()} x {ticketPrice}€: </span><span> {ticketPrice * (getTombolaSold())}€ </span></div>
                 <div><span><i className="fa fa-minus icon"/>Total des frais:</span> <span>{costTotal}€</span></div>
                 <div className="separated"><span>Bénéfices net du marché:</span> <span>{computeTotal()}€</span></div>
-                <div className="divider">_________________________________________________________</div>
+                {!!days.length &&
+                    <span className="divider">_________________________________________________________</span>
+                }
                 {days.map((value, dayIndex) => {
                     return(<DayData day={value} key={dayIndex} dailyAccounting={dailyAccounting} index={dayIndex}/>)
                 })}
@@ -55,7 +57,6 @@ function PageData({ days, costTotal, supplierTotal, dailyAccounting, ticketPrice
             <div className="global-stats">
                 <h3>Statistiques</h3>
                 {getStats()}
-                <div>_________________________</div>
             </div>
         </div>
     );
