@@ -15,7 +15,6 @@ const FileInput = ({ value, label='Upload', onChange = defaultChange, ...rest })
                     onChange([...e.target.files]);
                     e.target.value = null;
                 }}
-                multiple
             />
         </label>
     </span>

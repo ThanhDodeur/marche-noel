@@ -10,15 +10,18 @@ class Marche extends React.Component {
     constructor(props) {
         super();
         this.state = {
-            files: [],
-            days: [], // { customers, missedPayments, dailyLoss, customersAverage }
+            files: {}, // { dayName: file, }
+            days: [], // { dayName, customers, missedPayments, dailyLoss, customersAverage }
             suppliers: {}, // { supplierId : { total } }
             resetRequested: false,
             showForm: false,
             eventAccounting: {},
+            dailyAccounting: {}, // { dayName: {valuesDict} }
             supplierTotal: 0,
             costTotal: 0,
+            ticketPrice: 0,
         };
+        this.DAYS = ['Vendredi', 'Samedi', 'Dimanche']; // const
     }
     /**
     *
@@ -37,9 +40,9 @@ class Marche extends React.Component {
     _processFiles = async (files) => {
         const days = [];
         let suppliers = {};
-        for (const file of files) {
+        for (const [dayName, file] of Object.entries(files)) {
             const page = await this._readFile(file);
-            const result = this._computeFile(page, suppliers);
+            const result = this._computeFile({ dayName, page, suppliers });
             suppliers = result.suppliers;
             days.push(result.day);
         }
@@ -65,7 +68,7 @@ class Marche extends React.Component {
      * @param {String} page open text file
      * @return {Object}
      */
-    _computeFile = (page, suppliers) => {
+    _computeFile = ({ dayName, page, suppliers }) => {
         const OFFSET_HEIGHT = 1; // does not include the column titles.
         const lines = page.split(/\r\n|\n/);
         for (const i of Array(OFFSET_HEIGHT)) {
@@ -136,7 +139,7 @@ class Marche extends React.Component {
             }
         }
         const { missedPayments, dailyLoss, customersAverage } = this._computeDailyStats(customers);
-        return {day: { customers, missedPayments, dailyLoss, customersAverage }, suppliers };
+        return {day: { dayName, customers, missedPayments, dailyLoss, customersAverage }, suppliers };
     }
     _computeDailyStats = (customers) => {
         const missedPayments = {};
@@ -162,7 +165,7 @@ class Marche extends React.Component {
     */
     _getButtons() {
         let resetButtons = [];
-        if (this.state.files.length) {
+        if (Object.keys(this.state.files).length) {
             resetButtons = [{content: 'Retirer les fichiers', fa: 'fa-trash', className: 'warning', callBack: this.toggleReset}];
         }
         if (this.state.resetRequested) {
@@ -171,13 +174,18 @@ class Marche extends React.Component {
                 {content: 'Confirmer', fa: 'fa-check', className: 'alert', callBack: this.resetFiles},
             ];
         }
+        const dayButtons = [];
+        for (const day of this.DAYS) {
+            dayButtons.push(
+                {className: (this.state.files[day] ? 'green' : 'alert'), fa: 'fa-upload', content: (<FileInput label={day} className="noselect" value={this.state.files[day]} onChange={val => {this.onFileInputChange(val, day)}} />)},
+            )
+        }
         const buttons = [
-            {className: 'blue', fa: 'fa-upload', content: (<FileInput label={`Ajouter | jours: ${this.state.files.length}`} className="noselect" value={this.state.files} onChange={this.onFileInputChange} />)},
             {className: ((this.state.showForm ? 'active' : '') + ' purple'), fa: 'fa-eur', content: 'Comptabilité', callBack: this.toggleEventForm},
-        ].concat(resetButtons);
+        ].concat(dayButtons, resetButtons);
 
-        if (this.state.files.length && !this.state.showForm) {
-            buttons.push({content: 'Calculer', fa: 'fa-plus', className: 'green', callBack: this.computeResults});
+        if (Object.keys(this.state.files).length && !this.state.showForm && !this.state.resetRequested) {
+            buttons.push({ content: 'Calculer', fa: 'fa-plus', className: 'green', callBack: this.computeResults });
         }
         return buttons;
     }
@@ -192,16 +200,17 @@ class Marche extends React.Component {
     * @param {file[]} files
     * @return {void}
     */
-   onFileInputChange = async (files) => {
-        this.setState({ files: [...this.state.files, ...files]});
+   onFileInputChange = async (files, name) => {
+       const file = files[0];
+        this.setState({ files: Object.assign({}, this.state.files, {[name]: file})});
     }
     /**
     * Handler for event form.
     */
-    onEventFormSave = async ({ eventAccounting, extra }) => {
+    onEventFormSave = async ({ eventAccounting, dailyAccounting, ticketPrice }) => {
         let costTotal = 0;
         Object.values(eventAccounting).forEach(val => costTotal += val);
-        this.setState({ eventAccounting, costTotal, showForm: false });
+        this.setState({ eventAccounting, ticketPrice, dailyAccounting, costTotal, showForm: false });
         this.computeResults();
     }
     /**
@@ -254,9 +263,9 @@ class Marche extends React.Component {
                 buttons={this._getButtons()}
             />
             {!!this.state.showForm ? (
-                <EventForm eventAccounting={this.state.eventAccounting} save={this.onEventFormSave}/>
+                <EventForm eventAccounting={this.state.eventAccounting} dailyAccounting={this.state.dailyAccounting} dayList={this.DAYS} ticketPrice={this.state.ticketPrice} save={this.onEventFormSave}/>
             ) : (
-                <PageData days={this.state.days} costTotal={this.state.costTotal} supplierTotal={this.state.supplierTotal}/>
+                <PageData days={this.state.days} dailyAccounting={this.state.dailyAccounting} ticketPrice={this.state.ticketPrice} costTotal={this.state.costTotal} supplierTotal={this.state.supplierTotal}/>
             )}
         </div>
     }

@@ -1,11 +1,20 @@
 .global-stats > div > span:first-of-type {
-    min-width: 200px;
+    min-width: 250px;
     display: inline-block;
+}
+
+.global-stats > div {
+    border-top: 1px solid rgba(158, 158, 158, 0.575);
+}
+
+.global-stats > .separated {
+    border-top: 3px solid rgb(255, 255, 255);
 }
 
 .global-stats > div > span > .icon {
     padding: 7px;
 }
+
 
 .global-stats {
     margin: 30px;

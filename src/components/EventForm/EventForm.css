@@ -15,15 +15,32 @@
     transform: translateY(1px) translateX(1px);
   }
 
-  .form > .form-button:hover {
-    filter: brightness(90%);
-  }
-
-.input-grid > div > span {
-    min-width: 100px;
-    display: inline-block;
+.form > .form-button:hover {
+  filter: brightness(90%);
 }
 
-.input-grid > div > input {
-    max-width: 60px;
+.accounting-span {
+  min-width: 100px;
+  display: inline-block;
+}
+
+.accounting-input {
+  max-width: 60px;
+}
+
+.input-grid {
+  margin: 50px;
+}
+
+
+.left {
+  float: left;
+}
+
+.right {
+  float: right;
+}
+
+.clear {
+  clear:both;
 }
