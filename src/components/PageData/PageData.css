@@ -1,8 +1,16 @@
-.daily-result > div > span:first-of-type {
+.global-stats > div > span:first-of-type {
     min-width: 200px;
     display: inline-block;
 }
 
-.daily-result > div > span > .icon {
+.global-stats > div > span > .icon {
     padding: 7px;
+}
+
+.global-stats {
+    margin: 30px;
+}
+
+.global-stats > .divider {
+    padding: 30px;
 }

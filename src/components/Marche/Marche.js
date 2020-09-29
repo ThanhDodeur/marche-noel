@@ -11,7 +11,7 @@ class Marche extends React.Component {
         super();
         this.state = {
             files: [],
-            days: [], // { customers, missedPayments }
+            days: [], // { customers, missedPayments, dailyLoss, customersAverage }
             suppliers: {}, // { supplierId : { total } }
             resetRequested: false,
             showForm: false,
@@ -135,20 +135,25 @@ class Marche extends React.Component {
                 suppliers[currentLine[4]].total += Number(currentLine[7].replace(',','.'));
             }
         }
-        const { missedPayments, dailyLoss } = this._computeMissedPayments(customers);
-        return {day: { customers, missedPayments, dailyLoss }, suppliers };
+        const { missedPayments, dailyLoss, customersAverage } = this._computeDailyStats(customers);
+        return {day: { customers, missedPayments, dailyLoss, customersAverage }, suppliers };
     }
-    _computeMissedPayments = (customers) => {
+    _computeDailyStats = (customers) => {
         const missedPayments = {};
         let dailyLoss = 0;
-        for (const customerId of Object.keys(customers)) {
-            const balance = customers[customerId].suppliedTotal - customers[customerId].paidTotal;
+        let customersTotal = 0;
+        const customerKeys = Object.keys(customers);
+        for (const customerId of customerKeys) {
+            const customerPaid = customers[customerId].paidTotal;
+            const balance = customers[customerId].suppliedTotal - customerPaid;
+            customersTotal += customerPaid;
             if (balance !== 0) {
                 missedPayments[customerId] = balance;
                 dailyLoss += balance;
             }
         }
-        return { missedPayments, dailyLoss };
+        const customersAverage = customersTotal / (customerKeys.length || 0);
+        return { missedPayments, dailyLoss, customersTotal, customersAverage };
     }
     /**
     * Brief description of the function here.

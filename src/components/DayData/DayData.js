@@ -13,7 +13,8 @@ function DayData({ day, index }) {
         <div className="day" key={index}>
             <h1>Jour {index + 1}</h1>
             <div className="day-data">
-                <div>total des paiements manqués: {day.dailyLoss}€</div>
+                <div>Total des paiements manqués: {day.dailyLoss}€</div>
+                <div>Moyenne de dépense des clients: {day.customersAverage}€</div>
                 <CustomerData customers={day.customers}/>
                 <MissedPayments missedPayments={day.missedPayments}/>
             </div>
