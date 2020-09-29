@@ -34,6 +34,10 @@ function PageData({ days, costTotal, supplierTotal, dailyAccounting, ticketPrice
         return soldTickets;
     }
 
+    function computeTotal() {
+        return (supplierTotal + (ticketPrice * (getTombolaSold()))) - costTotal;
+    }
+
     return (
         <div className="content">
             <div className="global-stats">
@@ -42,7 +46,7 @@ function PageData({ days, costTotal, supplierTotal, dailyAccounting, ticketPrice
                 <div><span>Vente de tombola:</span></div>
                 <div><span>{getTombolaSold()} x {ticketPrice}€: </span><span> {ticketPrice * (getTombolaSold())}€ </span></div>
                 <div><span><i className="fa fa-minus icon"/>Total des frais:</span> <span>{costTotal}€</span></div>
-                <div className="separated"><span>Bénéfices net du marché:</span> <span>{supplierTotal - costTotal}€</span></div>
+                <div className="separated"><span>Bénéfices net du marché:</span> <span>{computeTotal()}€</span></div>
                 <div class="divider">_________________________________________________________</div>
                 {days.map((value, dayIndex) => {
                     return(<DayData day={value} key={dayIndex} dailyAccounting={dailyAccounting} index={dayIndex}/>)
