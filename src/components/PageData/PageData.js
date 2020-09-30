@@ -19,9 +19,9 @@ function PageData({ days, costTotal, supplierTotal, dailyAccounting, ticketPrice
         }
         return (
             <div className="daily-stats">
-                <div><span>Moyenne des dépenses:</span> <span>{totalSpendings / (dailyArray.length || 1)}€</span></div>
-                <div><span>Tickets de tombola Vendus:</span> <span>{getTombolaSold()}</span></div>
-                <div><span>Quantité de fiches payées:</span> <span>{totalCustomers}</span></div>
+                <div><span>Moyenne des dépenses:</span> <span className="value-display">{totalSpendings / (dailyArray.length || 1)}€</span></div>
+                <div><span>Tickets de tombola Vendus:</span> <span className="value-display">{getTombolaSold()}</span></div>
+                <div><span>Quantité de fiches payées:</span> <span className="value-display">{totalCustomers}</span></div>
             </div>
         )
     }
@@ -42,11 +42,11 @@ function PageData({ days, costTotal, supplierTotal, dailyAccounting, ticketPrice
         <div className="content">
             <div className="global-stats">
                 <h3>Bénéfices</h3>
-                <div><span>Bénéfices des vendeurs:</span> <span>{supplierTotal}€</span></div>
+                <div><span>Bénéfices des vendeurs:</span> <span className="value-display">{supplierTotal}€</span></div>
                 <div><span>Vente de tombola:</span></div>
-                <div><span>{getTombolaSold()} x {ticketPrice}€: </span><span> {ticketPrice * (getTombolaSold())}€ </span></div>
-                <div><span><i className="fa fa-minus icon"/>Total des frais:</span> <span>{costTotal}€</span></div>
-                <div className="separated"><span>Bénéfices net du marché:</span> <span>{computeTotal()}€</span></div>
+                <div><span>{getTombolaSold()} x {ticketPrice}€: </span><span className="value-display">{ticketPrice * (getTombolaSold())}€ </span></div>
+                <div><span><i className="fa fa-minus icon"/>Total des frais: </span><span className="value-display">{costTotal}€</span></div>
+                <div className="separated"><span>Bénéfices net du marché: </span><span className="value-display">{computeTotal()}€</span></div>
                 {!!days.length &&
                     <span className="divider">_________________________________________________________</span>
                 }

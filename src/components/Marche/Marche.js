@@ -13,9 +13,9 @@ class Marche extends React.Component {
             files: {}, // { dayName: file, }
             days: [], // { dayName, customers, missedPayments, dailyLoss, customersAverage }
             suppliers: {}, // { supplierId : { total } }
-            resetRequested: false,
-            showForm: false,
-            eventAccounting: {},
+            resetRequested: false, // toggle for the confirm/cancel buttons for removing files
+            showForm: false, // toggle for the accounting/event input form
+            eventExpenses: {}, // {expenseName: <int>amount}
             dailyAccounting: {}, // { dayName: {valuesDict} }
             supplierTotal: 0,
             costTotal: 0,
@@ -37,16 +37,24 @@ class Marche extends React.Component {
             };
         });
     }
+    /**
+     * Extracts values from files.
+     *
+     * @param {Array} files
+     * @returns {Object}
+     */
     _processFiles = async (files) => {
         const days = [];
         let suppliers = {};
+        let supplierTotal = 0;
         for (const [dayName, file] of Object.entries(files)) {
             const page = await this._readFile(file);
             const result = this._computeFile({ dayName, page, suppliers });
             suppliers = result.suppliers;
             days.push(result.day);
         }
-        this.setState({ days, suppliers });
+        Object.values(suppliers).forEach(val => supplierTotal += val.total);
+        return { days, suppliers, supplierTotal };
     }
     /**
      * Expected structure of page:
@@ -185,7 +193,7 @@ class Marche extends React.Component {
         ].concat(dayButtons, resetButtons);
 
         if (Object.keys(this.state.files).length && !this.state.showForm && !this.state.resetRequested) {
-            buttons.push({ content: 'Calculer', fa: 'fa-plus', className: 'green', callBack: this.computeResults });
+            buttons.push({ content: 'Calculer', fa: 'fa-plus', className: 'green', callBack: this._computeResults });
         }
         return buttons;
     }
@@ -207,37 +215,27 @@ class Marche extends React.Component {
     /**
     * Handler for event form.
     */
-    onEventFormSave = async ({ eventAccounting, dailyAccounting, ticketPrice }) => {
+    onEventFormSave = async ({ eventExpenses, dailyAccounting, ticketPrice }) => {
         let costTotal = 0;
-        Object.values(eventAccounting).forEach(val => costTotal += val);
-        this.setState({ eventAccounting, ticketPrice, dailyAccounting, costTotal });
+        Object.values(eventExpenses).forEach(val => costTotal += val);
+        this.setState({ eventExpenses, ticketPrice, dailyAccounting, costTotal });
     }
     /**
-    * Brief description of the function here.
-    *
-    * @return {Object[]} [{content, className, fa, callBack}]
+    * processes the files and updates the state.
     */
-    computeResults = async () => {
-        // add up expenses
-        // add up suppliers sale totals
-        await this._processFiles(this.state.files);
-        let supplierTotal = 0;
-        Object.values(this.state.suppliers).forEach(val => supplierTotal += val.total);
-        this.setState({ supplierTotal });
+    _computeResults = async () => {
+        const { days, suppliers, supplierTotal } = await this._processFiles(this.state.files);
+        this.setState({ days, suppliers, supplierTotal });
     }
     /**
-    * Brief description of the function here.
     *
-    * @return {Object[]} [{content, className, fa, callBack}]
     */
     resetFiles = () => {
         this.setState({files: [], days: [], pages: [], supplierTotal: 0});
         this.toggleReset();
     }
     /**
-    * Brief description of the function here.
     *
-    * @return {Object[]} [{content, className, fa, callBack}]
     */
     toggleReset = () => {
         this.setState({ resetRequested: !this.state.resetRequested });
@@ -249,7 +247,7 @@ class Marche extends React.Component {
         const isOpen = this.state.showForm;
         this.setState({ showForm: !isOpen });
         if (isOpen) {
-            this.computeResults();
+            this._computeResults();
         }
     }
     /**
@@ -266,7 +264,7 @@ class Marche extends React.Component {
                 buttons={this._getButtons()}
             />
             {!!this.state.showForm ? (
-                <EventForm eventAccounting={this.state.eventAccounting} dailyAccounting={this.state.dailyAccounting} dayList={this.DAYS} ticketPrice={this.state.ticketPrice} save={this.onEventFormSave}/>
+                <EventForm eventExpenses={this.state.eventExpenses} dailyAccounting={this.state.dailyAccounting} dayList={this.DAYS} ticketPrice={this.state.ticketPrice} save={this.onEventFormSave}/>
             ) : (
                 <PageData days={this.state.days} dailyAccounting={this.state.dailyAccounting} ticketPrice={this.state.ticketPrice} costTotal={this.state.costTotal} supplierTotal={this.state.supplierTotal}/>
             )}

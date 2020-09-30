@@ -4,9 +4,9 @@ import "./EventForm.css";
 /*
  * All the inputs to register the expenses of the event.
  */
-function EventForm({ eventAccounting, dailyAccounting, ticketPrice, dayList, save }) {
+function EventForm({ eventExpenses, dailyAccounting, ticketPrice, dayList, save }) {
 
-    const [eventAccountingState, setEventAccountingState] = useState(eventAccounting || {});
+    const [eventExpensesState, setEventExpensesState] = useState(eventExpenses || {});
     const [ticketP, setTicketP] = useState(ticketPrice || 0);
     const [dailyAccountingState, setDailyAccountingState] = useState(dailyAccounting || {});
 
@@ -18,12 +18,12 @@ function EventForm({ eventAccounting, dailyAccounting, ticketPrice, dayList, sav
         return () => {
             // willUnMount
             save({
-                eventAccounting: eventAccountingState,
+                eventExpenses: eventExpensesState,
                 ticketPrice: ticketP,
                 dailyAccounting: dailyAccountingState,
             });
         }
-    }, [eventAccountingState, ticketP, dailyAccountingState]);
+    }, [eventExpensesState, ticketP, dailyAccountingState]);
 
     function setTombolaTickets(day, value) {
         const dailyState = Object.assign({}, dailyAccountingState);
@@ -44,16 +44,16 @@ function EventForm({ eventAccounting, dailyAccounting, ticketPrice, dayList, sav
     }
 
     function setExpense(expense, value) {
-        const accountingState = Object.assign({}, eventAccountingState);
+        const accountingState = Object.assign({}, eventExpensesState);
         accountingState[expense] = value;
-        setEventAccountingState(accountingState);
+        setEventExpensesState(accountingState);
     }
 
     function getExpenseValue(expense) {
-        return eventAccountingState[expense] || 0;
+        return eventExpensesState[expense] || 0;
     }
 
-    function renderEventAccounting() {
+    function renderEventExpenses() {
         return (
             <div className="input-grid left">
                 {EXPENSE_TYPES.map(expense => {
@@ -91,7 +91,7 @@ function EventForm({ eventAccounting, dailyAccounting, ticketPrice, dayList, sav
     return (
         <div className="content">
             <div className="form">
-                {renderEventAccounting()}
+                {renderEventExpenses()}
                 {renderDailyAccounting()}
             </div>
         </div>
