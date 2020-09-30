@@ -1,0 +1,32 @@
+.popups {
+    z-index: 1000;
+    top: 0px;
+    margin: 50px;
+    right: 0px;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+}
+
+.popup {
+    padding: 10px;
+    color: black;
+    font-weight: bold;
+    margin: 5px;
+    transition: 2s;
+}
+
+.popup.info {
+    background-color: rgb(95, 196, 255);
+    border: 2px solid rgba(255, 255, 255, 0.527);
+}
+
+.popup.error {
+    background-color: rgb(255, 132, 95);
+    border: 3px solid rgba(255, 255, 255, 0.527);
+}
+
+.popup > span {
+    display: block;
+    margin: 5px;
+}

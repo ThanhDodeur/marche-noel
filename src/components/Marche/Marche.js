@@ -1,7 +1,9 @@
 import React from 'react';
 import './Marche.css';
 
+import newId from '../../utils/utils.js';
 import NavBar from '../NavBar/NavBar.js';
+import Popups from '../Popups/Popups.js';
 import PageData from '../PageData/PageData.js';
 import FileInput from '../FileInput/FileInput.js';
 import EventForm from '../EventForm/EventForm.js';
@@ -20,8 +22,43 @@ class Marche extends React.Component {
             supplierTotal: 0,
             costTotal: 0,
             ticketPrice: 0,
+            popupIds: [],
+            popups: {}, // {content, type}
         };
         this.DAYS = ['Vendredi', 'Samedi', 'Dimanche']; // const
+    }
+    /**
+     *
+     * @param {String} title
+     * @param {String} content text content of the message
+     * @param {String} [type] info | error
+     * @param {Number} [duration] amount of ms
+     */
+    _addMessage = async (title, content, type, duration) => {
+        duration = duration || 5000;
+        type = type || 'info';
+        const id = newId('message');
+        await this.setState({
+            popupIds: this.state.popupIds.concat(id),
+            popups: Object.assign({}, this.state.popups, {
+                [id]: {
+                    title,
+                    content,
+                    type,
+                },
+            }),
+        });
+        setTimeout(async () => {
+            const newPopupIds = this.state.popupIds.filter((filterId) => {
+                return filterId !== id;
+            });
+            const newPopups = Object.assign({}, this.state.popups);
+            delete newPopups[id];
+            await this.setState({
+                popupIds: newPopupIds,
+                popups: newPopups,
+            });
+        }, duration);
     }
     /**
     *
@@ -38,6 +75,7 @@ class Marche extends React.Component {
                 };
             });
         } catch (error) {
+            this._addMessage('ERREUR', error.message, 'error');
             return false;
         }
     }
@@ -224,6 +262,7 @@ class Marche extends React.Component {
    onFileInputChange = async (files, name) => {
         const file = files[0];
         if (!file.name.includes('.csv')) {
+            this._addMessage('ERREUR', 'Le fichier doit être un .csv', 'error');
             return;
         }
         await this.setState({ files: Object.assign({}, this.state.files, {[name]: file})});
@@ -279,6 +318,9 @@ class Marche extends React.Component {
             <NavBar
                 buttons={this._getButtons()}
             />
+            {!!this.state.popupIds.length &&
+                <Popups messageIds={this.state.popupIds} messages={this.state.popups}/>
+            }
             {!!this.state.showForm ? (
                 <EventForm eventExpenses={this.state.eventExpenses} dailyAccounting={this.state.dailyAccounting} dayList={this.DAYS} ticketPrice={this.state.ticketPrice} save={this.onEventFormSave}/>
             ) : (
