@@ -236,8 +236,21 @@ class Marche extends React.Component {
 
         // ADD DAYS
         for (const day of this.DAYS) {
-            buttons.push(
-                {className: (this.state.files[day] ? 'green' : 'alert'), fa: 'fa-upload', content: (<FileInput label={day} className="noselect" value={this.state.files[day]} onChange={val => {this.onFileInputChange(val, day)}} />)},
+            buttons.push({
+                className: (this.state.files[day] ? 'green' : 'alert'),
+                fa: 'fa-upload',
+                callBack: (e) => {
+                    // allows clicking on the file input from the outside element.
+                    const input = e.currentTarget.getElementsByTagName('input');
+                    if (input.length) {
+                        input[0].click();
+                    }
+                },
+                content: (<FileInput label={day}
+                    className="noselect"
+                    value={this.state.files[day]}
+                    onChange={val => {this.onFileInputChange(val, day)}} />
+                )},
             )
         }
 
