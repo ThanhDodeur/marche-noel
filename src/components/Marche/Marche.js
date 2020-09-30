@@ -29,13 +29,22 @@ class Marche extends React.Component {
     * @return {file}
     */
     _readFile = async (blob) => {
-        const reader = new FileReader();
-        reader.readAsText(blob);
-        return new Promise((resolve) => {
-            reader.onload = (e) => {
-                resolve(reader.result);
-            };
-        });
+        try {
+            const reader = new FileReader();
+            reader.readAsText(blob);
+            return new Promise((resolve) => {
+                reader.onload = (e) => {
+                    resolve(reader.result);
+                };
+            });
+        } catch (error) {
+            return false;
+        }
+    }
+    _removeFile = async (dayName) => {
+        const files = Object.assign({}, this.state.files);
+        delete files[dayName];
+        await this.setState({ files });
     }
     /**
      * Extracts values from files.
@@ -49,6 +58,10 @@ class Marche extends React.Component {
         let supplierTotal = 0;
         for (const [dayName, file] of Object.entries(files)) {
             const page = await this._readFile(file);
+            if (!page) {
+                await this._removeFile(dayName);
+                continue;
+            }
             const result = this._computeFile({ dayName, page, suppliers });
             suppliers = result.suppliers;
             days.push(result.day);
@@ -209,8 +222,11 @@ class Marche extends React.Component {
     * @return {void}
     */
    onFileInputChange = async (files, name) => {
-       const file = files[0];
-        this.setState({ files: Object.assign({}, this.state.files, {[name]: file})});
+        const file = files[0];
+        if (!file.name.includes('.csv')) {
+            return;
+        }
+        await this.setState({ files: Object.assign({}, this.state.files, {[name]: file})});
     }
     /**
     * Handler for event form.
@@ -218,34 +234,34 @@ class Marche extends React.Component {
     onEventFormSave = async ({ eventExpenses, dailyAccounting, ticketPrice }) => {
         let costTotal = 0;
         Object.values(eventExpenses).forEach(val => costTotal += val);
-        this.setState({ eventExpenses, ticketPrice, dailyAccounting, costTotal });
+        await this.setState({ eventExpenses, ticketPrice, dailyAccounting, costTotal });
     }
     /**
     * processes the files and updates the state.
     */
     _computeResults = async () => {
         const { days, suppliers, supplierTotal } = await this._processFiles(this.state.files);
-        this.setState({ days, suppliers, supplierTotal });
+        await this.setState({ days, suppliers, supplierTotal });
     }
     /**
     *
     */
-    resetFiles = () => {
-        this.setState({files: [], days: [], pages: [], supplierTotal: 0});
+    resetFiles = async () => {
+        await this.setState({files: [], days: [], pages: [], supplierTotal: 0});
         this.toggleReset();
     }
     /**
     *
     */
-    toggleReset = () => {
-        this.setState({ resetRequested: !this.state.resetRequested });
+    toggleReset = async () => {
+        await this.setState({ resetRequested: !this.state.resetRequested });
     }
     /**
     *
     */
-    toggleEventForm = () => {
+    toggleEventForm = async () => {
         const isOpen = this.state.showForm;
-        this.setState({ showForm: !isOpen });
+        await this.setState({ showForm: !isOpen });
         if (isOpen) {
             this._computeResults();
         }
