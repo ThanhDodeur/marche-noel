@@ -1,7 +1,7 @@
 import React from 'react';
 import './Marche.css';
 
-import newId from '../../utils/utils.js';
+import { newId, times } from '../../utils/utils.js';
 import NavBar from '../NavBar/NavBar.js';
 import Popups from '../Popups/Popups.js';
 import PageData from '../PageData/PageData.js';
@@ -130,10 +130,9 @@ class Marche extends React.Component {
     _computeFile = ({ dayName, page, suppliers }) => {
         const OFFSET_HEIGHT = 1; // does not include the column titles.
         const lines = page.split(/\r\n|\n/);
-        for (const i of Array(OFFSET_HEIGHT)) {
-            lines.shift();
-        }
-        const colNames = lines.shift().split(','); // removes and saves column titles.
+        times(OFFSET_HEIGHT) (() => lines.shift());
+        // colNames
+        lines.shift().split(','); // removes and saves column titles.
         /*
         *
         * customers = { clientId: { supplied, suppliedTotal, paid, paidTotal } }

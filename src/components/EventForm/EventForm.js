@@ -23,7 +23,7 @@ function EventForm({ eventExpenses, dailyAccounting, ticketPrice, dayList, save 
                 dailyAccounting: dailyAccountingState,
             });
         }
-    }, [eventExpensesState, ticketP, dailyAccountingState]);
+    }, [save, eventExpensesState, ticketP, dailyAccountingState]);
 
     function setTombolaTickets(day, value) {
         const dailyState = Object.assign({}, dailyAccountingState);
