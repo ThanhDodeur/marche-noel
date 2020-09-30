@@ -250,8 +250,8 @@ class Marche extends React.Component {
                     className="noselect"
                     value={this.state.files[day]}
                     onChange={val => {this.onFileInputChange(val, day)}} />
-                )},
-            )
+                ),
+            });
         }
 
         // REMOVE FILES
