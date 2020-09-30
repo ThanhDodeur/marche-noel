@@ -17,6 +17,7 @@ class Marche extends React.Component {
             suppliers: {}, // { supplierId : { total } }
             resetRequested: false, // toggle for the confirm/cancel buttons for removing files
             showForm: false, // toggle for the accounting/event input form
+            displayHelp: false, // toggle the "help" box
             eventExpenses: {}, // {expenseName: <int>amount}
             dailyAccounting: {}, // { dayName: {valuesDict} }
             supplierTotal: 0,
@@ -227,6 +228,20 @@ class Marche extends React.Component {
     * @return {Object[]} [{content, className, fa, callBack}]
     */
     _getButtons() {
+
+        // MAIN
+        const buttons = [
+            {className: ((this.state.showForm ? 'active' : '') + ' purple'), fa: 'fa-eur', content: 'Comptabilité', callBack: this.toggleEventForm},
+        ]
+
+        // ADD DAYS
+        for (const day of this.DAYS) {
+            buttons.push(
+                {className: (this.state.files[day] ? 'green' : 'alert'), fa: 'fa-upload', content: (<FileInput label={day} className="noselect" value={this.state.files[day]} onChange={val => {this.onFileInputChange(val, day)}} />)},
+            )
+        }
+
+        // REMOVE FILES
         let resetButtons = [];
         if (Object.keys(this.state.files).length) {
             resetButtons = [{content: 'Retirer les fichiers', fa: 'fa-trash', className: 'warning', callBack: this.toggleReset}];
@@ -237,19 +252,14 @@ class Marche extends React.Component {
                 {content: 'Confirmer', fa: 'fa-check', className: 'alert', callBack: this.resetFiles},
             ];
         }
-        const dayButtons = [];
-        for (const day of this.DAYS) {
-            dayButtons.push(
-                {className: (this.state.files[day] ? 'green' : 'alert'), fa: 'fa-upload', content: (<FileInput label={day} className="noselect" value={this.state.files[day]} onChange={val => {this.onFileInputChange(val, day)}} />)},
-            )
-        }
-        const buttons = [
-            {className: ((this.state.showForm ? 'active' : '') + ' purple'), fa: 'fa-eur', content: 'Comptabilité', callBack: this.toggleEventForm},
-        ].concat(dayButtons, resetButtons);
+        buttons.push(...resetButtons);
 
+        // COMPUTE
         if (Object.keys(this.state.files).length && !this.state.showForm && !this.state.resetRequested) {
             buttons.push({ content: 'Calculer', fa: 'fa-plus', className: 'green', callBack: this._computeResults });
         }
+
+        buttons.push({ content: 'Aide', fa: 'fa-circle', className: 'green order-2 ml-auto', callBack: this._toggleHelp });
         return buttons;
     }
 
@@ -266,7 +276,7 @@ class Marche extends React.Component {
    onFileInputChange = async (files, name) => {
         const file = files[0];
         if (!file.name.includes('.csv')) {
-            this._addMessage('ERREUR', 'Le fichier doit être un .csv', 'error');
+            this._addMessage('ERREUR', 'Le fichier doit être un .csv', 'error', 8000);
             return;
         }
         await this.setState({ files: Object.assign({}, this.state.files, {[name]: file})});
@@ -310,6 +320,12 @@ class Marche extends React.Component {
         }
     }
     /**
+    *
+    */
+    _toggleHelp = async () => {
+        await this.setState({ displayHelp: !this.state.displayHelp });
+    }
+    /**
      * add encodage popup with button toggle
      * location salle, location bancontact et frais de transaction, assurance, papetrie, timbres, courses restaurant, traiteur, schmitz
      * form component with callback to change state here with new data.
@@ -325,10 +341,34 @@ class Marche extends React.Component {
             {!!this.state.popupIds.length &&
                 <Popups messageIds={this.state.popupIds} messages={this.state.popups}/>
             }
+            {!! this.state.displayHelp &&
+                <div className="help">
+                    <div className="help-link ml-auto">
+                        <a className="help-text" target="new" href="https://docs.google.com/spreadsheets/d/1UKT38_RUa3MQ_HEGtWgaPKvedD35wYksaj7-T0sc9N8/edit?usp=sharing">Fiche à remplire</a>
+                        <i className="fa fa-file-excel-o"/>
+                    </div>
+                    <div className="help-link ml-auto">
+                        <a className="help-text" target="new" href="https://drive.google.com/file/d/18Cs7Gyetq9kGnfS8gg4BnLfDHVo5YATV/view?usp=sharing">Vidéo d'explication</a>
+                        <i className="fa fa-play"/>
+                    </div>
+                </div>
+            }
             {!!this.state.showForm ? (
-                <EventForm eventExpenses={this.state.eventExpenses} dailyAccounting={this.state.dailyAccounting} dayList={this.DAYS} ticketPrice={this.state.ticketPrice} save={this.onEventFormSave}/>
+                <EventForm
+                    eventExpenses={this.state.eventExpenses}
+                    dailyAccounting={this.state.dailyAccounting}
+                    dayList={this.DAYS}
+                    ticketPrice={this.state.ticketPrice}
+                    save={this.onEventFormSave}
+                />
             ) : (
-                <PageData days={this.state.days} dailyAccounting={this.state.dailyAccounting} ticketPrice={this.state.ticketPrice} costTotal={this.state.costTotal} supplierTotal={this.state.supplierTotal}/>
+                <PageData
+                    days={this.state.days}
+                    dailyAccounting={this.state.dailyAccounting}
+                    ticketPrice={this.state.ticketPrice}
+                    costTotal={this.state.costTotal}
+                    supplierTotal={this.state.supplierTotal}
+                />
             )}
         </div>
     }

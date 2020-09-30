@@ -25,6 +25,11 @@
     font-weight: bold;
   }
 
+  .navbar > .nav-button.ml-auto {
+    margin-left: auto;
+    margin-right: 30px;
+  }
+
   .navbar > .nav-button > span {
     cursor: pointer;
     display: inline-block;

@@ -1,0 +1,14 @@
+.help {
+    flex-direction: column;
+    text-align: right;
+    position: absolute;
+    top: 80px;
+    right: 30px;
+    background-color: rgb(16, 160, 255);
+    border: 2px solid rgba(255, 255, 255, 0.842);
+    padding: 10px;
+}
+
+.help-link > a {
+    color: white;
+}
