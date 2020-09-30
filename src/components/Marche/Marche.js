@@ -259,7 +259,7 @@ class Marche extends React.Component {
             buttons.push({ content: 'Calculer', fa: 'fa-plus', className: 'green', callBack: this._computeResults });
         }
 
-        buttons.push({ content: 'Aide', fa: 'fa-circle', className: 'green order-2 ml-auto', callBack: this._toggleHelp });
+        buttons.push({ content: 'Aide', fa: 'fa-info-circle', className: 'green order-2 ml-auto', callBack: this._toggleHelp });
         return buttons;
     }
 
