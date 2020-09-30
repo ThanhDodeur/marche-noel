@@ -19,7 +19,8 @@ function DayData({ day, index, dailyAccounting }) {
             <div className="day-data">
                 <div>Total des paiements manqués: {day.dailyLoss}€</div>
                 <div>Tickets de tombola vendus: {getTicketSold(day.dayName)}</div>
-                <div>Moyenne de dépense des clients: {day.customersAverage}€</div>
+                <div>Moyenne des dépenses des clients: {day.customersAverage}€</div>
+                <div>Moyenne des objets reçu par les clients: {day.obtainedAverage}€</div>
                 <CustomerData customers={day.customers}/>
                 <MissedPayments missedPayments={day.missedPayments}/>
             </div>

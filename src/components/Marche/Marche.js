@@ -13,7 +13,7 @@ class Marche extends React.Component {
         super();
         this.state = {
             files: {}, // { dayName: file, }
-            days: [], // { dayName, customers, missedPayments, dailyLoss, customersAverage }
+            days: [], // { dayName, customers, missedPayments, dailyLoss, customersAverage, obtainedAverage }
             suppliers: {}, // { supplierId : { total } }
             resetRequested: false, // toggle for the confirm/cancel buttons for removing files
             showForm: false, // toggle for the accounting/event input form
@@ -192,21 +192,25 @@ class Marche extends React.Component {
                     price: currentLine[7],
                     supplierId: currentLine[4],
                 });
+                // computes the total value of supplied by the supplier.
                 suppliers[currentLine[4]] = suppliers[currentLine[4]] || { total: 0 };
                 suppliers[currentLine[4]].total += Number(currentLine[7].replace(',','.'));
             }
         }
-        const { missedPayments, dailyLoss, customersAverage } = this._computeDailyStats(customers);
-        return {day: { dayName, customers, missedPayments, dailyLoss, customersAverage }, suppliers };
+        const { missedPayments, dailyLoss, customersAverage, obtainedAverage } = this._computeDailyStats(customers);
+        return {day: { dayName, customers, missedPayments, dailyLoss, customersAverage, obtainedAverage }, suppliers };
     }
     _computeDailyStats = (customers) => {
         const missedPayments = {};
         let dailyLoss = 0;
         let customersTotal = 0;
+        let obtainedTotal = 0;
         const customerKeys = Object.keys(customers);
         for (const customerId of customerKeys) {
             const customerPaid = customers[customerId].paidTotal;
-            const balance = customers[customerId].suppliedTotal - customerPaid;
+            const customerSupplied = customers[customerId].suppliedTotal;
+            const balance =  customerSupplied - customerPaid;
+            obtainedTotal += customerSupplied;
             customersTotal += customerPaid;
             if (balance !== 0) {
                 missedPayments[customerId] = balance;
@@ -214,7 +218,8 @@ class Marche extends React.Component {
             }
         }
         const customersAverage = customersTotal / (customerKeys.length || 0);
-        return { missedPayments, dailyLoss, customersTotal, customersAverage };
+        const obtainedAverage = obtainedTotal / (customerKeys.length || 0);
+        return { missedPayments, dailyLoss, customersTotal, customersAverage, obtainedAverage };
     }
     /**
     * Brief description of the function here.
