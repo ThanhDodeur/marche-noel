@@ -357,11 +357,15 @@ class Marche extends React.Component {
             {!! this.state.displayHelp &&
                 <div className="help">
                     <div className="help-link ml-auto">
-                        <a className="help-text" target="new" href="https://docs.google.com/spreadsheets/d/1UKT38_RUa3MQ_HEGtWgaPKvedD35wYksaj7-T0sc9N8/edit?usp=sharing">Fiche à remplire</a>
+                        <a className="help-text" target="new" href="https://docs.google.com/spreadsheets/d/1UKT38_RUa3MQ_HEGtWgaPKvedD35wYksaj7-T0sc9N8/edit?usp=sharing">
+                            Fiche à remplire
+                        </a>
                         <i className="fa fa-file-excel-o"/>
                     </div>
                     <div className="help-link ml-auto">
-                        <a className="help-text" target="new" href="https://drive.google.com/file/d/18Cs7Gyetq9kGnfS8gg4BnLfDHVo5YATV/view?usp=sharing">Vidéo d'explication</a>
+                        <a className="help-text" target="new" href="https://drive.google.com/file/d/18Cs7Gyetq9kGnfS8gg4BnLfDHVo5YATV/view?usp=sharing">
+                            Vidéo d'explication
+                        </a>
                         <i className="fa fa-play"/>
                     </div>
                 </div>
