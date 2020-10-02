@@ -57,6 +57,7 @@ class Marche extends React.Component {
         const daysRawData = Object.assign({}, this.state.daysRawData);
         daysRawData[day] = data;
         await this.setState({ daysRawData, dailyAccounting: Object.assign(this.state.dailyAccounting, {[day]: dayAccounting}) });
+        await this._computeResults();
     }
     /**
      *
@@ -245,7 +246,7 @@ class Marche extends React.Component {
      */
    toggleDay = async (day) => {
         const isSameDay = this.state.showDayForm === day;
-        await this.setState({ showDayForm: false });
+        await this.setState({ showDayForm: false, showForm: false });
         if (!isSameDay) {
             await this.setState({ showDayForm: day });
         }
@@ -261,7 +262,7 @@ class Marche extends React.Component {
     */
     toggleEventForm = async () => {
         const isOpen = this.state.showForm;
-        await this.setState({ showForm: !isOpen });
+        await this.setState({ showForm: !isOpen, showDayForm: false });
         if (isOpen) {
             this._computeResults();
         }
@@ -277,7 +278,7 @@ class Marche extends React.Component {
      */
    _getButtons() {
 
-        // MAIN
+        // ACCOUNTING
         const buttons = [
             {className: ((this.state.showForm ? 'active' : '') + ' purple'), fa: 'fa-eur', content: 'Comptabilité', callBack: this.toggleEventForm},
         ]
@@ -285,12 +286,22 @@ class Marche extends React.Component {
         // ADD DAYS
         for (const day of this.DAYS) {
             buttons.push({
-                className: ((this.state.showDayForm === day ? 'active' : '') + ' green'),
+                className: ((this.state.showDayForm === day ? 'active ' : '') + (this.state.daysRawData[day].customers.length ? 'green' : 'alert')),
                 fa: 'fa-calendar',
                 callBack: () => { this.toggleDay(day) },
                 content: day,
             });
         }
+
+        // COMPUTE
+        /*
+        if (Object.keys(this.state.daysRawData).length && !this.state.showForm && !this.state.resetRequested) {
+            buttons.push({ content: 'Calculer', fa: 'fa-plus', className: 'green', callBack: this._computeResults });
+        }
+        */
+
+        // RIGHT
+        buttons.push({ content: 'Aide', fa: 'fa-info-circle', className: 'blue order-2 ml-auto', callBack: this._toggleHelp });
 
         // REMOVE FILES
         let resetButtons = [{content: 'Tout effacer', fa: 'fa-trash', className: 'warning', callBack: this.toggleReset}];
@@ -302,13 +313,7 @@ class Marche extends React.Component {
         }
         buttons.push(...resetButtons);
 
-        // COMPUTE
-        if (Object.keys(this.state.daysRawData).length && !this.state.showForm && !this.state.resetRequested) {
-            buttons.push({ content: 'Calculer', fa: 'fa-plus', className: 'green', callBack: this._computeResults });
-        }
-
         buttons.push(...[
-            { content: 'Aide', fa: 'fa-info-circle', className: 'blue order-2 ml-auto', callBack: this._toggleHelp },
             { content: 'Charcher', fa: 'fa-download', className: 'green order-2', callBack: this.loadSave },
             { content: 'Sauvegarder', fa: 'fa-upload', className: 'green order-2', callBack: this.saveState },
         ]);
@@ -360,6 +365,7 @@ class Marche extends React.Component {
                     dailyAccounting={this.state.dailyAccounting}
                     ticketPrice={this.state.ticketPrice}
                     costTotal={this.state.costTotal}
+                    suppliers={this.state.suppliers}
                     supplierTotal={this.state.supplierTotal}
                 />
             )}

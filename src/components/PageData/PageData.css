@@ -1,4 +1,4 @@
-.global-stats > div > span:first-of-type {
+.global-stats.profits > div > span:first-of-type {
     min-width: 250px;
     display: inline-block;
 }
@@ -13,6 +13,21 @@
 
 .global-stats > div > span > .icon {
     padding: 7px;
+}
+
+.content .ladder-entry {
+    margin: 2px;
+    border-top: 1px solid rgba(158, 158, 158, 0.575);
+    display: flex;
+}
+
+.content .ladder-entry > span {
+    display: inline-block;
+    margin: 0px 5px;
+}
+
+.content .ladder-entry > .value {
+    margin-left: auto;
 }
 
 

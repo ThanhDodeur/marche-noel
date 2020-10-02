@@ -8,7 +8,9 @@ import MissedPayments from '../MissedPayments/MissedPayments.js';
  *
  */
 function DayData({ day, index, dayAccounting }) {
-
+    if (!Object.keys(day.customers).length) {
+        return (<div></div>);
+    }
     return (
         <div className="day" key={index}>
             <h1>{day.dayName}</h1>
