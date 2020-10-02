@@ -1,22 +1,25 @@
 import React from 'react';
 import './Marche.css';
 
-import { newId, times } from '../../utils/utils.js';
+import { newId, zip } from '../../utils/utils.js';
 import NavBar from '../NavBar/NavBar.js';
 import Popups from '../Popups/Popups.js';
 import PageData from '../PageData/PageData.js';
-import FileInput from '../FileInput/FileInput.js';
+import DayForm from '../DayForm/DayForm.js';
 import EventForm from '../EventForm/EventForm.js';
 
 class Marche extends React.Component {
     constructor(props) {
         super();
+        this.DAYS = ['Vendredi', 'Samedi', 'Dimanche']; // const
         this.state = {
             files: {}, // { dayName: file, }
+            daysRawData: Object.fromEntries(zip(this.DAYS, Array(3).fill({'customers': [], 'suppliers': []}))),
             days: [], // { dayName, customers, missedPayments, dailyLoss, customersAverage, obtainedAverage }
             suppliers: {}, // { supplierId : { total } }
             resetRequested: false, // toggle for the confirm/cancel buttons for removing files
             showForm: false, // toggle for the accounting/event input form
+            showDayForm: false, // false or this.DAYS[*]
             displayHelp: false, // toggle the "help" box
             eventExpenses: {}, // {expenseName: <int>amount}
             dailyAccounting: {}, // { dayName: {valuesDict} }
@@ -26,7 +29,11 @@ class Marche extends React.Component {
             popupIds: [],
             popups: {}, // {content, type}
         };
-        this.DAYS = ['Vendredi', 'Samedi', 'Dimanche']; // const
+    }
+    setDayRawData = async (day, data) => {
+        const daysRawData = Object.assign({}, this.state.daysRawData);
+        daysRawData[day] = data;
+        await this.setState({ daysRawData });
     }
     /**
      *
@@ -62,46 +69,16 @@ class Marche extends React.Component {
         }, duration);
     }
     /**
-    *
-    * @param {blob} blob
-    * @return {file}
-    */
-    _readFile = async (blob) => {
-        try {
-            const reader = new FileReader();
-            reader.readAsText(blob);
-            return new Promise((resolve) => {
-                reader.onload = (e) => {
-                    resolve(reader.result);
-                };
-            });
-        } catch (error) {
-            this._addMessage('ERREUR', error.message, 'error');
-            return false;
-        }
-    }
-    _removeFile = async (dayName) => {
-        const files = Object.assign({}, this.state.files);
-        delete files[dayName];
-        await this.setState({ files });
-    }
-    /**
-     * Extracts values from files.
+     * Extracts values from day raw data.
      *
-     * @param {Array} files
      * @returns {Object}
      */
-    _processFiles = async (files) => {
+    _processDays = async () => {
         const days = [];
         let suppliers = {};
         let supplierTotal = 0;
-        for (const [dayName, file] of Object.entries(files)) {
-            const page = await this._readFile(file);
-            if (!page) {
-                await this._removeFile(dayName);
-                continue;
-            }
-            const result = this._computeFile({ dayName, page, suppliers });
+        for (const [dayName, dayRaw] of Object.entries(this.state.daysRawData)) {
+            const result = this._computeDay({ dayName, dayRaw, suppliers });
             suppliers = result.suppliers;
             days.push(result.day);
         }
@@ -109,95 +86,71 @@ class Marche extends React.Component {
         return { days, suppliers, supplierTotal };
     }
     /**
-     * Expected structure of page:
      *
-     * ,,,,,,... // row0
-     * numeroClient,Fournisseur,achat,numeroFournisseur,numeroClient,prix,total,... n-1, n // row x
-     * 600,65,objet,56,576,55,110,... n-1, n // row X+1
-     * x,x,x,x,x,x,... m-1, m,... n-1, n
-     * x,x,x,x,x,x,... m-1, m,... n-1, n
-     * . . .
-     * .
-     * .
-     * where:
-     *  x = OFFSET_HEIGHT
-     *  x + 1 = column names
-     *  m = CLIENT_COLS
-     *  n - m = FOURNISSEUR_COLS
-     *
-     * @param {String} page open text file
-     * @return {Object}
+     * @param {Object} param0
+     * @param {String} param0.dayName
+     * @param {Object} param0.dayRaw
+     * @param {Object} param0.suppliers
      */
-    _computeFile = ({ dayName, page, suppliers }) => {
-        const OFFSET_HEIGHT = 1; // does not include the column titles.
-        const lines = page.split(/\r\n|\n/);
-        times(OFFSET_HEIGHT) (() => lines.shift());
-        // colNames
-        lines.shift().split(','); // removes and saves column titles.
-        /*
-        *
-        * customers = { clientId: { supplied, suppliedTotal, paid, paidTotal } }
-        * supplied = [ {name: 'itemName', 'price': price, 'supplierId': id } ] WHAT IS PAID
-        * paid = [ {name: 'itemName', 'price': price, 'supplierId': id } ]
-        *
-        * suppliers = { supplierId : { total } }
-        *
-        */
-        const customers = {};
-        while (lines.length) {
-            const currentLine = lines.shift().split(',');
+    _computeDay = ({ dayName, dayRaw, suppliers }) => {
 
             /* DATA FILL
             *   paid
-            *   currentLine[0] purchase - customerId
-            *   currentLine[1] purchase - supplierId
-            *   currentLine[2] purchase - item Name
-            *   currentLine[3] purchase - item Price
+            *   rawCustomers[*][0] purchase - customerId
+            *   rawCustomers[*][1] purchase - supplierId
+            *   rawCustomers[*][2] purchase - item Name
+            *   rawCustomers[*][3] purchase - item Price
             *   supplied
-            *   currentLine[4] payment - supplierId
-            *   currentLine[5] payment - customerId
-            *   currentLine[6] payment - item Name
-            *   currentLine[7] payment - item Price
+            *   rawSuppliers[*][0] payment - supplierId
+            *   rawSuppliers[*][1] payment - customerId
+            *   rawSuppliers[*][2] payment - item Name
+            *   rawSuppliers[*][3] payment - item Price
             */
+            const rawCustomers = dayRaw.customers;
+            const rawSuppliers = dayRaw.suppliers;
+            const customers = {};
 
-            if (currentLine[0]) { // CUSTOMER SIDE
-                // creates the customer if it doesn't already exist.
-                customers[currentLine[0]] = customers[currentLine[0]] || {
-                    paid: [],
-                    paidTotal: 0,
-                    supplied: [],
-                    suppliedTotal: 0,
-                };
-                // adds the total paid by the customer
-                customers[currentLine[0]].paidTotal += Number(currentLine[3].replace(',','.'));
-                // adds a line for what the customer paid
-                customers[currentLine[0]].paid.push({
-                    name: currentLine[2],
-                    price: currentLine[3],
-                    supplierId: currentLine[1],
-                });
+            for (const rawCustomer of rawCustomers) {
+                if (rawCustomer[0]) { // CUSTOMER SIDE
+                    // creates the customer if it doesn't already exist.
+                    customers[rawCustomer[0]] = customers[rawCustomer[0]] || {
+                        paid: [],
+                        paidTotal: 0,
+                        supplied: [],
+                        suppliedTotal: 0,
+                    };
+                    // adds the total paid by the customer
+                    customers[rawCustomer[0]].paidTotal += Number(rawCustomer[3]) || 0;
+                    // adds a line for what the customer paid
+                    customers[rawCustomer[0]].paid.push({
+                        name: rawCustomer[2],
+                        price: rawCustomer[3],
+                        supplierId: rawCustomer[1],
+                    });
+                }
+            }
+            for (const rawSupplier of rawSuppliers) {
+                if (rawSupplier[0] && rawSupplier[1]) { // SUPPLIER SIDE
+                    customers[rawSupplier[1]] = customers[rawSupplier[1]] || {
+                        paid: [],
+                        paidTotal: 0,
+                        supplied: [],
+                        suppliedTotal: 0,
+                    };
+                    // adds the total paid by the customer
+                    customers[rawSupplier[1]].suppliedTotal += Number(rawSupplier[3]) || 0;
+                    // adds a line for what the customer recieved (not a guarantee of payment)
+                    customers[rawSupplier[1]].supplied.push({
+                        name: rawSupplier[2],
+                        price: rawSupplier[3],
+                        supplierId: rawSupplier[0],
+                    });
+                    // computes the total value of supplied by the supplier.
+                    suppliers[rawSupplier[0]] = suppliers[rawSupplier[0]] || { total: 0 };
+                    suppliers[rawSupplier[0]].total += Number(rawSupplier[3]) || 0;
+                }
             }
 
-            if (currentLine[4] && currentLine[5]) { // SUPPLIER SIDE
-                customers[currentLine[5]] = customers[currentLine[5]] || {
-                    paid: [],
-                    paidTotal: 0,
-                    supplied: [],
-                    suppliedTotal: 0,
-                };
-                // adds the total paid by the customer
-                customers[currentLine[5]].suppliedTotal += Number(currentLine[7].replace(',','.'));
-                // adds a line for what the customer recieved (not a guarantee of payment)
-                customers[currentLine[5]].supplied.push({
-                    name: currentLine[6],
-                    price: currentLine[7],
-                    supplierId: currentLine[4],
-                });
-                // computes the total value of supplied by the supplier.
-                suppliers[currentLine[4]] = suppliers[currentLine[4]] || { total: 0 };
-                suppliers[currentLine[4]].total += Number(currentLine[7].replace(',','.'));
-            }
-        }
         const { missedPayments, dailyLoss, customersAverage, obtainedAverage } = this._computeDailyStats(customers);
         return {day: { dayName, customers, missedPayments, dailyLoss, customersAverage, obtainedAverage }, suppliers };
     }
@@ -211,8 +164,8 @@ class Marche extends React.Component {
             const customerPaid = customers[customerId].paidTotal;
             const customerSupplied = customers[customerId].suppliedTotal;
             const balance =  customerSupplied - customerPaid;
-            obtainedTotal += customerSupplied;
-            customersTotal += customerPaid;
+            obtainedTotal += Number(customerSupplied);
+            customersTotal += Number(customerPaid);
             if (balance !== 0) {
                 missedPayments[customerId] = balance;
                 dailyLoss += balance;
@@ -235,6 +188,7 @@ class Marche extends React.Component {
         ]
 
         // ADD DAYS
+        /*
         for (const day of this.DAYS) {
             buttons.push({
                 className: (this.state.files[day] ? 'green' : 'alert'),
@@ -253,12 +207,20 @@ class Marche extends React.Component {
                 ),
             });
         }
+        */
+
+        // ADD DAYS
+        for (const day of this.DAYS) {
+            buttons.push({
+                className: ((this.state.showDayForm === day ? 'active' : '') + ' green'),
+                fa: 'fa-calendar',
+                callBack: () => { this.toggleDay(day) },
+                content: day,
+            });
+        }
 
         // REMOVE FILES
-        let resetButtons = [];
-        if (Object.keys(this.state.files).length) {
-            resetButtons = [{content: 'Retirer les fichiers', fa: 'fa-trash', className: 'warning', callBack: this.toggleReset}];
-        }
+        let resetButtons = [{content: 'Retirer les jours', fa: 'fa-trash', className: 'warning', callBack: this.toggleReset}];
         if (this.state.resetRequested) {
             resetButtons = [
                 {content: 'Annuler', fa: 'fa-times', className: 'green', callBack: this.toggleReset},
@@ -268,7 +230,7 @@ class Marche extends React.Component {
         buttons.push(...resetButtons);
 
         // COMPUTE
-        if (Object.keys(this.state.files).length && !this.state.showForm && !this.state.resetRequested) {
+        if (Object.keys(this.state.daysRawData).length && !this.state.showForm && !this.state.resetRequested) {
             buttons.push({ content: 'Calculer', fa: 'fa-plus', className: 'green', callBack: this._computeResults });
         }
 
@@ -306,15 +268,25 @@ class Marche extends React.Component {
     * processes the files and updates the state.
     */
     _computeResults = async () => {
-        const { days, suppliers, supplierTotal } = await this._processFiles(this.state.files);
+        const { days, suppliers, supplierTotal } = await this._processDays();
         await this.setState({ days, suppliers, supplierTotal });
     }
     /**
     *
     */
     resetFiles = async () => {
-        await this.setState({files: [], days: [], pages: [], supplierTotal: 0});
+        await this.setState({daysRawData: Object.fromEntries(zip(this.DAYS, Array(3).fill({'customers': [], 'suppliers': []}))), showDayForm: false});
         this.toggleReset();
+    }
+    /**
+    *
+    */
+   toggleDay = async (day) => {
+        const isSameDay = this.state.showDayForm === day;
+        await this.setState({ showDayForm: false });
+        if (!isSameDay) {
+            await this.setState({ showDayForm: day });
+        }
     }
     /**
     *
@@ -370,6 +342,9 @@ class Marche extends React.Component {
                     </div>
                 </div>
             }
+            {!!this.DAYS.includes(this.state.showDayForm) && (
+                <DayForm day={this.state.showDayForm} dayRawData={this.state.daysRawData[this.state.showDayForm]} save={this.setDayRawData}/>
+            )}
             {!!this.state.showForm ? (
                 <EventForm
                     eventExpenses={this.state.eventExpenses}

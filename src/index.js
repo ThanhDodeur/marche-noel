@@ -12,4 +12,4 @@ ReactDOM.render(
 );
 
 // turn service worker off
-//serviceWorker.unregister();
+serviceWorker.unregister();

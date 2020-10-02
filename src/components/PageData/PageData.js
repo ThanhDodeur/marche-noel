@@ -15,8 +15,8 @@ function PageData({ days, costTotal, supplierTotal, dailyAccounting, ticketPrice
         let totalObtained = 0;
         let totalCustomers = 0;
         for (const day of dailyArray) {
-            totalSpendings += day.customersAverage;
-            totalObtained += day.obtainedAverage;
+            totalSpendings += day.customersAverage || 0;
+            totalObtained += day.obtainedAverage || 0;
             totalCustomers += Object.keys(day.customers).length;
         }
         return (
