@@ -17,6 +17,8 @@ class Marche extends React.Component {
             days: [], // { dayName, customers, missedPayments, dailyLoss, customersAverage, obtainedAverage }
             suppliers: {}, // { supplierId : { total } }
             resetRequested: false, // toggle for the confirm/cancel buttons for removing files
+            loadRequested: false,
+            saveRequested: false,
             showForm: false, // toggle for the accounting/event input form
             showDayForm: false, // false or this.DAYS[*]
             displayHelp: false, // toggle the "help" box
@@ -36,6 +38,7 @@ class Marche extends React.Component {
             await this.setState(JSON.parse(saved));
         }
         await this._addMessage('Chargé', 'La dernière sauvegarde à été chargée', 'info', 5000);
+        await this.toggleLoad();
         await this._computeResults();
     }
     saveState = async () => {
@@ -45,6 +48,7 @@ class Marche extends React.Component {
             dailyAccounting: this.state.dailyAccounting,
             ticketPrice: this.state.ticketPrice,
         }));
+        await this.toggleSave();
         await this._addMessage('Sauvegardé', 'Les informations ont été sauvegardées', 'info', 5000);
     }
     /**
@@ -260,6 +264,18 @@ class Marche extends React.Component {
     /**
     *
     */
+    toggleSave = async () => {
+        await this.setState({ saveRequested: !this.state.saveRequested });
+    }
+    /**
+    *
+    */
+    toggleLoad = async () => {
+        await this.setState({ loadRequested: !this.state.loadRequested });
+    }
+    /**
+    *
+    */
     toggleEventForm = async () => {
         const isOpen = this.state.showForm;
         await this.setState({ showForm: !isOpen, showDayForm: false });
@@ -308,15 +324,34 @@ class Marche extends React.Component {
         if (this.state.resetRequested) {
             resetButtons = [
                 {content: 'Annuler', fa: 'fa-times', className: 'green', callBack: this.toggleReset},
-                {content: 'Confirmer', fa: 'fa-check', className: 'alert', callBack: this.clearAll},
+                {content: "Confirmer: Effacer l'encodage en cours", fa: 'fa-check', className: 'alert', callBack: this.clearAll},
             ];
         }
         buttons.push(...resetButtons);
 
-        buttons.push(...[
-            { content: 'Charcher', fa: 'fa-download', className: 'green order-2', callBack: this.loadSave },
-            { content: 'Sauvegarder', fa: 'fa-upload', className: 'green order-2', callBack: this.saveState },
-        ]);
+        // SAVE
+        let saveButtons = [{ content: 'Sauvegarder', fa: 'fa-upload', className: 'green order-2', callBack: this.toggleSave }];
+        if (this.state.saveRequested) {
+            saveButtons = [
+                {content: 'Annuler', fa: 'fa-times', className: 'green', callBack: this.toggleSave},
+                {content: 'Confirmer: Sauvegarder', fa: 'fa-check', className: 'alert', callBack: this.saveState},
+            ];
+        }
+        if (!this.state.loadRequested) {
+            buttons.push(...saveButtons);
+        }
+
+        // LOAD
+        let loadButtons = [{ content: 'Charcher', fa: 'fa-download', className: 'green order-2', callBack: this.toggleLoad }];
+        if (this.state.loadRequested) {
+            loadButtons = [
+                {content: 'Annuler', fa: 'fa-times', className: 'green', callBack: this.toggleLoad},
+                {content: 'Confirmer: Charder la Sauvegarde', fa: 'fa-check', className: 'alert', callBack: this.loadSave},
+            ];
+        }
+        if (!this.state.saveRequested) {
+            buttons.push(...loadButtons);
+        }
         return buttons;
     }
 
