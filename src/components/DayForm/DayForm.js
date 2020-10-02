@@ -176,7 +176,7 @@ function DayForm({ day, dayRawData = {}, save, addMessage }) {
             <div className="title-area">
                 <h1>{day}</h1>
                 <div className="form-button">
-                    <FileInput label="Ajouter un Fichier"
+                    <FileInput label="Ajouter .csv"
                         className="noselect"
                         value={file}
                         onChange={onFileInputChange}
@@ -190,7 +190,7 @@ function DayForm({ day, dayRawData = {}, save, addMessage }) {
                     </div>
                     {customers.map((customer, index) => {
                         return (
-                            <div className="customer-row row" key={'customer_'+index}>
+                            <div className="customer-row row saved-row" key={'customer_'+index}>
                                 <input className="number-input" pattern="[0-9]*" type="number" onChange={event => { setCustomerValue(index, 0, event.target.value) }} value={customer[0]}/>
                                 <input className="number-input" pattern="[0-9]*" type="number" onChange={event => { setCustomerValue(index, 1, event.target.value) }} value={customer[1]}/>
                                 <input className="string-input" onChange={event => { setCustomerValue(index, 2, event.target.value) }} value={customer[2]}/>
@@ -198,7 +198,7 @@ function DayForm({ day, dayRawData = {}, save, addMessage }) {
                             </div>
                         )
                     })}
-                    <div className="customer-row row">
+                    <div className="customer-row row new-row">
                         <input className="number-input" pattern="[0-9]*" type="number" onChange={event => { setCustomerValue(false, 0, event.target.value) }} value={newCustomer[0]}/>
                         <input className="number-input" pattern="[0-9]*" type="number" onChange={event => { setCustomerValue(false, 1, event.target.value) }} value={newCustomer[1]}/>
                         <input className="string-input" onChange={event => { setCustomerValue(false, 2, event.target.value) }} value={newCustomer[2]}/>
@@ -214,7 +214,7 @@ function DayForm({ day, dayRawData = {}, save, addMessage }) {
                     </div>
                     {suppliers.map((supplier, index) => {
                         return (
-                            <div className="supplier-row row" key={'supplier_'+index}>
+                            <div className="supplier-row row saved-row" key={'supplier_'+index}>
                                 <input className="number-input" pattern="[0-9]*" type="number" onChange={event => { setSupplierValue(index, 0, event.target.value) }} value={supplier[0]}/>
                                 <input className="number-input" pattern="[0-9]*" type="number" onChange={event => { setSupplierValue(index, 1, event.target.value) }} value={supplier[1]}/>
                                 <input className="string-input" onChange={event => { setSupplierValue(index, 2, event.target.value) }} value={supplier[2]}/>
@@ -222,7 +222,7 @@ function DayForm({ day, dayRawData = {}, save, addMessage }) {
                             </div>
                         )
                     })}
-                    <div className="supplier-row row">
+                    <div className="supplier-row row new-row">
                         <input className="number-input" pattern="[0-9]*" type="number" onChange={event => { setSupplierValue(false, 0, event.target.value) }} value={newSupplier[0]}/>
                         <input className="number-input" pattern="[0-9]*" type="number" onChange={event => { setSupplierValue(false, 1, event.target.value) }} value={newSupplier[1]}/>
                         <input className="string-input" onChange={event => { setSupplierValue(false, 2, event.target.value) }} value={newSupplier[2]}/>

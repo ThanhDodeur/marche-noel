@@ -16,6 +16,8 @@
 .row {
     display: flex;
     justify-content: space-between;
+    padding-left: 10px;
+    border-radius: 5px;
 }
 
 .col-titles > div {
@@ -45,4 +47,16 @@
 
 .title-area {
     display: flex;
+}
+
+.title-area > .form-button > span {
+    margin: auto;
+}
+
+.saved-row {
+    background-color: rgb(90, 226, 0);
+}
+
+.new-row {
+    background-color: rgb(255, 59, 24);
 }
