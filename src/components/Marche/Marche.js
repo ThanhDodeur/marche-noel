@@ -30,6 +30,24 @@ class Marche extends React.Component {
             popups: {}, // {content, type}
         };
     }
+
+    loadSave = async () => {
+        const saved = localStorage.getItem('saved-state');
+        if (saved) {
+            await this.setState(JSON.parse(saved));
+        }
+        await this._addMessage('Chargé', 'La dernière sauvegarde à été chargée', 'info', 5000);
+        await this._computeResults();
+    }
+    saveState = async () => {
+        localStorage.setItem('saved-state', JSON.stringify({
+            daysRawData: this.state.daysRawData,
+            eventExpenses: this.state.eventExpenses,
+            dailyAccounting: this.state.dailyAccounting,
+            ticketPrice: this.state.ticketPrice,
+        }));
+        await this._addMessage('Sauvegardé', 'Les informations ont été sauvegardées', 'info', 5000);
+    }
     setDayRawData = async (day, data) => {
         const daysRawData = Object.assign({}, this.state.daysRawData);
         daysRawData[day] = data;
@@ -188,28 +206,6 @@ class Marche extends React.Component {
         ]
 
         // ADD DAYS
-        /*
-        for (const day of this.DAYS) {
-            buttons.push({
-                className: (this.state.files[day] ? 'green' : 'alert'),
-                fa: 'fa-upload',
-                callBack: (e) => {
-                    // allows clicking on the file input from the outside element.
-                    const input = e.currentTarget.getElementsByTagName('input');
-                    if (input.length) {
-                        input[0].click();
-                    }
-                },
-                content: (<FileInput label={day}
-                    className="noselect"
-                    value={this.state.files[day]}
-                    onChange={val => {this.onFileInputChange(val, day)}} />
-                ),
-            });
-        }
-        */
-
-        // ADD DAYS
         for (const day of this.DAYS) {
             buttons.push({
                 className: ((this.state.showDayForm === day ? 'active' : '') + ' green'),
@@ -220,11 +216,11 @@ class Marche extends React.Component {
         }
 
         // REMOVE FILES
-        let resetButtons = [{content: 'Retirer les jours', fa: 'fa-trash', className: 'warning', callBack: this.toggleReset}];
+        let resetButtons = [{content: 'Tout effacer', fa: 'fa-trash', className: 'warning', callBack: this.toggleReset}];
         if (this.state.resetRequested) {
             resetButtons = [
                 {content: 'Annuler', fa: 'fa-times', className: 'green', callBack: this.toggleReset},
-                {content: 'Confirmer', fa: 'fa-check', className: 'alert', callBack: this.resetFiles},
+                {content: 'Confirmer', fa: 'fa-check', className: 'alert', callBack: this.clearAll},
             ];
         }
         buttons.push(...resetButtons);
@@ -234,7 +230,11 @@ class Marche extends React.Component {
             buttons.push({ content: 'Calculer', fa: 'fa-plus', className: 'green', callBack: this._computeResults });
         }
 
-        buttons.push({ content: 'Aide', fa: 'fa-info-circle', className: 'green order-2 ml-auto', callBack: this._toggleHelp });
+        buttons.push(...[
+            { content: 'Aide', fa: 'fa-info-circle', className: 'blue order-2 ml-auto', callBack: this._toggleHelp },
+            { content: 'Charcher', fa: 'fa-info-circle', className: 'green order-2', callBack: this.loadSave },
+            { content: 'Sauvegarder', fa: 'fa-info-circle', className: 'green order-2', callBack: this.saveState },
+        ]);
         return buttons;
     }
 
@@ -260,9 +260,19 @@ class Marche extends React.Component {
     /**
     *
     */
-    resetFiles = async () => {
-        await this.setState({daysRawData: Object.fromEntries(zip(this.DAYS, Array(3).fill({'customers': [], 'suppliers': []}))), showDayForm: false});
-        this.toggleReset();
+    clearAll = async () => {
+        await this.setState({
+            daysRawData: Object.fromEntries(zip(this.DAYS, Array(3).fill({'customers': [], 'suppliers': []}))),
+            showDayForm: false,
+            eventExpenses: {},
+            dailyAccounting: {},
+            supplierTotal: 0,
+            costTotal: 0,
+            ticketPrice: 0,
+        });
+        await this._computeResults();
+        await this._addMessage('', 'Tout le contenu a été réinitialisé', 'error', 5000);
+        await this.toggleReset();
     }
     /**
     *
