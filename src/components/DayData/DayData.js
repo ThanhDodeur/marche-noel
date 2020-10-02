@@ -7,18 +7,14 @@ import MissedPayments from '../MissedPayments/MissedPayments.js';
  * Represents a single day.
  *
  */
-function DayData({ day, index, dailyAccounting }) {
-
-    function getTicketSold(day) {
-        return dailyAccounting[day] && dailyAccounting[day].tombolaTickets;
-    }
+function DayData({ day, index, dayAccounting }) {
 
     return (
         <div className="day" key={index}>
             <h1>{day.dayName}</h1>
             <div className="day-data">
                 <div>Total des paiements manqués: {day.dailyLoss}€</div>
-                <div>Tickets de tombola vendus: {getTicketSold(day.dayName)}</div>
+                <div>Tickets de tombola vendus: {dayAccounting.tombolaTickets}</div>
                 <div>Moyenne des dépenses des clients: {(day.customersAverage || 0).toFixed(3)}€</div>
                 <div>Moyenne des objets reçu par les clients: {(day.obtainedAverage || 0).toFixed(3)}€</div>
                 <CustomerData customers={day.customers}/>

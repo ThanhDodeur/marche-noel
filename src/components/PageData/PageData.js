@@ -9,7 +9,20 @@ import DayData from '../DayData/DayData.js';
  */
 function PageData({ days, costTotal, supplierTotal, dailyAccounting, ticketPrice }) {
 
-    function getStats() {
+    function getContent() {
+        let soldTickets = 0;
+        for (const value of Object.values(dailyAccounting)) {
+            soldTickets += Number(value.tombolaTickets) || 0;
+        }
+        return(
+            <div className="content">
+                {getBenefices(soldTickets)}
+                {getStats(soldTickets)}
+            </div>
+        )
+    }
+
+    function getStats(soldTickets) {
         const dailyArray = Object.values(days);
         let totalSpendings = 0;
         let totalObtained = 0;
@@ -20,48 +33,43 @@ function PageData({ days, costTotal, supplierTotal, dailyAccounting, ticketPrice
             totalCustomers += Object.keys(day.customers).length;
         }
         return (
-            <div className="daily-stats">
-                <div><span>Moyenne payée par les clients:</span> <span className="value-display">{(totalSpendings / (dailyArray.length || 1)).toFixed(3)}€</span></div>
-                <div><span>Moyenne des articles reçu:</span> <span className="value-display">{(totalObtained / (dailyArray.length || 1)).toFixed(3)}€</span></div>
-                <div><span>Tickets de tombola Vendus:</span> <span className="value-display">{getTombolaSold()}</span></div>
-                <div><span>Quantité de fiches payées:</span> <span className="value-display">{totalCustomers}</span></div>
+            <div className="global-stats">
+                <h3>Statistiques (sur {days.length} jour(s))</h3>
+                <div className="daily-stats">
+                    <div><span>Moyenne payée par les clients:</span> <span className="value-display">{(totalSpendings / (dailyArray.length || 1)).toFixed(3)}€</span></div>
+                    <div><span>Moyenne des articles reçu:</span> <span className="value-display">{(totalObtained / (dailyArray.length || 1)).toFixed(3)}€</span></div>
+                    <div><span>Tickets de tombola Vendus:</span> <span className="value-display">{soldTickets}</span></div>
+                    <div><span>Quantité de fiches payées:</span> <span className="value-display">{totalCustomers}</span></div>
+                </div>
             </div>
         )
     }
 
-    function getTombolaSold() {
-        let soldTickets = 0;
-        for (const value of Object.values(dailyAccounting)) {
-            soldTickets += value.tombolaTickets || 0;
-        }
-        return soldTickets;
-    }
-
-    function computeTotal() {
-        return (supplierTotal + (ticketPrice * (getTombolaSold()))) - costTotal;
-    }
-
-    return (
-        <div className="content">
+    function getBenefices(soldTickets) {
+        return (
             <div className="global-stats">
                 <h3>Bénéfices</h3>
                 <div><span>Bénéfices des vendeurs:</span> <span className="value-display">{supplierTotal}€</span></div>
                 <div><span>Vente de tombola:</span></div>
-                <div><span>{getTombolaSold()} x {ticketPrice}€: </span><span className="value-display">{ticketPrice * (getTombolaSold())}€ </span></div>
+                <div><span>{soldTickets} x {ticketPrice}€: </span><span className="value-display">{ticketPrice * (soldTickets)}€ </span></div>
                 <div><span><i className="fa fa-minus icon"/>Total des frais: </span><span className="value-display">{costTotal}€</span></div>
-                <div className="separated"><span>Bénéfices net du marché: </span><span className="value-display">{computeTotal()}€</span></div>
+                <div className="separated"><span>Bénéfices net du marché: </span><span className="value-display">{computeTotal(soldTickets)}€</span></div>
                 {!!days.length &&
                     <span className="divider">_________________________________________________________</span>
                 }
                 {days.map((value, dayIndex) => {
-                    return(<DayData day={value} key={dayIndex} dailyAccounting={dailyAccounting} index={dayIndex}/>)
+                    return(<DayData day={value} key={dayIndex} dayAccounting={dailyAccounting[value.dayName]} index={dayIndex}/>)
                 })}
             </div>
-            <div className="global-stats">
-            <h3>Statistiques (sur {days.length} jour(s))</h3>
-                {getStats()}
-            </div>
-        </div>
+        )
+    }
+
+    function computeTotal(soldTickets) {
+        return (supplierTotal + (ticketPrice * (soldTickets))) - costTotal;
+    }
+
+    return (
+        <div>{getContent()}</div>
     );
 }
 

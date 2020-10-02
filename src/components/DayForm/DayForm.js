@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import FileInput from '../FileInput/FileInput.js';
 import { times } from '../../utils/utils.js';
 import "./DayForm.css";
@@ -6,13 +6,16 @@ import "./DayForm.css";
 /*
  * dayRawData = { customers: [], suppliers: [] }
  */
-function DayForm({ day, dayRawData = {}, save, addMessage }) {
+function DayForm({ day, dayRawData = {}, save, addMessage, dailyAccounting }) {
 
     const [customers, setCustomers] = useState([].concat(dayRawData.customers));
     const [newCustomer, setNewCustomer] = useState([]);
     const [suppliers, setSuppliers] = useState([].concat(dayRawData.suppliers));
     const [newSupplier, setNewSupplier] = useState([]);
     const [file, setFile] = useState(undefined);
+    const [dayAccounting, setDayAccounting] = useState(dailyAccounting);
+    const customerFirstInput = useRef(null);
+    const supplierFirstInput = useRef(null);
 
     useEffect(() => {
         // willMount
@@ -22,24 +25,29 @@ function DayForm({ day, dayRawData = {}, save, addMessage }) {
         }
     }, [save, day, customers, suppliers]);
 
-    const saveRow = (type) => {
+    const setTombolaTicket = async (val) => {
+        await setDayAccounting({tombolaTickets: Number(val)});
+        await save(day, { customers, suppliers }, {tombolaTickets: Number(val)});
+    }
+
+    const saveRow = async (type) => {
         let local;
 
         if (type === 'customer') {
             const newCustomerlocal = newCustomer;
-            setNewCustomer(['', '', '', '']);
+            await setNewCustomer(['', '', '', '']);
             local = customers;
             local.push(newCustomerlocal)
-            setCustomers(local);
+            await setCustomers(local);
         }
         if (type === 'supplier') {
             const newSupplierlocal = newSupplier;
-            setNewSupplier(['', '', '', '']);
+            await setNewSupplier(['', '', '', '']);
             local = suppliers;
             local.push(newSupplierlocal)
-            setSuppliers(local);
+            await setSuppliers(local);
         }
-        save(day, { customers, suppliers });
+        await save(day, { customers, suppliers }, dayAccounting);
     }
 
     const setCustomerValue = (index, colIndex, value) => {
@@ -57,7 +65,7 @@ function DayForm({ day, dayRawData = {}, save, addMessage }) {
         }
         localCustomers[index][colIndex] = value;
         setCustomers(localCustomers);
-        save(day, { customers, suppliers });
+        save(day, { customers, suppliers }, dayAccounting);
     }
 
     const setSupplierValue = (index, colIndex, value) => {
@@ -75,18 +83,20 @@ function DayForm({ day, dayRawData = {}, save, addMessage }) {
         }
         localSuppliers[index][colIndex] = value;
         setSuppliers(localSuppliers);
-        save(day, { customers, suppliers });
+        save(day, { customers, suppliers }, dayAccounting);
     }
 
-    const cKeyDownHandler = (e) => {
+    const cKeyDownHandler = async (e) => {
         if (e.key === 'Enter') {
-            saveRow('customer');
+            customerFirstInput.current.focus();
+            await saveRow('customer');
         }
     }
 
-    const sKeyDownHandler = (e) => {
+    const sKeyDownHandler = async (e) => {
         if (e.key === 'Enter') {
-            saveRow('supplier');
+            supplierFirstInput.current.focus();
+            await saveRow('supplier');
         }
     }
 
@@ -107,7 +117,7 @@ function DayForm({ day, dayRawData = {}, save, addMessage }) {
         const { newCustomers, newSuppliers } = await _readPage(page);
         setCustomers(newCustomers);
         setSuppliers(newSuppliers);
-        save(day, { customers: newCustomers, suppliers: newSuppliers });
+        save(day, { customers: newCustomers, suppliers: newSuppliers }, dayAccounting);
     }
     /**
     *
@@ -183,6 +193,10 @@ function DayForm({ day, dayRawData = {}, save, addMessage }) {
                     />
                 </div>
             </div>
+            <div>
+                <span className="ml-10">Tickets de tombola vendus:</span>
+                <input className="number-input ml-10" pattern="[0-9]*" type="number" onChange={event => { setTombolaTicket(event.target.value) }} value={ dayAccounting.tombolaTickets }/>
+            </div>
             <div className="area-container">
                 <div onKeyDown={cKeyDownHandler} className="group-input customers">
                     <div className="col-titles">
@@ -199,7 +213,7 @@ function DayForm({ day, dayRawData = {}, save, addMessage }) {
                         )
                     })}
                     <div className="customer-row row new-row">
-                        <input className="number-input" pattern="[0-9]*" type="number" onChange={event => { setCustomerValue(false, 0, event.target.value) }} value={newCustomer[0]}/>
+                        <input ref={customerFirstInput} className="number-input" pattern="[0-9]*" type="number" onChange={event => { setCustomerValue(false, 0, event.target.value) }} value={newCustomer[0]}/>
                         <input className="number-input" pattern="[0-9]*" type="number" onChange={event => { setCustomerValue(false, 1, event.target.value) }} value={newCustomer[1]}/>
                         <input className="string-input" onChange={event => { setCustomerValue(false, 2, event.target.value) }} value={newCustomer[2]}/>
                         <input className="number-input" pattern="[0-9]*" type="number" onChange={event => { setCustomerValue(false, 3, event.target.value) }} value={newCustomer[3]}/>€
@@ -223,7 +237,7 @@ function DayForm({ day, dayRawData = {}, save, addMessage }) {
                         )
                     })}
                     <div className="supplier-row row new-row">
-                        <input className="number-input" pattern="[0-9]*" type="number" onChange={event => { setSupplierValue(false, 0, event.target.value) }} value={newSupplier[0]}/>
+                        <input ref={supplierFirstInput} className="number-input" pattern="[0-9]*" type="number" onChange={event => { setSupplierValue(false, 0, event.target.value) }} value={newSupplier[0]}/>
                         <input className="number-input" pattern="[0-9]*" type="number" onChange={event => { setSupplierValue(false, 1, event.target.value) }} value={newSupplier[1]}/>
                         <input className="string-input" onChange={event => { setSupplierValue(false, 2, event.target.value) }} value={newSupplier[2]}/>
                         <input className="number-input" pattern="[0-9]*" type="number" onChange={event => { setSupplierValue(false, 3, event.target.value) }} value={newSupplier[3]}/>€

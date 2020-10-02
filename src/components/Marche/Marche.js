@@ -21,7 +21,7 @@ class Marche extends React.Component {
             showDayForm: false, // false or this.DAYS[*]
             displayHelp: false, // toggle the "help" box
             eventExpenses: {}, // {expenseName: <int>amount}
-            dailyAccounting: {}, // { dayName: {valuesDict} }
+            dailyAccounting: Object.fromEntries(zip(this.DAYS, Array(3).fill({'tombolaTickets': 0}))), // { dayName: {valuesDict} }
             supplierTotal: 0,
             costTotal: 0,
             ticketPrice: 0,
@@ -51,11 +51,12 @@ class Marche extends React.Component {
      *
      * @param {String} day
      * @param {Object} data
+     * @param {Object} dayAccounting
      */
-    setDayRawData = async (day, data) => {
+    setDayRawData = async (day, data, dayAccounting) => {
         const daysRawData = Object.assign({}, this.state.daysRawData);
         daysRawData[day] = data;
-        await this.setState({ daysRawData });
+        await this.setState({ daysRawData, dailyAccounting: Object.assign(this.state.dailyAccounting, {[day]: dayAccounting}) });
     }
     /**
      *
@@ -209,10 +210,10 @@ class Marche extends React.Component {
     /**
     * Handler for event form.
     */
-    onEventFormSave = async ({ eventExpenses, dailyAccounting, ticketPrice }) => {
+    onEventFormSave = async ({ eventExpenses, ticketPrice }) => {
         let costTotal = 0;
         Object.values(eventExpenses).forEach(val => costTotal += val);
-        await this.setState({ eventExpenses, ticketPrice, dailyAccounting, costTotal });
+        await this.setState({ eventExpenses, ticketPrice, costTotal });
     }
     /**
     * processes the days and updates the state.
@@ -229,7 +230,7 @@ class Marche extends React.Component {
             daysRawData: Object.fromEntries(zip(this.DAYS, Array(3).fill({'customers': [], 'suppliers': []}))),
             showDayForm: false,
             eventExpenses: {},
-            dailyAccounting: {},
+            dailyAccounting: Object.fromEntries(zip(this.DAYS, Array(3).fill({'tombolaTickets': 0}))),
             supplierTotal: 0,
             costTotal: 0,
             ticketPrice: 0,
@@ -339,13 +340,17 @@ class Marche extends React.Component {
                 </div>
             }
             {!!this.DAYS.includes(this.state.showDayForm) && (
-                <DayForm day={this.state.showDayForm} dayRawData={this.state.daysRawData[this.state.showDayForm]} save={this.setDayRawData} addMessage={this._addMessage}/>
+                <DayForm
+                    day={this.state.showDayForm}
+                    dayRawData={this.state.daysRawData[this.state.showDayForm]}
+                    save={this.setDayRawData}
+                    addMessage={this._addMessage}
+                    dailyAccounting={this.state.dailyAccounting[this.state.showDayForm]}
+                />
             )}
             {!!this.state.showForm ? (
                 <EventForm
                     eventExpenses={this.state.eventExpenses}
-                    dailyAccounting={this.state.dailyAccounting}
-                    dayList={this.DAYS}
                     ticketPrice={this.state.ticketPrice}
                     save={this.onEventFormSave}
                 />

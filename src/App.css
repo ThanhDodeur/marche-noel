@@ -122,5 +122,9 @@
 }
 
 .form-button:hover {
-filter: brightness(90%);
+  filter: brightness(90%);
+}
+
+.ml-10 {
+  margin-left: 10px;
 }
