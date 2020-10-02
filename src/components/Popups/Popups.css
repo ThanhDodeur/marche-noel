@@ -14,6 +14,7 @@
     font-weight: bold;
     margin: 5px;
     transition: 2s;
+    border-radius: 2px;
 }
 
 .popup.info {
@@ -23,7 +24,7 @@
 
 .popup.error {
     background-color: rgb(255, 132, 95);
-    border: 3px solid rgba(255, 255, 255, 0.527);
+    border: 2px solid rgba(255, 255, 255, 0.527);
 }
 
 .popup > span {
