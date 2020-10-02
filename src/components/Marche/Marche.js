@@ -243,20 +243,6 @@ class Marche extends React.Component {
     ////////////////// //////// //////////////////
 
     /**
-    * Handler for File Input onChange.
-    *
-    * @param {file[]} files
-    * @return {void}
-    */
-   onFileInputChange = async (files, name) => {
-        const file = files[0];
-        if (!file.name.includes('.csv')) {
-            this._addMessage('ERREUR', 'Le fichier doit être un .csv', 'error', 8000);
-            return;
-        }
-        await this.setState({ files: Object.assign({}, this.state.files, {[name]: file})});
-    }
-    /**
     * Handler for event form.
     */
     onEventFormSave = async ({ eventExpenses, dailyAccounting, ticketPrice }) => {
@@ -343,7 +329,7 @@ class Marche extends React.Component {
                 </div>
             }
             {!!this.DAYS.includes(this.state.showDayForm) && (
-                <DayForm day={this.state.showDayForm} dayRawData={this.state.daysRawData[this.state.showDayForm]} save={this.setDayRawData}/>
+                <DayForm day={this.state.showDayForm} dayRawData={this.state.daysRawData[this.state.showDayForm]} save={this.setDayRawData} addMessage={this._addMessage}/>
             )}
             {!!this.state.showForm ? (
                 <EventForm

@@ -28,3 +28,7 @@
 .daily-stats > div {
     margin: 3px;
 }
+
+.value-display {
+    margin-left: 5px;
+}

@@ -102,3 +102,25 @@
 .darker {
   background-color: rgba(0, 0, 0, 0.384);
 }
+
+.form-button {
+  padding: 10px;
+  margin: 20px;
+  border-radius: 5px;
+  width: 105px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  border: 1px solid rgba(0, 0, 0, 0.425);
+  background-color: green;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.form-button:active {
+  transform: translateY(1px) translateX(1px);
+}
+
+.form-button:hover {
+filter: brightness(90%);
+}

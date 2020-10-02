@@ -21,8 +21,8 @@ function PageData({ days, costTotal, supplierTotal, dailyAccounting, ticketPrice
         }
         return (
             <div className="daily-stats">
-                <div><span>Moyenne payée par les clients:</span> <span className="value-display">{totalSpendings / (dailyArray.length || 1)}€</span></div>
-                <div><span>Moyenne des articles reçu:</span> <span className="value-display">{totalObtained / (dailyArray.length || 1)}€</span></div>
+                <div><span>Moyenne payée par les clients:</span> <span className="value-display">{(totalSpendings / (dailyArray.length || 1)).toFixed(3)}€</span></div>
+                <div><span>Moyenne des articles reçu:</span> <span className="value-display">{(totalObtained / (dailyArray.length || 1)).toFixed(3)}€</span></div>
                 <div><span>Tickets de tombola Vendus:</span> <span className="value-display">{getTombolaSold()}</span></div>
                 <div><span>Quantité de fiches payées:</span> <span className="value-display">{totalCustomers}</span></div>
             </div>

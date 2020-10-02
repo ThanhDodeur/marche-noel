@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from "react";
+import FileInput from '../FileInput/FileInput.js';
+import { times } from '../../utils/utils.js';
 import "./DayForm.css";
 
 /*
  * dayRawData = { customers: [], suppliers: [] }
  */
-function DayForm({ day, dayRawData = {}, save }) {
+function DayForm({ day, dayRawData = {}, save, addMessage }) {
 
     const [customers, setCustomers] = useState([].concat(dayRawData.customers));
     const [newCustomer, setNewCustomer] = useState([]);
     const [suppliers, setSuppliers] = useState([].concat(dayRawData.suppliers));
     const [newSupplier, setNewSupplier] = useState([]);
+    const [file, setFile] = useState(undefined);
 
     useEffect(() => {
         // willMount
@@ -87,9 +90,99 @@ function DayForm({ day, dayRawData = {}, save }) {
         }
     }
 
+    /**
+    * Handler for File Input onChange.
+    *
+    * @param {file[]} files
+    * @return {void}
+    */
+    const onFileInputChange = async (files) => {
+        const file = files[0];
+        if (!file.name.includes('.csv')) {
+            addMessage('ERREUR', 'Le fichier doit être un .csv', 'error', 8000);
+            return;
+        }
+        await setFile(file);
+        const page = await _readFile(file);
+        const { newCustomers, newSuppliers } = await _readPage(page);
+        setCustomers(newCustomers);
+        setSuppliers(newSuppliers);
+        save(day, { customers: newCustomers, suppliers: newSuppliers });
+    }
+    /**
+    *
+    * @param {blob} blob
+    * @return {file}
+    */
+    const _readFile = async (blob) => {
+        try {
+            const reader = new FileReader();
+            reader.readAsText(blob);
+            return new Promise((resolve) => {
+                reader.onload = (e) => {
+                    resolve(reader.result);
+                };
+            });
+        } catch (error) {
+            this._addMessage('ERREUR', error.message, 'error');
+            return false;
+        }
+    }
+    const _readPage = async (page) => {
+        const OFFSET_HEIGHT = 1; // does not include the column titles.
+        const lines = page.split(/\r\n|\n/);
+        times(OFFSET_HEIGHT) (() => lines.shift());
+        // colNames
+        lines.shift().split(','); // removes and saves column titles.
+        /*
+        *
+        * customers = { clientId: { supplied, suppliedTotal, paid, paidTotal } }
+        * supplied = [ {name: 'itemName', 'price': price, 'supplierId': id } ] WHAT IS PAID
+        * paid = [ {name: 'itemName', 'price': price, 'supplierId': id } ]
+        *
+        * suppliers = { supplierId : { total } }
+        *
+        */
+        const newCustomers = [];
+        const newSuppliers = [];
+        while (lines.length) {
+            const currentLine = lines.shift().split(',');
+
+            /* DATA FILL
+            *   paid
+            *   currentLine[0] purchase - customerId
+            *   currentLine[1] purchase - supplierId
+            *   currentLine[2] purchase - item Name
+            *   currentLine[3] purchase - item Price
+            *   supplied
+            *   currentLine[4] payment - supplierId
+            *   currentLine[5] payment - customerId
+            *   currentLine[6] payment - item Name
+            *   currentLine[7] payment - item Price
+            */
+
+            if (currentLine[0]) { // CUSTOMER SIDE
+                newCustomers.push([Number(currentLine[0]), Number(currentLine[1]), currentLine[2], Number(currentLine[3])])
+            }
+            if (currentLine[4] && currentLine[5]) { // SUPPLIER SIDE
+                newSuppliers.push([Number(currentLine[4]), Number(currentLine[5]), currentLine[6], Number(currentLine[7])])
+            }
+        }
+        return { newCustomers, newSuppliers }
+    }
+
     return (
         <div className="content input-page">
-            <h1>{day}</h1>
+            <div className="title-area">
+                <h1>{day}</h1>
+                <div className="form-button">
+                    <FileInput label="Ajouter un Fichier"
+                        className="noselect"
+                        value={file}
+                        onChange={onFileInputChange}
+                    />
+                </div>
+            </div>
             <div className="area-container">
                 <div onKeyDown={cKeyDownHandler} className="group-input customers">
                     <div className="col-titles">
