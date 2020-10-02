@@ -13,7 +13,6 @@ class Marche extends React.Component {
         super();
         this.DAYS = ['Vendredi', 'Samedi', 'Dimanche']; // const
         this.state = {
-            files: {}, // { dayName: file, }
             daysRawData: Object.fromEntries(zip(this.DAYS, Array(3).fill({'customers': [], 'suppliers': []}))),
             days: [], // { dayName, customers, missedPayments, dailyLoss, customersAverage, obtainedAverage }
             suppliers: {}, // { supplierId : { total } }
@@ -48,6 +47,11 @@ class Marche extends React.Component {
         }));
         await this._addMessage('Sauvegardé', 'Les informations ont été sauvegardées', 'info', 5000);
     }
+    /**
+     *
+     * @param {String} day
+     * @param {Object} data
+     */
     setDayRawData = async (day, data) => {
         const daysRawData = Object.assign({}, this.state.daysRawData);
         daysRawData[day] = data;
@@ -172,6 +176,10 @@ class Marche extends React.Component {
         const { missedPayments, dailyLoss, customersAverage, obtainedAverage } = this._computeDailyStats(customers);
         return {day: { dayName, customers, missedPayments, dailyLoss, customersAverage, obtainedAverage }, suppliers };
     }
+    /**
+     *
+     * @param {Object} customers
+     */
     _computeDailyStats = (customers) => {
         const missedPayments = {};
         let dailyLoss = 0;
@@ -193,12 +201,80 @@ class Marche extends React.Component {
         const obtainedAverage = obtainedTotal / (customerKeys.length || 0);
         return { missedPayments, dailyLoss, customersTotal, customersAverage, obtainedAverage };
     }
+
+    ////////////////// //////// //////////////////
+    ////////////////// HANDLERS //////////////////
+    ////////////////// //////// //////////////////
+
     /**
-    * Brief description of the function here.
-    *
-    * @return {Object[]} [{content, className, fa, callBack}]
+    * Handler for event form.
     */
-    _getButtons() {
+    onEventFormSave = async ({ eventExpenses, dailyAccounting, ticketPrice }) => {
+        let costTotal = 0;
+        Object.values(eventExpenses).forEach(val => costTotal += val);
+        await this.setState({ eventExpenses, ticketPrice, dailyAccounting, costTotal });
+    }
+    /**
+    * processes the days and updates the state.
+    */
+    _computeResults = async () => {
+        const { days, suppliers, supplierTotal } = await this._processDays();
+        await this.setState({ days, suppliers, supplierTotal });
+    }
+    /**
+    *
+    */
+    clearAll = async () => {
+        await this.setState({
+            daysRawData: Object.fromEntries(zip(this.DAYS, Array(3).fill({'customers': [], 'suppliers': []}))),
+            showDayForm: false,
+            eventExpenses: {},
+            dailyAccounting: {},
+            supplierTotal: 0,
+            costTotal: 0,
+            ticketPrice: 0,
+        });
+        await this._computeResults();
+        await this._addMessage('', 'Tout le contenu a été réinitialisé', 'error', 5000);
+        await this.toggleReset();
+    }
+    /**
+     *
+     * @param {String} day
+     */
+   toggleDay = async (day) => {
+        const isSameDay = this.state.showDayForm === day;
+        await this.setState({ showDayForm: false });
+        if (!isSameDay) {
+            await this.setState({ showDayForm: day });
+        }
+    }
+    /**
+    *
+    */
+    toggleReset = async () => {
+        await this.setState({ resetRequested: !this.state.resetRequested });
+    }
+    /**
+    *
+    */
+    toggleEventForm = async () => {
+        const isOpen = this.state.showForm;
+        await this.setState({ showForm: !isOpen });
+        if (isOpen) {
+            this._computeResults();
+        }
+    }
+    /**
+    *
+    */
+    _toggleHelp = async () => {
+        await this.setState({ displayHelp: !this.state.displayHelp });
+    }
+    /**
+     * @returns {Array} buttons
+     */
+   _getButtons() {
 
         // MAIN
         const buttons = [
@@ -232,88 +308,12 @@ class Marche extends React.Component {
 
         buttons.push(...[
             { content: 'Aide', fa: 'fa-info-circle', className: 'blue order-2 ml-auto', callBack: this._toggleHelp },
-            { content: 'Charcher', fa: 'fa-info-circle', className: 'green order-2', callBack: this.loadSave },
-            { content: 'Sauvegarder', fa: 'fa-info-circle', className: 'green order-2', callBack: this.saveState },
+            { content: 'Charcher', fa: 'fa-download', className: 'green order-2', callBack: this.loadSave },
+            { content: 'Sauvegarder', fa: 'fa-upload', className: 'green order-2', callBack: this.saveState },
         ]);
         return buttons;
     }
 
-    ////////////////// //////// //////////////////
-    ////////////////// HANDLERS //////////////////
-    ////////////////// //////// //////////////////
-
-    /**
-    * Handler for event form.
-    */
-    onEventFormSave = async ({ eventExpenses, dailyAccounting, ticketPrice }) => {
-        let costTotal = 0;
-        Object.values(eventExpenses).forEach(val => costTotal += val);
-        await this.setState({ eventExpenses, ticketPrice, dailyAccounting, costTotal });
-    }
-    /**
-    * processes the files and updates the state.
-    */
-    _computeResults = async () => {
-        const { days, suppliers, supplierTotal } = await this._processDays();
-        await this.setState({ days, suppliers, supplierTotal });
-    }
-    /**
-    *
-    */
-    clearAll = async () => {
-        await this.setState({
-            daysRawData: Object.fromEntries(zip(this.DAYS, Array(3).fill({'customers': [], 'suppliers': []}))),
-            showDayForm: false,
-            eventExpenses: {},
-            dailyAccounting: {},
-            supplierTotal: 0,
-            costTotal: 0,
-            ticketPrice: 0,
-        });
-        await this._computeResults();
-        await this._addMessage('', 'Tout le contenu a été réinitialisé', 'error', 5000);
-        await this.toggleReset();
-    }
-    /**
-    *
-    */
-   toggleDay = async (day) => {
-        const isSameDay = this.state.showDayForm === day;
-        await this.setState({ showDayForm: false });
-        if (!isSameDay) {
-            await this.setState({ showDayForm: day });
-        }
-    }
-    /**
-    *
-    */
-    toggleReset = async () => {
-        await this.setState({ resetRequested: !this.state.resetRequested });
-    }
-    /**
-    *
-    */
-    toggleEventForm = async () => {
-        const isOpen = this.state.showForm;
-        await this.setState({ showForm: !isOpen });
-        if (isOpen) {
-            this._computeResults();
-        }
-    }
-    /**
-    *
-    */
-    _toggleHelp = async () => {
-        await this.setState({ displayHelp: !this.state.displayHelp });
-    }
-    /**
-     * add encodage popup with button toggle
-     * location salle, location bancontact et frais de transaction, assurance, papetrie, timbres, courses restaurant, traiteur, schmitz
-     * form component with callback to change state here with new data.
-     *
-     * Add full data (all prices + price computation)
-     *
-     */
     render() {
         return <div>
             <NavBar
