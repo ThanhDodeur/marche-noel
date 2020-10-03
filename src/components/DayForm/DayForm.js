@@ -181,11 +181,19 @@ function DayForm({ day, dayRawData = {}, save, addMessage, dailyAccounting, miss
         return { newCustomers, newSuppliers }
     }
 
+    const onFileInputWrapperClick = (e) => {
+        // allows clicking on the file input from the outside element.
+        const input = e.currentTarget.getElementsByTagName('input');
+        if (input.length) {
+            input[0].click();
+        }
+    }
+
     return (
         <div className="content input-page">
             <div className="title-area ml-10">
                 <h1>{day}</h1>
-                <div className="form-button">
+                <div className="form-button" onClick={ (e) => onFileInputWrapperClick(e) }>
                     <FileInput label="Ajouter .csv"
                         className="noselect"
                         value={file}

@@ -62,7 +62,6 @@ class Marche extends React.Component {
             "info",
             5000
         );
-        await this.toggleLoad();
         await this._computeResults();
     };
     /**
@@ -78,7 +77,6 @@ class Marche extends React.Component {
                 ticketPrice: this.state.ticketPrice,
             })
         );
-        await this.toggleSave();
         await this._addMessage(
             "Sauvegardé",
             "Les informations ont été sauvegardées",
@@ -311,9 +309,11 @@ class Marche extends React.Component {
     };
     onClickLoad = async () => {
         await this._loadSave('saved-state-manual');
+        await this.toggleLoad();
     }
     onClickSave = async () => {
         await this._saveState('saved-state-manual');
+        await this.toggleLoad();
     }
     onClose = async () => {
         await this._saveState('saved-state-auto');
