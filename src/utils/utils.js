@@ -1,6 +1,6 @@
 let lastId = 0;
 
-export { newId, times, zip }
+export { newId, times, zip, rounded }
 
 function newId(prefix='id') {
     lastId++;
@@ -17,4 +17,11 @@ function times(x) {
 
 function zip(arr1, arr2) {
     return arr1.map((k, i) => [k, arr2[i]]);
+}
+
+function rounded(num, decimal) {
+    if (!num) return 0;
+    num = Number(num);
+    const exp = Math.abs(decimal);
+    return Math.round((num + Number.EPSILON) * Math.pow(10, exp)) / Math.pow(10, exp);
 }

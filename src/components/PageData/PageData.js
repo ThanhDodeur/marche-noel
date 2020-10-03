@@ -1,5 +1,6 @@
 import React from "react";
 import "./PageData.css";
+import { rounded } from "../../utils/utils.js";
 
 import DayData from '../DayData/DayData.js';
 
@@ -42,7 +43,7 @@ function PageData({ days, costTotal, suppliers, openDay, supplierTotal, dailyAcc
                         <div className="ladder-entry">
                             <span>{index+1}.</span>
                             <span>[{tuple[0]}]</span>
-                            <span className="value">{tuple[1].total}€</span>
+                            <span className="value">{rounded(tuple[1].total, 3)}€</span>
                         </div>
                     )
                 })}
@@ -64,8 +65,8 @@ function PageData({ days, costTotal, suppliers, openDay, supplierTotal, dailyAcc
             <div className="global-stats">
                 <h3>Statistiques (sur {days.length} jour(s))</h3>
                 <div className="daily-stats">
-                    <div><span>Moyenne payée par les clients:</span> <span className="value-display">{(totalSpendings / (dailyArray.length || 1)).toFixed(3)}€</span></div>
-                    <div><span>Moyenne des articles reçu:</span> <span className="value-display">{(totalObtained / (dailyArray.length || 1)).toFixed(3)}€</span></div>
+                    <div><span>Moyenne payée par les clients:</span> <span className="value-display">{rounded((totalSpendings / (dailyArray.length || 1)), 3)}€</span></div>
+                    <div><span>Moyenne des articles reçu:</span> <span className="value-display">{rounded((totalObtained / (dailyArray.length || 1)), 3)}€</span></div>
                     <div><span>Tickets de tombola Vendus:</span> <span className="value-display">{soldTickets}</span></div>
                     <div><span>Quantité de fiches payées:</span> <span className="value-display">{totalCustomers}</span></div>
                 </div>
@@ -77,11 +78,11 @@ function PageData({ days, costTotal, suppliers, openDay, supplierTotal, dailyAcc
         return (
             <div className="global-stats profits">
                 <h3>Bénéfices</h3>
-                <div><span>Bénéfices des vendeurs:</span> <span className="value-display">{supplierTotal}€</span></div>
+                <div><span>Bénéfices des vendeurs:</span> <span className="value-display">{rounded(supplierTotal, 3)}€</span></div>
                 <div><span>Vente de tombola:</span></div>
-                <div><span>{soldTickets} x {ticketPrice}€: </span><span className="value-display">{ticketPrice * (soldTickets)}€ </span></div>
-                <div><span><i className="fa fa-minus icon"/>Total des frais: </span><span className="value-display">-{costTotal}€</span></div>
-                <div className="separated"><span>Bénéfices net du marché: </span><span className="value-display">{computeTotal(soldTickets)}€</span></div>
+                <div><span>{soldTickets} x {ticketPrice}€: </span><span className="value-display">{rounded(ticketPrice * (soldTickets), 3)}€ </span></div>
+                <div><span><i className="fa fa-minus icon"/>Total des frais: </span><span className="value-display">-{rounded(costTotal, 3)}€</span></div>
+                <div className="separated"><span>Bénéfices net du marché: </span><span className="value-display">{rounded(computeTotal(soldTickets), 3)}€</span></div>
                 {days.map((value, dayIndex) => {
                     if (!(openDay && openDay !== value.dayName)) {
                         return(<DayData day={value} key={dayIndex} dayAccounting={dailyAccounting[value.dayName]} index={dayIndex}/>);

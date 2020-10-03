@@ -1,5 +1,6 @@
 import React from "react";
 import "./CustomerData.css";
+import { rounded } from "../../utils/utils.js";
 
 /*
  *
@@ -16,9 +17,9 @@ function CustomerData({ customers }) {
                 return (
                     <div className="entry" key={'cust_'+customerId}>
                         <span>[client: {customerId}] - </span>
-                        <span>total payé: {customers[customerId].paidTotal}€</span>
+                        <span>total payé: {rounded(customers[customerId].paidTotal, 3)}€</span>
                         <span> | </span>
-                        <span>a reçu pour un total de: {customers[customerId].suppliedTotal}€</span>
+                        <span>a reçu pour un total de: {rounded(customers[customerId].suppliedTotal, 3)}€</span>
                     </div>
                 )
             })}
