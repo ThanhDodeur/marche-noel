@@ -179,8 +179,12 @@ function DayForm({
      */
     const onFileInputWrapperClick = (e) => {
         // allows clicking on the file input from the outside element.
+        if (e.currentTarget !== e.target) {
+            return;
+        }
         const input = e.currentTarget.getElementsByTagName("input");
         if (input.length) {
+            e.stopPropagation();
             input[0].click();
         }
     };
