@@ -3,7 +3,7 @@
     top: 0px;
     margin: 50px;
     right: 0px;
-    position: absolute;
+    position: fixed;
     display: flex;
     flex-direction: column;
 }
