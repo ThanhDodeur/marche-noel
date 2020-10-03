@@ -75,6 +75,7 @@ class Marche extends React.Component {
                 eventExpenses: this.state.eventExpenses,
                 dailyAccounting: this.state.dailyAccounting,
                 ticketPrice: this.state.ticketPrice,
+                costTotal: this.state.costTotal,
             })
         );
         await this._addMessage(
