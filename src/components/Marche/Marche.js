@@ -36,11 +36,23 @@ class Marche extends React.Component {
             popups: {}, // {content, type}
         };
     }
+    async componentDidMount() {
+        window.addEventListener('beforeunload', this.onClose);
+        await this._loadSave('saved-state-auto');
+    }
+    componentWillUnmount() {
+        window.removeEventListener('beforeunload', this.onClose);
+    }
+
+    ////////////////// //////// //////////////////
+    ////////////////// PRIVATE ///////////////////
+    ////////////////// //////// //////////////////
+
     /**
      * Loads the save from the localStorage.
      */
-    loadSave = async () => {
-        const saved = localStorage.getItem("saved-state");
+    _loadSave = async (saveName) => {
+        const saved = localStorage.getItem(saveName);
         if (saved) {
             await this.setState(JSON.parse(saved));
         }
@@ -56,9 +68,9 @@ class Marche extends React.Component {
     /**
      * Saves part of the state to the localStorage.
      */
-    saveState = async () => {
+    _saveState = async (saveName) => {
         localStorage.setItem(
-            "saved-state",
+            saveName,
             JSON.stringify({
                 daysRawData: this.state.daysRawData,
                 eventExpenses: this.state.eventExpenses,
@@ -297,6 +309,15 @@ class Marche extends React.Component {
         );
         await this.toggleReset();
     };
+    onClickLoad = async () => {
+        await this._loadSave('saved-state-manual');
+    }
+    onClickSave = async () => {
+        await this._saveState('saved-state-manual');
+    }
+    onClose = async () => {
+        await this._saveState('saved-state-auto');
+    }
     /**
      * This is a handler given to the DayForm to propagate the raw daily data to here.
      *
@@ -453,7 +474,7 @@ class Marche extends React.Component {
                     content: "Confirmer: Sauvegarder",
                     fa: "fa-check",
                     className: "alert",
-                    callBack: this.saveState,
+                    callBack: this.onClickSave,
                 },
             ];
         }
@@ -482,7 +503,7 @@ class Marche extends React.Component {
                     content: "Confirmer: Charder la Sauvegarde",
                     fa: "fa-check",
                     className: "alert",
-                    callBack: this.loadSave,
+                    callBack: this.onClickLoad,
                 },
             ];
         }
