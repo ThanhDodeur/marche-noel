@@ -109,9 +109,7 @@ class Marche extends React.Component {
      * @param {String} [type] info | error
      * @param {Number} [duration] amount of ms
      */
-    _addMessage = async (title, content, type, duration) => {
-        duration = duration || 5000;
-        type = type || "info";
+    _addMessage = async (title, content, type='info', duration=5000) => {
         const id = newId("message");
         await this.setState({
             popupIds: this.state.popupIds.concat(id),
@@ -532,7 +530,7 @@ class Marche extends React.Component {
                                 target="new"
                                 href="https://docs.google.com/spreadsheets/d/1UKT38_RUa3MQ_HEGtWgaPKvedD35wYksaj7-T0sc9N8/edit?usp=sharing"
                             >
-                                Fiche à remplire
+                                Format accepté
                             </a>
                             <i className="fa fa-file-excel-o" />
                         </div>

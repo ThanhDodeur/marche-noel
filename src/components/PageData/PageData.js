@@ -83,10 +83,9 @@ function PageData({ days, costTotal, suppliers, openDay, supplierTotal, dailyAcc
                 <div><span><i className="fa fa-minus icon"/>Total des frais: </span><span className="value-display">-{costTotal}€</span></div>
                 <div className="separated"><span>Bénéfices net du marché: </span><span className="value-display">{computeTotal(soldTickets)}€</span></div>
                 {days.map((value, dayIndex) => {
-                    if (openDay && openDay !== value.dayName) {
-                        return;
+                    if (!(openDay && openDay !== value.dayName)) {
+                        return(<DayData day={value} key={dayIndex} dayAccounting={dailyAccounting[value.dayName]} index={dayIndex}/>);
                     }
-                    return(<DayData day={value} key={dayIndex} dayAccounting={dailyAccounting[value.dayName]} index={dayIndex}/>)
                 })}
             </div>
         )
