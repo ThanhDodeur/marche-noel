@@ -183,7 +183,7 @@ function DayForm({ day, dayRawData = {}, save, addMessage, dailyAccounting, miss
 
     return (
         <div className="content input-page">
-            <div className="title-area">
+            <div className="title-area ml-10">
                 <h1>{day}</h1>
                 <div className="form-button">
                     <FileInput label="Ajouter .csv"
