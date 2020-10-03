@@ -7,7 +7,7 @@ import DayData from '../DayData/DayData.js';
  * Represents a whole page of data for all the uploaded days.
  *
  */
-function PageData({ days, costTotal, suppliers, supplierTotal, dailyAccounting, ticketPrice }) {
+function PageData({ days, costTotal, suppliers, openDay, supplierTotal, dailyAccounting, ticketPrice }) {
 
     function getContent() {
         let soldTickets = 0;
@@ -83,6 +83,9 @@ function PageData({ days, costTotal, suppliers, supplierTotal, dailyAccounting, 
                 <div><span><i className="fa fa-minus icon"/>Total des frais: </span><span className="value-display">-{costTotal}€</span></div>
                 <div className="separated"><span>Bénéfices net du marché: </span><span className="value-display">{computeTotal(soldTickets)}€</span></div>
                 {days.map((value, dayIndex) => {
+                    if (openDay && openDay !== value.dayName) {
+                        return;
+                    }
                     return(<DayData day={value} key={dayIndex} dayAccounting={dailyAccounting[value.dayName]} index={dayIndex}/>)
                 })}
             </div>

@@ -405,6 +405,7 @@ class Marche extends React.Component {
                     ticketPrice={this.state.ticketPrice}
                     costTotal={this.state.costTotal}
                     suppliers={this.state.suppliers}
+                    openDay={this.state.showDayForm}
                     supplierTotal={this.state.supplierTotal}
                 />
             )}
