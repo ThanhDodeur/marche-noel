@@ -142,6 +142,15 @@ function DayForm({
             await _saveRow("customer");
         }
     };
+    const onCustomerLastBoxKeyDown = async (e) => {
+        if (e.key === "Tab") {
+            e.stopPropagation();
+            e.preventDefault();
+            customerFirstInput.current.focus();
+            await _saveRow("customer");
+            
+        }
+    }
     /**
      * Handler for File Input onChange.
      *
@@ -186,6 +195,14 @@ function DayForm({
             await _saveRow("supplier");
         }
     };
+    const onSupplierLastBoxKeyDown = async (e) => {
+        if (e.key === "Tab") {
+            e.stopPropagation();
+            e.preventDefault();
+            supplierFirstInput.current.focus();
+            await _saveRow("supplier");
+        }
+    }
     /**
      *
      * @param {Number} index the index of the line
@@ -279,7 +296,6 @@ function DayForm({
             </div>
             <div className="area-container">
                 <div
-                    onKeyDown={onCustomerGroupInputKeyDown}
                     className="group-input customers"
                 >
                     <div className="col-titles">
@@ -356,7 +372,7 @@ function DayForm({
                             </div>
                         );
                     })}
-                    <div className="customer-row row new-row">
+                    <div className="customer-row row new-row" onKeyDown={onCustomerGroupInputKeyDown}>
                         <input
                             ref={customerFirstInput}
                             className="number-input"
@@ -387,6 +403,7 @@ function DayForm({
                             className="number-input"
                             pattern="[0-9]*"
                             type="number"
+                            onKeyDown={onCustomerLastBoxKeyDown}
                             onChange={(event) => {
                                 setCustomerValue(false, 3, event.target.value);
                             }}
@@ -399,7 +416,6 @@ function DayForm({
                     </div>
                 </div>
                 <div
-                    onKeyDown={onSupplierGroupInputKeyDown}
                     className="group-input suppliers"
                 >
                     <div className="col-titles">
@@ -476,7 +492,7 @@ function DayForm({
                             </div>
                         );
                     })}
-                    <div className="supplier-row row new-row">
+                    <div className="supplier-row row new-row" onKeyDown={onSupplierGroupInputKeyDown}>
                         <input
                             ref={supplierFirstInput}
                             className="number-input"
@@ -507,6 +523,7 @@ function DayForm({
                             className="number-input"
                             pattern="[0-9]*"
                             type="number"
+                            onKeyDown={onSupplierLastBoxKeyDown}
                             onChange={(event) => {
                                 setSupplierValue(false, 3, event.target.value);
                             }}
