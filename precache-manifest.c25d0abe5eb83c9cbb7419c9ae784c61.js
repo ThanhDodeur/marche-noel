@@ -1,11 +1,11 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "7a6587eb64f5ed3ab3758f6d7b732874",
+    "revision": "e5924f5331570728a101c8fc3840ce74",
     "url": "/marche-noel/index.html"
   },
   {
-    "revision": "21ccaea3953ac795fe1c",
-    "url": "/marche-noel/static/css/main.7134c27d.chunk.css"
+    "revision": "3bc5c7f13a7caee9a5d1",
+    "url": "/marche-noel/static/css/main.6d86527d.chunk.css"
   },
   {
     "revision": "f8aa10597d167554d409",
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/marche-noel/static/js/2.0188feb2.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "21ccaea3953ac795fe1c",
-    "url": "/marche-noel/static/js/main.9295fb08.chunk.js"
+    "revision": "3bc5c7f13a7caee9a5d1",
+    "url": "/marche-noel/static/js/main.2a9d1d22.chunk.js"
   },
   {
     "revision": "306bd831ae8ed914d322",
