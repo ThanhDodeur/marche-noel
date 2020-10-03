@@ -6,7 +6,7 @@ import "./DayForm.css";
 /*
  * dayRawData = { customers: [], suppliers: [] }
  */
-function DayForm({ day, dayRawData = {}, save, addMessage, dailyAccounting }) {
+function DayForm({ day, dayRawData = {}, save, addMessage, dailyAccounting, missedPayments }) {
 
     const [customers, setCustomers] = useState([].concat(dayRawData.customers));
     const [newCustomer, setNewCustomer] = useState([]);
@@ -204,7 +204,7 @@ function DayForm({ day, dayRawData = {}, save, addMessage, dailyAccounting }) {
                     </div>
                     {customers.map((customer, index) => {
                         return (
-                            <div className="customer-row row saved-row" key={'customer_'+index}>
+                            <div className={"customer-row row saved-row " + (!!(missedPayments && missedPayments[customer[0]]) ? 'unpaid' : '')} key={'customer_'+index}>
                                 <input className="number-input" pattern="[0-9]*" type="number" onChange={event => { setCustomerValue(index, 0, event.target.value) }} value={customer[0]}/>
                                 <input className="number-input" pattern="[0-9]*" type="number" onChange={event => { setCustomerValue(index, 1, event.target.value) }} value={customer[1]}/>
                                 <input className="string-input" onChange={event => { setCustomerValue(index, 2, event.target.value) }} value={customer[2]}/>
@@ -228,7 +228,7 @@ function DayForm({ day, dayRawData = {}, save, addMessage, dailyAccounting }) {
                     </div>
                     {suppliers.map((supplier, index) => {
                         return (
-                            <div className="supplier-row row saved-row" key={'supplier_'+index}>
+                            <div className={"supplier-row row saved-row "+ (!!(missedPayments && missedPayments[supplier[1]]) ? 'unpaid' : '')} key={'supplier_'+index}>
                                 <input className="number-input" pattern="[0-9]*" type="number" onChange={event => { setSupplierValue(index, 0, event.target.value) }} value={supplier[0]}/>
                                 <input className="number-input" pattern="[0-9]*" type="number" onChange={event => { setSupplierValue(index, 1, event.target.value) }} value={supplier[1]}/>
                                 <input className="string-input" onChange={event => { setSupplierValue(index, 2, event.target.value) }} value={supplier[2]}/>

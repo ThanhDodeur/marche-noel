@@ -15,6 +15,7 @@ class Marche extends React.Component {
         this.state = {
             daysRawData: Object.fromEntries(zip(this.DAYS, Array(3).fill({'customers': [], 'suppliers': []}))),
             days: [], // { dayName, customers, missedPayments, dailyLoss, customersAverage, obtainedAverage }
+            missedPaymentsByDay: {},
             suppliers: {}, // { supplierId : { total } }
             resetRequested: false, // toggle for the confirm/cancel buttons for removing files
             loadRequested: false,
@@ -105,13 +106,15 @@ class Marche extends React.Component {
         const days = [];
         let suppliers = {};
         let supplierTotal = 0;
+        let missedPaymentsByDay = this.state.missedPaymentsByDay;
         for (const [dayName, dayRaw] of Object.entries(this.state.daysRawData)) {
             const result = this._computeDay({ dayName, dayRaw, suppliers });
             suppliers = result.suppliers;
+            missedPaymentsByDay[dayName] = result.missedPayments;
             days.push(result.day);
         }
         Object.values(suppliers).forEach(val => supplierTotal += val.total);
-        return { days, suppliers, supplierTotal };
+        return { days, suppliers, supplierTotal, missedPaymentsByDay };
     }
     /**
      *
@@ -180,7 +183,7 @@ class Marche extends React.Component {
             }
 
         const { missedPayments, dailyLoss, customersAverage, obtainedAverage } = this._computeDailyStats(customers);
-        return {day: { dayName, customers, missedPayments, dailyLoss, customersAverage, obtainedAverage }, suppliers };
+        return {day: { dayName, customers, missedPayments, dailyLoss, customersAverage, obtainedAverage }, suppliers, missedPayments };
     }
     /**
      *
@@ -224,8 +227,8 @@ class Marche extends React.Component {
     * processes the days and updates the state.
     */
     _computeResults = async () => {
-        const { days, suppliers, supplierTotal } = await this._processDays();
-        await this.setState({ days, suppliers, supplierTotal });
+        const { days, suppliers, supplierTotal, missedPaymentsByDay } = await this._processDays();
+        await this.setState({ days, suppliers, supplierTotal, missedPaymentsByDay });
     }
     /**
     *
@@ -385,6 +388,7 @@ class Marche extends React.Component {
                     dayRawData={this.state.daysRawData[this.state.showDayForm]}
                     save={this.setDayRawData}
                     addMessage={this._addMessage}
+                    missedPayments={this.state.missedPaymentsByDay[this.state.showDayForm]}
                     dailyAccounting={this.state.dailyAccounting[this.state.showDayForm]}
                 />
             )}

@@ -82,9 +82,6 @@ function PageData({ days, costTotal, suppliers, supplierTotal, dailyAccounting, 
                 <div><span>{soldTickets} x {ticketPrice}€: </span><span className="value-display">{ticketPrice * (soldTickets)}€ </span></div>
                 <div><span><i className="fa fa-minus icon"/>Total des frais: </span><span className="value-display">-{costTotal}€</span></div>
                 <div className="separated"><span>Bénéfices net du marché: </span><span className="value-display">{computeTotal(soldTickets)}€</span></div>
-                {!!days.length &&
-                    <span className="divider">_________________________________________________________</span>
-                }
                 {days.map((value, dayIndex) => {
                     return(<DayData day={value} key={dayIndex} dayAccounting={dailyAccounting[value.dayName]} index={dayIndex}/>)
                 })}
