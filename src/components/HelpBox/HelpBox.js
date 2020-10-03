@@ -27,7 +27,7 @@ function HelpBox() {
             </div>
             {!!showVideo &&
                 (
-                    <iframe src="https://drive.google.com/file/d/1hk40AsnzUJ7gUevslwSnfZGkSvyJ0OKu/preview" width="900" height="500"/>
+                    <iframe title="help video" src="https://drive.google.com/file/d/1hk40AsnzUJ7gUevslwSnfZGkSvyJ0OKu/preview" width="900" height="500"/>
                 )
             }
         </div>

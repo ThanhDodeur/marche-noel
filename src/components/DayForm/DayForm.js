@@ -148,7 +148,6 @@ function DayForm({
             e.preventDefault();
             customerFirstInput.current.focus();
             await _saveRow("customer");
-            
         }
     }
     /**
@@ -412,7 +411,8 @@ function DayForm({
                         €
                     </div>
                     <div>
-                        appuiez sur 'Entrer' pour sauver la dernière ligne.
+                        Appuier sur 'Tab' pour naviguer entre les cases.
+                        Appuier sur 'Entrer' pour sauver la dernière ligne.
                     </div>
                 </div>
                 <div
@@ -532,7 +532,8 @@ function DayForm({
                         €
                     </div>
                     <div>
-                        appuiez sur 'Entrer' pour sauver la dernière ligne.
+                        Appuier sur 'Tab' pour naviguer entre les cases.
+                        Appuier sur 'Entrer' pour sauver la dernière ligne.
                     </div>
                 </div>
             </div>
