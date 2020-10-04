@@ -24,7 +24,7 @@ function App(props) {
         <div className="page">
             {state.open ? (
                 <div className="page">
-                    <Marche menu=""/>
+                    <Marche/>
                 </div>
             ) : (
                 <div className="page clickable" onClick={openApp}>
