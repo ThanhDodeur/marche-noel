@@ -274,6 +274,7 @@ function DayForm({
             <div className="title-area ml-10">
                 <h1>{day}</h1>
                 <div
+                    role="button"
                     className="form-button"
                     onClick={(e) => onFileInputWrapperClick(e)}
                 >

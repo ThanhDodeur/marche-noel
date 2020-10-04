@@ -87,7 +87,7 @@ function PageData({ days, costTotal, suppliers, openDay, supplierTotal, dailyAcc
                     if (!(openDay && openDay !== value.dayName)) {
                         return(<DayData day={value} key={dayIndex} dayAccounting={dailyAccounting[value.dayName]} index={dayIndex}/>);
                     } else {
-                        return(<div/>)
+                        return(<div key={'empty_'+dayIndex}/>)
                     }
                 })}
             </div>

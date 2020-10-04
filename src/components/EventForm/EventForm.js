@@ -39,7 +39,7 @@ function EventForm({ eventExpenses, ticketPrice, save }) {
             <div className="input-grid left">
                 {EXPENSE_TYPES.map(expense => {
                     return (
-                        <div>
+                        <div key={'input_container_'+expense}>
                             <span className="accounting-span">{expense}: </span>
                             <input className="accounting-input" onChange={event => { setExpense(expense, Number(event.target.value)) }} pattern="[0-9]*" type="number" value={getExpenseValue(expense)}/> €
                         </div>
