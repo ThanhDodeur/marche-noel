@@ -47,24 +47,17 @@ function DayForm({
         }
     };
     /**
+     * Generates the raw daily data. A simple Array<Array> that represents two grids of entries (suppliers, customers).
      *
      * @param {String} page returned by a fileReader in "reader.readAsText"
      */
     const _readPage = async (page) => {
         const OFFSET_HEIGHT = 1; // does not include the column titles.
-        const lines = page.split(/\r\n|\n/);
+        const lines = page.split(/\r\n|\n/); // splits the page (String) into an array of line (Array<String>).
         times(OFFSET_HEIGHT)(() => lines.shift());
         // colNames
         lines.shift().split(","); // removes and saves column titles.
-        /*
-         *
-         * customers = { clientId: { supplied, suppliedTotal, paid, paidTotal } }
-         * supplied = [ {name: 'itemName', 'price': price, 'supplierId': id } ] WHAT IS PAID
-         * paid = [ {name: 'itemName', 'price': price, 'supplierId': id } ]
-         *
-         * suppliers = { supplierId : { total } }
-         *
-         */
+
         const newCustomers = [];
         const newSuppliers = [];
         while (lines.length) {

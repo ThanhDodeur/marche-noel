@@ -18,8 +18,8 @@ class Marche extends React.Component {
                 zip(this.DAYS, Array(3).fill({ customers: [], suppliers: [] }))
             ),
             days: [], // { dayName, customers, missedPayments, missedTransactions, dailyLoss, customersAverage, obtainedAverage }
-            missedPaymentsByDay: {},
-            missedTransactionsByDay: {},
+            missedPaymentsByDay: {}, // the total amount missed by customers (negative meaning that they paid too much)
+            missedTransactionsByDay: {}, // { dayName: { customerId: { paidSurplus: [], suppliedSurplus: [] } } } unresolved payments.
             suppliers: {}, // { supplierId : { total } }
             resetRequested: false, // toggle for the confirm/cancel buttons for removing files
             loadRequested: false,
@@ -84,7 +84,7 @@ class Marche extends React.Component {
             "Sauvegardé",
             "Les informations ont été sauvegardées",
             "info",
-            5000
+            3000
         );
     };
     /**
@@ -138,7 +138,7 @@ class Marche extends React.Component {
         }, duration);
     };
     /**
-     * Extracts values from day raw data.
+     * Extracts values from day raw data (state.daysRawData).
      *
      * @returns {Object}
      */
@@ -151,16 +151,18 @@ class Marche extends React.Component {
         for (const [dayName, dayRaw] of Object.entries(
             this.state.daysRawData
         )) {
-            const result = this._computeDay({ dayName, dayRaw, suppliers });
-            suppliers = result.suppliers;
-            missedPaymentsByDay[dayName] = result.missedPayments;
-            missedTransactionsByDay[dayName] = result.missedTransactions;
-            days.push(result.day);
+            const computedDay = this._computeDay({ dayName, dayRaw, suppliers });
+            suppliers = computedDay.suppliers;
+            missedPaymentsByDay[dayName] = computedDay.missedPayments;
+            missedTransactionsByDay[dayName] = computedDay.missedTransactions;
+            days.push(computedDay.day);
         }
-        Object.values(suppliers).forEach((val) => (supplierTotal += val.total));
+        // computes the total gross sale revenue of the suppliers, across all days.
+        Object.values(suppliers).forEach((supplier) => (supplierTotal += supplier.total));
         return { days, suppliers, supplierTotal, missedPaymentsByDay, missedTransactionsByDay };
     };
     /**
+     * Computes
      *
      * @param {Object} param0
      * @param {String} param0.dayName
@@ -168,7 +170,7 @@ class Marche extends React.Component {
      * @param {Object} param0.suppliers
      */
     _computeDay = ({ dayName, dayRaw, suppliers }) => {
-        /* DATA FILL
+        /* DATA FILL from dayRaw
          *   paid
          *   rawCustomers[*][0] purchase - customerId
          *   rawCustomers[*][1] purchase - supplierId
@@ -179,10 +181,21 @@ class Marche extends React.Component {
          *   rawSuppliers[*][1] payment - customerId
          *   rawSuppliers[*][2] payment - item Name
          *   rawSuppliers[*][3] payment - item Price
+         *
+         *
+         * suppliers = { supplierId : { total } }
+         *
          */
         const rawCustomers = dayRaw.customers;
         const rawSuppliers = dayRaw.suppliers;
         const customers = {};
+        /*
+         * customerKeys dataStructure
+         * supplied = [ {name: 'itemName', 'price': price, 'supplierId': id } ] WHAT IS PAID
+         * paid = [ {name: 'itemName', 'price': price, 'supplierId': id } ]
+         * paymentTransactions: Number[],
+         * recievedTransactions: Number[],
+         */
         const customerKeys = {
             paid: [],
             paidTotal: 0,
@@ -263,20 +276,25 @@ class Marche extends React.Component {
         let dailyLoss = 0;
         let customersTotal = 0;
         let obtainedTotal = 0;
+
         const customerEntries = Object.entries(customers)
         for (const [customerId, customer] of customerEntries) {
+
+            // cancels the payment and receipt transactions to find out which one don't have an equivalent.
+            const [paidSurplus, suppliedSurplus] = cancelArrays(customer.paymentTransactions, customer.recievedTransactions);
+            missedTransactions[customerId] = { paidSurplus, suppliedSurplus };
+
+            // amounts that customers didn't pay (can be negative, in which case, the customer is owed money).
             const customerPaid = customer.paidTotal;
             const customerSupplied = customer.suppliedTotal;
             const balance = customerSupplied - customerPaid;
-            const [paidSurplus, suppliedSurplus] = cancelArrays(customer.paymentTransactions, customer.recievedTransactions);
-            missedTransactions[customerId] = { paidSurplus, suppliedSurplus };
-            obtainedTotal += Number(customerSupplied);
-            customersTotal += Number(customerPaid);
             if (balance !== 0) {
                 missedPayments[customerId] = balance;
                 dailyLoss += balance;
             }
-
+            // daily totals
+            obtainedTotal += Number(customerSupplied);
+            customersTotal += Number(customerPaid);
 
         }
         const customersAverage = customersTotal / (customerEntries.length || 0);
