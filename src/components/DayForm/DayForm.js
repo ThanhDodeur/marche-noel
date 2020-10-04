@@ -270,7 +270,7 @@ function DayForm({
     ////////////////// //////// //////////////////
 
     return (
-        <div className="content input-page">
+        <div className="content input-page noselect">
             <div className="title-area ml-10">
                 <h1>{day}</h1>
                 <div

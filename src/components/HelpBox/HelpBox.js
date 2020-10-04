@@ -10,7 +10,7 @@ function HelpBox() {
     }
 
     return (
-        <div className="help">
+        <div className="help noselect">
             <div className="help-link ml-auto">
                 <a
                     className="help-text"

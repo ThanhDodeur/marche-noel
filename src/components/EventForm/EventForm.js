@@ -62,7 +62,7 @@ function EventForm({ eventExpenses, ticketPrice, save }) {
 
     return (
         <div className="content">
-            <div className="form">
+            <div className="form noselect">
                 {renderEventExpenses()}
                 {renderDailyAccounting()}
             </div>
