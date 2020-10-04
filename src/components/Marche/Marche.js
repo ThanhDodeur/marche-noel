@@ -1,7 +1,7 @@
 import React from "react";
 import "./Marche.css";
 
-import { newId, zip, subtractArrays } from "../../utils/utils.js";
+import { newId, zip, cancelArrays } from "../../utils/utils.js";
 import NavBar from "../NavBar/NavBar.js";
 import Popups from "../Popups/Popups.js";
 import PageData from "../PageData/PageData.js";
@@ -268,7 +268,7 @@ class Marche extends React.Component {
             const customerPaid = customer.paidTotal;
             const customerSupplied = customer.suppliedTotal;
             const balance = customerSupplied - customerPaid;
-            const [paidSurplus, suppliedSurplus] = subtractArrays(customer.paymentTransactions, customer.recievedTransactions);
+            const [paidSurplus, suppliedSurplus] = cancelArrays(customer.paymentTransactions, customer.recievedTransactions);
             missedTransactions[customerId] = { paidSurplus, suppliedSurplus };
             obtainedTotal += Number(customerSupplied);
             customersTotal += Number(customerPaid);
