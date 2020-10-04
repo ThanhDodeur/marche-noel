@@ -1,7 +1,7 @@
 import React from "react";
 import "./Marche.css";
 
-import { newId, zip } from "../../utils/utils.js";
+import { newId, zip, subtractArrays } from "../../utils/utils.js";
 import NavBar from "../NavBar/NavBar.js";
 import Popups from "../Popups/Popups.js";
 import PageData from "../PageData/PageData.js";
@@ -17,8 +17,9 @@ class Marche extends React.Component {
             daysRawData: Object.fromEntries(
                 zip(this.DAYS, Array(3).fill({ customers: [], suppliers: [] }))
             ),
-            days: [], // { dayName, customers, missedPayments, dailyLoss, customersAverage, obtainedAverage }
+            days: [], // { dayName, customers, missedPayments, missedTransactions, dailyLoss, customersAverage, obtainedAverage }
             missedPaymentsByDay: {},
+            missedTransactionsByDay: {},
             suppliers: {}, // { supplierId : { total } }
             resetRequested: false, // toggle for the confirm/cancel buttons for removing files
             loadRequested: false,
@@ -95,12 +96,14 @@ class Marche extends React.Component {
             suppliers,
             supplierTotal,
             missedPaymentsByDay,
+            missedTransactionsByDay,
         } = await this._processDays();
         await this.setState({
             days,
             suppliers,
             supplierTotal,
             missedPaymentsByDay,
+            missedTransactionsByDay,
         });
     };
     /**
@@ -144,16 +147,18 @@ class Marche extends React.Component {
         let suppliers = {};
         let supplierTotal = 0;
         let missedPaymentsByDay = this.state.missedPaymentsByDay;
+        let missedTransactionsByDay = this.state.missedTransactionsByDay;
         for (const [dayName, dayRaw] of Object.entries(
             this.state.daysRawData
         )) {
             const result = this._computeDay({ dayName, dayRaw, suppliers });
             suppliers = result.suppliers;
             missedPaymentsByDay[dayName] = result.missedPayments;
+            missedTransactionsByDay[dayName] = result.missedTransactions;
             days.push(result.day);
         }
         Object.values(suppliers).forEach((val) => (supplierTotal += val.total));
-        return { days, suppliers, supplierTotal, missedPaymentsByDay };
+        return { days, suppliers, supplierTotal, missedPaymentsByDay, missedTransactionsByDay };
     };
     /**
      *
@@ -178,20 +183,24 @@ class Marche extends React.Component {
         const rawCustomers = dayRaw.customers;
         const rawSuppliers = dayRaw.suppliers;
         const customers = {};
+        const customerKeys = {
+            paid: [],
+            paidTotal: 0,
+            paymentTransactions: [],
+            recievedTransactions: [],
+            supplied: [],
+            suppliedTotal: 0,
+        };
 
         for (const rawCustomer of rawCustomers) {
             if (rawCustomer[0]) {
                 // CUSTOMER SIDE
                 // creates the customer if it doesn't already exist.
-                customers[rawCustomer[0]] = customers[rawCustomer[0]] || {
-                    paid: [],
-                    paidTotal: 0,
-                    supplied: [],
-                    suppliedTotal: 0,
-                };
+                customers[rawCustomer[0]] = customers[rawCustomer[0]] || Object.assign({}, customerKeys);
                 // adds the total paid by the customer
-                customers[rawCustomer[0]].paidTotal +=
-                    Number(rawCustomer[3]) || 0;
+                const paidValue = Number(rawCustomer[3]);
+                customers[rawCustomer[0]].paidTotal += paidValue || 0;
+                customers[rawCustomer[0]].paymentTransactions.push(paidValue);
                 // adds a line for what the customer paid
                 customers[rawCustomer[0]].paid.push({
                     name: rawCustomer[2],
@@ -203,15 +212,11 @@ class Marche extends React.Component {
         for (const rawSupplier of rawSuppliers) {
             if (rawSupplier[0] && rawSupplier[1]) {
                 // SUPPLIER SIDE
-                customers[rawSupplier[1]] = customers[rawSupplier[1]] || {
-                    paid: [],
-                    paidTotal: 0,
-                    supplied: [],
-                    suppliedTotal: 0,
-                };
+                customers[rawSupplier[1]] = customers[rawSupplier[1]] || Object.assign({}, customerKeys);
                 // adds the total paid by the customer
-                customers[rawSupplier[1]].suppliedTotal +=
-                    Number(rawSupplier[3]) || 0;
+                const suppliedValue = Number(rawSupplier[3]);
+                customers[rawSupplier[1]].suppliedTotal += suppliedValue || 0;
+                customers[rawSupplier[1]].recievedTransactions.push(suppliedValue);
                 // adds a line for what the customer recieved (not a guarantee of payment)
                 customers[rawSupplier[1]].supplied.push({
                     name: rawSupplier[2],
@@ -228,6 +233,7 @@ class Marche extends React.Component {
 
         const {
             missedPayments,
+            missedTransactions,
             dailyLoss,
             customersAverage,
             obtainedAverage,
@@ -237,12 +243,14 @@ class Marche extends React.Component {
                 dayName,
                 customers,
                 missedPayments,
+                missedTransactions,
                 dailyLoss,
                 customersAverage,
                 obtainedAverage,
             },
             suppliers,
             missedPayments,
+            missedTransactions,
         };
     };
     /**
@@ -251,25 +259,31 @@ class Marche extends React.Component {
      */
     _computeDailyStats = (customers) => {
         const missedPayments = {};
+        const missedTransactions = {};
         let dailyLoss = 0;
         let customersTotal = 0;
         let obtainedTotal = 0;
-        const customerKeys = Object.keys(customers);
-        for (const customerId of customerKeys) {
-            const customerPaid = customers[customerId].paidTotal;
-            const customerSupplied = customers[customerId].suppliedTotal;
+        const customerEntries = Object.entries(customers)
+        for (const [customerId, customer] of customerEntries) {
+            const customerPaid = customer.paidTotal;
+            const customerSupplied = customer.suppliedTotal;
             const balance = customerSupplied - customerPaid;
+            const [paidSurplus, suppliedSurplus] = subtractArrays(customer.paymentTransactions, customer.recievedTransactions);
+            missedTransactions[customerId] = { paidSurplus, suppliedSurplus };
             obtainedTotal += Number(customerSupplied);
             customersTotal += Number(customerPaid);
             if (balance !== 0) {
                 missedPayments[customerId] = balance;
                 dailyLoss += balance;
             }
+
+
         }
-        const customersAverage = customersTotal / (customerKeys.length || 0);
-        const obtainedAverage = obtainedTotal / (customerKeys.length || 0);
+        const customersAverage = customersTotal / (customerEntries.length || 0);
+        const obtainedAverage = obtainedTotal / (customerEntries.length || 0);
         return {
             missedPayments,
+            missedTransactions,
             dailyLoss,
             customersTotal,
             customersAverage,
@@ -534,11 +548,7 @@ class Marche extends React.Component {
                         }
                         save={this.onSaveDayForm}
                         addMessage={this._addMessage}
-                        missedPayments={
-                            this.state.missedPaymentsByDay[
-                                this.state.showDayForm
-                            ]
-                        }
+                        missedTransactions={ this.state.missedTransactionsByDay[this.state.showDayForm] }
                         dailyAccounting={
                             this.state.dailyAccounting[this.state.showDayForm]
                         }

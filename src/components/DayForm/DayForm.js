@@ -12,7 +12,7 @@ function DayForm({
     save,
     addMessage,
     dailyAccounting,
-    missedPayments,
+    missedTransactions,
 }) {
     const [customers, setCustomers] = useState([].concat(dayRawData.customers));
     const [newCustomer, setNewCustomer] = useState([]);
@@ -308,13 +308,15 @@ function DayForm({
                         <div className="number">Prix</div>
                     </div>
                     {customers.map((customer, index) => {
+                        const localMissedTransactions = missedTransactions[customer[0]];
                         return (
                             <div
                                 className={
                                     "customer-row row saved-row " +
                                     (!!(
-                                        missedPayments &&
-                                        missedPayments[customer[0]]
+                                        localMissedTransactions &&
+                                        localMissedTransactions.paidSurplus &&
+                                        localMissedTransactions.paidSurplus.includes(Number(customer[3]))
                                     )
                                         ? "unpaid"
                                         : "")
@@ -429,13 +431,15 @@ function DayForm({
                         <div className="number">Prix</div>
                     </div>
                     {suppliers.map((supplier, index) => {
+                        const localMissedTransactions = missedTransactions[supplier[1]];
                         return (
                             <div
                                 className={
                                     "supplier-row row saved-row " +
                                     (!!(
-                                        missedPayments &&
-                                        missedPayments[supplier[1]]
+                                        localMissedTransactions &&
+                                        localMissedTransactions.suppliedSurplus &&
+                                        localMissedTransactions.suppliedSurplus.includes(Number(supplier[3]))
                                     )
                                         ? "unpaid"
                                         : "")
