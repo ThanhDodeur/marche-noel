@@ -65,3 +65,18 @@
 .unpaid {
     background-color: rgb(255, 182, 25);
 }
+
+@media screen and (max-width: 480px) {
+    .customers > .col-titles > div:nth-of-type(2) {
+        margin-left: 20px;
+    }
+    .row {
+        max-width: 50px;
+    }
+    .string-input {
+        width: 95px;
+    }
+    .col-titles {
+        width: 85%;
+    }
+}
