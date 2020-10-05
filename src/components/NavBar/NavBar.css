@@ -1,51 +1,99 @@
-.navbar {
-    position: absolute;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    top: 0;
-    left: 0;
-    bottom: auto;
-    height: 60px;
-    color: rgba(255, 255, 255, 0.904);
-    background-color: #282c34;
-    right: 0;
-    position: fixed;
-    z-index: 1000;
-    font-size: 14px;
-  }
-  .navbar > .nav-button {
-    padding: 10px;
-    margin: 5px;
-    border-radius: 3px;
-    display: flex;
-    align-items: center;
-    text-align: center;
-    border: 1px solid rgba(0, 0, 0, 0.425);
-    font-weight: bold;
-  }
+.nav-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  top: 0;
+  left: 0;
+  height: 60px;
+  color: rgba(255, 255, 255, 0.904);
+  background-color: #282c34;
+  right: 0;
+  position: fixed;
+  z-index: 1000;
+  font-size: 14px;
+}
 
-  .navbar > .nav-button.ml-auto {
+.navbar .nav-button {
+  padding: 10px;
+  margin: 5px;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  border: 1px solid rgba(0, 0, 0, 0.425);
+  font-weight: bold;
+}
+
+.navbar .nav-button.ml-auto {
+  margin-left: auto;
+  margin-right: 30px;
+}
+
+.navbar .nav-button > span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.2s;
+}
+
+.navbar .nav-button:active {
+  transform: translateY(1px) translateX(1px);
+}
+
+.navbar .nav-button:hover {
+  filter: brightness(90%);
+}
+
+.navbar .nav-button.active {
+  padding-bottom: 20px;
+  transform: translateY(5px);
+}
+
+@media screen and (max-width: 888px) {
+  .nav-buttons {
     margin-left: auto;
-    margin-right: 30px;
+    height: 45vh;
+    width: 25%;
+    flex-direction: column;
+    align-items: flex-end;
+    top: 60px;
+    right: 0px;
+    position: fixed;
+    display: none;
   }
 
-  .navbar > .nav-button > span {
+  .navbar .nav-button.active {
+    padding: 10px;
+    padding-right: 40px;
+    transform: translateX(-30px);
+  }
+
+  .nav-buttons.open {
+    display: inherit;
+  }
+
+  .nav-buttons > .nav-button {
+    width: 150px;
+  }
+
+  .navbar > .nav-buttons .nav-button.ml-auto {
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+
+  .line {
+    width: 30px;
+    height: 3px;
+    background: white;
+    margin: 5px;
+  }
+
+  .hamburger {
+    position: fixed;
     cursor: pointer;
-    display: inline-block;
-    position: relative;
-    transition: 0.2s;
+    top: 30px;
+    right: 5%;
+    transform: translate(-5%, -50%);
   }
 
-  .navbar > .nav-button:active {
-    transform: translateY(1px) translateX(1px);
-  }
-
-  .navbar > .nav-button:hover {
-    filter: brightness(90%);
-  }
-
-  .navbar > .nav-button.active {
-    padding: 15px 10px;
-    transform: translateY(5px);
-  }
+}

@@ -30,14 +30,28 @@ function PageData({ days, costTotal, suppliers, openDay, supplierTotal, dailyAcc
                 {getBenefices(soldTickets)}
                 {getStats(soldTickets)}
                 {!!supplierTuples.length && getSupplierLadder(supplierTuples)}
+                {getDayData()}
             </div>
         )
+    }
+
+    function getDayData() {
+        return(
+            <div>
+                {days.map((value, dayIndex) => {
+                    if (!(openDay && openDay !== value.dayName)) {
+                        return(<DayData day={value} key={dayIndex} dayAccounting={dailyAccounting[value.dayName]} index={dayIndex}/>);
+                    } else {
+                        return(<div key={'empty_'+dayIndex}/>)
+                    }
+                })}
+            </div>)
     }
 
     function getSupplierLadder(supplierTuples) {
         return (
             <div className="global-stats">
-               <h3>Classement des fournisseurs</h3>
+            <h3>Classement des fournisseurs</h3>
                 {supplierTuples && supplierTuples.map((tuple, index) => {
                     return(
                         <div className="ladder-entry">
@@ -83,13 +97,6 @@ function PageData({ days, costTotal, suppliers, openDay, supplierTotal, dailyAcc
                 <div><span>{soldTickets} x {ticketPrice}€: </span><span className="value-display">{rounded(ticketPrice * (soldTickets), 3)}€ </span></div>
                 <div><span><i className="fa fa-minus icon"/>Total des frais: </span><span className="value-display">-{rounded(costTotal, 3)}€</span></div>
                 <div className="separated"><span>Bénéfices net du marché: </span><span className="value-display">{rounded(computeTotal(soldTickets), 3)}€</span></div>
-                {days.map((value, dayIndex) => {
-                    if (!(openDay && openDay !== value.dayName)) {
-                        return(<DayData day={value} key={dayIndex} dayAccounting={dailyAccounting[value.dayName]} index={dayIndex}/>);
-                    } else {
-                        return(<div key={'empty_'+dayIndex}/>)
-                    }
-                })}
             </div>
         )
     }
