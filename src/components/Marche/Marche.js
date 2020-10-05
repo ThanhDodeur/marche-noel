@@ -1,13 +1,14 @@
 import React from "react";
 import "./Marche.css";
 
-import { newId, zip, cancelArrays } from "../../utils/utils.js";
+import { newId, zip, cancelArrays, download, formattedDate } from "../../utils/utils.js";
 import NavBar from "../NavBar/NavBar.js";
 import Popups from "../Popups/Popups.js";
 import PageData from "../PageData/PageData.js";
 import DayForm from "../DayForm/DayForm.js";
 import EventForm from "../EventForm/EventForm.js";
 import HelpBox from "../HelpBox/HelpBox.js";
+import FileInput from "../FileInput/FileInput.js";
 
 class Marche extends React.Component {
     constructor(props) {
@@ -65,6 +66,25 @@ class Marche extends React.Component {
             2000
         );
         await this._computeResults();
+    };
+    /**
+     *
+     * @param {blob} blob
+     * @return {file}
+     */
+    _readFile = async (blob) => {
+        try {
+            const reader = new FileReader();
+            reader.readAsText(blob);
+            return new Promise((resolve) => {
+                reader.onload = (e) => {
+                    resolve(reader.result);
+                };
+            });
+        } catch (error) {
+            this._addMessage("ERREUR", error.message, "error");
+            return false;
+        }
     };
     /**
      * Saves part of the state to the localStorage.
@@ -345,11 +365,62 @@ class Marche extends React.Component {
     }
     onClickSave = async () => {
         await this._saveState('saved-state-manual');
-        await this.toggleLoad();
+        await this.toggleSave();
+    }
+    onClickSaveFile = async () => {
+        const data = JSON.stringify({
+            daysRawData: this.state.daysRawData,
+            eventExpenses: this.state.eventExpenses,
+            dailyAccounting: this.state.dailyAccounting,
+            ticketPrice: this.state.ticketPrice,
+            costTotal: this.state.costTotal,
+        })
+        download(
+            data,
+            `marche-de-noel-${formattedDate()}.json`,
+            'text/html'
+        );
+        await this.toggleSave();
     }
     onClose = async () => {
         await this._saveState('saved-state-auto');
     }
+    onFileInputChange = async (file) => {
+        const save = await this._readFile(file[0]);
+        const saveObject = JSON.parse(save);
+        if (Object.keys(saveObject).includes('daysRawData')) {
+            await this.setState(saveObject);
+            await this._addMessage(
+                "Chargé",
+                "Le fichier a bien été chargé",
+                "info",
+                2000
+            );
+            await this._computeResults();
+            await this.toggleLoad();
+        } else {
+            this._addMessage(
+                "ERREUR",
+                "Le fichier n'a pas pu être chargé",
+                "error"
+                );
+        }
+    }
+    /**
+     *
+     * @param {mouseEvent} e
+     */
+    onFileInputWrapperClick = (e) => {
+        // allows clicking on the file input from the outside element.
+        if (e.currentTarget !== e.target) {
+            return;
+        }
+        const input = e.currentTarget.getElementsByTagName("input");
+        if (input.length) {
+            e.stopPropagation();
+            input[0].click();
+        }
+    };
     /**
      * This is a handler given to the DayForm to propagate the raw daily data to here.
      *
@@ -459,31 +530,33 @@ class Marche extends React.Component {
         });
 
         // REMOVE FILES
-        let resetButtons = [
-            {
-                content: "Tout effacer",
-                fa: "fa-trash",
-                className: "warning",
-                callBack: this.toggleReset,
-            },
-        ];
-        if (this.state.resetRequested) {
-            resetButtons = [
+        if (!(this.state.saveRequested || this.state.loadRequested)) {
+            let resetButtons = [
                 {
-                    content: "Annuler",
-                    fa: "fa-times",
-                    className: "green",
+                    content: "Tout effacer",
+                    fa: "fa-trash",
+                    className: "warning",
                     callBack: this.toggleReset,
                 },
-                {
-                    content: "Confirmer: Effacer l'encodage en cours",
-                    fa: "fa-check",
-                    className: "alert",
-                    callBack: this.clearAll,
-                },
             ];
+            if (this.state.resetRequested) {
+                resetButtons = [
+                    {
+                        content: "Annuler",
+                        fa: "fa-times",
+                        className: "green",
+                        callBack: this.toggleReset,
+                    },
+                    {
+                        content: "Confirmer: Effacer l'encodage en cours",
+                        fa: "fa-check",
+                        className: "alert",
+                        callBack: this.clearAll,
+                    },
+                ];
+            }
+            buttons.push(...resetButtons);
         }
-        buttons.push(...resetButtons);
 
         // SAVE
         let saveButtons = [
@@ -499,14 +572,20 @@ class Marche extends React.Component {
                 {
                     content: "Annuler",
                     fa: "fa-times",
-                    className: "green",
+                    className: "alert",
                     callBack: this.toggleSave,
                 },
                 {
-                    content: "Confirmer: Sauvegarder",
+                    content: "Sauvegarde locale",
                     fa: "fa-check",
-                    className: "alert",
+                    className: "warning",
                     callBack: this.onClickSave,
+                },
+                {
+                    content: "Télécharger la sauvegarde",
+                    fa: "fa-check",
+                    className: "warning",
+                    callBack: this.onClickSaveFile,
                 },
             ];
         }
@@ -528,14 +607,20 @@ class Marche extends React.Component {
                 {
                     content: "Annuler",
                     fa: "fa-times",
-                    className: "green",
+                    className: "alert",
                     callBack: this.toggleLoad,
                 },
                 {
-                    content: "Confirmer: Charder la Sauvegarde",
+                    content: "Charger sauvegarde locale",
                     fa: "fa-check",
-                    className: "alert",
+                    className: "warning",
                     callBack: this.onClickLoad,
+                },
+                {
+                    fa: "fa-check",
+                    className: "warning",
+                    callBack: (e) => this.onFileInputWrapperClick(e),
+                    content: (<FileInput label={`"Charger depuis un fichier .JSON"`} className="noselect" value={undefined} onChange={this.onFileInputChange} />)
                 },
             ];
         }

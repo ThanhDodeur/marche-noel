@@ -1,6 +1,6 @@
 let lastId = 0;
 
-export { newId, times, zip, rounded, cancelArrays }
+export { newId, times, zip, rounded, cancelArrays, download, formattedDate }
 
 /**
  * generates a unique new id combining the prefix with a new <Number>, numbers are consecutive.
@@ -14,6 +14,7 @@ function newId(prefix='id') {
 }
 /**
  * times(10) (() => console.log('a')) this call will call console.log('a') 10 times.
+ *
  * @param {Number} x the amount of time to call the callback function 'f'
  * @returns {function} the function takes a callback 'f' as argument to be called x times.
  */
@@ -26,8 +27,8 @@ function times(x) {
     }
 }
 /**
- *
  * Equivalent to Python's Zip function, useful to merge two arrays into an array of Tuples to feed an Object.fromEntries()
+ *
  * @param {*} arr1
  * @param {*} arr2
  * @returns {Array<Tuples>} [[arr1[0], arr2[0]], [arr1[1], arr2[1]], [arr1[2], arr2[2]], [...]]
@@ -72,4 +73,38 @@ function cancelArrays(arr1, arr2) {
         }
     }
     return newArrs;
+}
+/**
+ * function from https://stackoverflow.com/a/30832210
+ *
+ * @param {*} data
+ * @param {String} filename
+ * @param {String} type mimetype
+ */
+function download(data, filename, type) {
+    const file = new Blob([data], {type: type});
+    if (window.navigator.msSaveOrOpenBlob) // IE10+
+        window.navigator.msSaveOrOpenBlob(file, filename);
+    else { // Others
+        const a = document.createElement("a"),
+                url = URL.createObjectURL(file);
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function() {
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }, 0);
+    }
+}
+
+function formattedDate() {
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    const yyyy = today.getFullYear();
+    const hh = today.getHours();
+    const min = today.getMinutes();
+return `${dd}-${mm}-${yyyy}-${hh}h${min}`;
 }
