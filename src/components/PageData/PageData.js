@@ -93,11 +93,10 @@ function PageData({ days, costTotal, suppliers, openDay, supplierTotal, supplier
             <div className="global-stats profits">
                 <h3><i class="fa fa-line-chart spaced"/> Bénéfices</h3>
                 <div><span>Bénéfices des vendeurs:</span> <span className="value-display">{rounded(supplierTotal, 3)}€</span></div>
-                <div><span>Payements manquants:</span> <span className="value-display">-{rounded(supplierTotal-supplierRealGain, 3)}€</span></div>
-                <div><span>Bénéfices net des vendeurs:</span> <span className="value-display">{rounded(supplierRealGain, 3)}€</span></div>
+                <div><span>Payements manquants:</span> <span className="value-display">{rounded(-(supplierTotal-supplierRealGain), 3)}€</span></div>
                 <div><span>Vente de tombola:</span></div>
                 <div><span>{soldTickets} x {ticketPrice}€: </span><span className="value-display">{rounded(ticketPrice * (soldTickets), 3)}€ </span></div>
-                <div><span><i className="fa fa-minus icon"/>Total des frais: </span><span className="value-display">-{rounded(costTotal, 3)}€</span></div>
+                <div><span>Total des frais: </span><span className="value-display">{rounded(-(costTotal), 3)}€</span></div>
                 <div className="separated"><span>Bénéfices net du marché: </span><span className="value-display">{rounded(computeTotal(soldTickets), 3)}€</span></div>
             </div>
         )
