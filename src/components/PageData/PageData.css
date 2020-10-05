@@ -3,6 +3,11 @@
     display: inline-block;
 }
 
+.global-stats {
+    min-width: 300px;
+    margin: 30px;
+}
+
 .global-stats > div {
     border-top: 1px solid rgba(158, 158, 158, 0.575);
 }
@@ -31,10 +36,7 @@
 }
 
 
-.global-stats {
-    margin: 30px;
-    min-width: 15%;
-}
+
 
 .global-stats > .divider {
     padding: 30px;
@@ -46,4 +48,11 @@
 
 .value-display {
     margin-left: 5px;
+}
+
+@media screen and (max-width: 480px) {
+    .global-stats {
+        padding: 10px;
+        margin: 10px;
+    }
 }

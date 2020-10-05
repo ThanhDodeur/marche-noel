@@ -67,6 +67,9 @@
 }
 
 @media screen and (max-width: 480px) {
+    .group-input {
+        margin: 5px;
+    }
     .customers > .col-titles > div:nth-of-type(2) {
         margin-left: 20px;
     }
@@ -78,5 +81,35 @@
     }
     .col-titles {
         width: 85%;
+    }
+}
+
+@media screen and (max-width: 380px) {
+    .area-container {
+        max-width: 320px;
+    }
+    .group-input {
+        margin: 5px;
+    }
+    .customers > .col-titles > div:nth-of-type(2) {
+        margin-left: 20px;
+    }
+    .suppliers > .col-titles > div:nth-of-type(2) {
+        margin-left: 10px;
+    }
+    .suppliers > .col-titles > div:nth-of-type(4) {
+        margin-left: 40px;
+    }
+    .row {
+        max-width: 30px;
+    }
+    .number-input {
+        width: 60px;
+    }
+    .string-input {
+        width: 80px;
+    }
+    .col-titles {
+        width: 50%;
     }
 }
