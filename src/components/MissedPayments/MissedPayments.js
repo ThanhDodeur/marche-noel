@@ -9,7 +9,7 @@ function MissedPayments({ missedPayments }) {
 
     return (
         <div>
-            <h2>Paiements incorrectes:</h2>
+            <h2><i class="fa fa-exclamation-triangle spaced"/> Paiements incorrectes:</h2>
             {Object.keys(missedPayments).map(customerId => {
                 return (
                     <div className="entry" key={'missed_'+customerId}>

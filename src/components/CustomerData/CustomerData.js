@@ -12,7 +12,7 @@ function CustomerData({ customers }) {
 
     return (
         <div>
-            <h2>Liste Client:</h2>
+            <h2><i class="fa fa-user spaced"/> Liste Client:</h2>
             {Object.keys(customers).map(customerId => {
                 return (
                     <div className="entry" key={'cust_'+customerId}>

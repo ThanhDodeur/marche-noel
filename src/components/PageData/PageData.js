@@ -51,7 +51,7 @@ function PageData({ days, costTotal, suppliers, openDay, supplierTotal, dailyAcc
     function getSupplierLadder(supplierTuples) {
         return (
             <div className="global-stats">
-            <h3>Classement des fournisseurs</h3>
+            <h3><i class="fa fa-trophy spaced"/> Classement des fournisseurs</h3>
                 {supplierTuples && supplierTuples.map((tuple, index) => {
                     return(
                         <div className="ladder-entry">
@@ -77,7 +77,7 @@ function PageData({ days, costTotal, suppliers, openDay, supplierTotal, dailyAcc
         }
         return (
             <div className="global-stats">
-                <h3>Statistiques (sur {days.length} jour(s))</h3>
+                <h3><i class="fa fa-bar-chart spaced"/> Statistiques (sur {days.length} jour(s))</h3>
                 <div className="daily-stats">
                     <div><span>Moyenne payée par les clients:</span> <span className="value-display">{rounded((totalSpendings / (dailyArray.length || 1)), 3)}€</span></div>
                     <div><span>Moyenne des articles reçu:</span> <span className="value-display">{rounded((totalObtained / (dailyArray.length || 1)), 3)}€</span></div>
@@ -91,7 +91,7 @@ function PageData({ days, costTotal, suppliers, openDay, supplierTotal, dailyAcc
     function getBenefices(soldTickets) {
         return (
             <div className="global-stats profits">
-                <h3>Bénéfices</h3>
+                <h3><i class="fa fa-line-chart spaced"/> Bénéfices</h3>
                 <div><span>Bénéfices des vendeurs:</span> <span className="value-display">{rounded(supplierTotal, 3)}€</span></div>
                 <div><span>Vente de tombola:</span></div>
                 <div><span>{soldTickets} x {ticketPrice}€: </span><span className="value-display">{rounded(ticketPrice * (soldTickets), 3)}€ </span></div>

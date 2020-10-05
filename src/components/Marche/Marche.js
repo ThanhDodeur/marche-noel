@@ -562,7 +562,7 @@ class Marche extends React.Component {
         let saveButtons = [
             {
                 content: "Sauvegarder",
-                fa: "fa-upload",
+                fa: "fa-floppy-o",
                 className: "green order-2",
                 callBack: this.toggleSave,
             },
@@ -577,13 +577,13 @@ class Marche extends React.Component {
                 },
                 {
                     content: "Sauvegarde locale",
-                    fa: "fa-check",
+                    fa: "fa-cloud-download",
                     className: "warning",
                     callBack: this.onClickSave,
                 },
                 {
                     content: "Télécharger la sauvegarde",
-                    fa: "fa-check",
+                    fa: "fa-download",
                     className: "warning",
                     callBack: this.onClickSaveFile,
                 },
@@ -596,8 +596,8 @@ class Marche extends React.Component {
         // LOAD
         let loadButtons = [
             {
-                content: "Charcher",
-                fa: "fa-download",
+                content: "Charger",
+                fa: "fa-upload",
                 className: "green order-2",
                 callBack: this.toggleLoad,
             },
@@ -612,12 +612,12 @@ class Marche extends React.Component {
                 },
                 {
                     content: "Charger sauvegarde locale",
-                    fa: "fa-check",
+                    fa: "fa-cloud-upload",
                     className: "warning",
                     callBack: this.onClickLoad,
                 },
                 {
-                    fa: "fa-check",
+                    fa: "fa-upload",
                     className: "warning",
                     callBack: (e) => this.onFileInputWrapperClick(e),
                     content: (<FileInput label={`"Charger depuis un fichier .JSON"`} className="noselect" value={undefined} onChange={this.onFileInputChange} />)
