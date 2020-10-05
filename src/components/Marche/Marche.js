@@ -54,6 +54,8 @@ class Marche extends React.Component {
 
     /**
      * Loads the save from the localStorage.
+     *
+     * @param {String} saveName
      */
     _loadSave = async (saveName) => {
         const saved = localStorage.getItem(saveName);
@@ -89,6 +91,8 @@ class Marche extends React.Component {
     };
     /**
      * Saves part of the state to the localStorage.
+     *
+     * @param {String} saveName
      */
     _saveState = async (saveName) => {
         localStorage.setItem(
@@ -399,6 +403,11 @@ class Marche extends React.Component {
     onClose = async () => {
         await this._saveState('saved-state-auto');
     }
+    /**
+     * Handles the change in the file input that is used to load a saved .json file.
+     *
+     * @param {Blob} file
+     */
     onFileInputChange = async (file) => {
         const save = await this._readFile(file[0]);
         const saveObject = JSON.parse(save);
@@ -455,6 +464,9 @@ class Marche extends React.Component {
     };
     /**
      * Handler for event form.
+     * @param {Object} param0
+     * @param {Object} param0.eventExpenses
+     * @param {Number} param0.ticketPrice
      */
     onSaveEventForm = async ({ eventExpenses, ticketPrice }) => {
         let costTotal = 0;
