@@ -97,3 +97,9 @@
   }
 
 }
+
+@media screen and (max-width: 480px) {
+  .nav-buttons {
+    width: 40%;
+  }
+}
