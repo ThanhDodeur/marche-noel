@@ -8,16 +8,16 @@ import DayData from '../DayData/DayData.js';
  * Represents a whole page of data for all the uploaded days.
  *
  */
-function PageData({ days, costTotal, suppliers, openDay, supplierTotal, dailyAccounting, ticketPrice }) {
+function PageData({ days, costTotal, suppliers, openDay, supplierTotal, supplierRealGain, dailyAccounting, ticketPrice }) {
 
     function getContent() {
         let soldTickets = 0;
         const supplierTuples = Object.entries(suppliers);
         supplierTuples.sort((a, b) => {
-            if (a[1].total < b[1].total) {
+            if (a[1].realGain < b[1].realGain) {
                 return 1;
             }
-            if (a[1].total > b[1].total) {
+            if (a[1].realGain > b[1].realGain) {
                 return -1;
             }
             return 0;
@@ -57,7 +57,7 @@ function PageData({ days, costTotal, suppliers, openDay, supplierTotal, dailyAcc
                         <div className="ladder-entry">
                             <span>{index+1}.</span>
                             <span>[{tuple[0]}]</span>
-                            <span className="value">{rounded(tuple[1].total, 3)}€</span>
+                            <span className="value">{rounded(tuple[1].realGain, 3)}€</span>
                         </div>
                     )
                 })}
@@ -93,6 +93,8 @@ function PageData({ days, costTotal, suppliers, openDay, supplierTotal, dailyAcc
             <div className="global-stats profits">
                 <h3><i class="fa fa-line-chart spaced"/> Bénéfices</h3>
                 <div><span>Bénéfices des vendeurs:</span> <span className="value-display">{rounded(supplierTotal, 3)}€</span></div>
+                <div><span>Payements manquants:</span> <span className="value-display">-{rounded(supplierTotal-supplierRealGain, 3)}€</span></div>
+                <div><span>Bénéfices net des vendeurs:</span> <span className="value-display">{rounded(supplierRealGain, 3)}€</span></div>
                 <div><span>Vente de tombola:</span></div>
                 <div><span>{soldTickets} x {ticketPrice}€: </span><span className="value-display">{rounded(ticketPrice * (soldTickets), 3)}€ </span></div>
                 <div><span><i className="fa fa-minus icon"/>Total des frais: </span><span className="value-display">-{rounded(costTotal, 3)}€</span></div>
@@ -102,7 +104,7 @@ function PageData({ days, costTotal, suppliers, openDay, supplierTotal, dailyAcc
     }
 
     function computeTotal(soldTickets) {
-        return (supplierTotal + (ticketPrice * (soldTickets))) - costTotal;
+        return (supplierRealGain + (ticketPrice * (soldTickets))) - costTotal;
     }
 
     return (

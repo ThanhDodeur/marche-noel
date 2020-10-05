@@ -33,6 +33,7 @@ class Marche extends React.Component {
                 zip(this.DAYS, Array(3).fill({ tombolaTickets: 0 }))
             ), // { dayName: {valuesDict} }
             supplierTotal: 0,
+            supplierRealGain: 0,
             costTotal: 0,
             ticketPrice: 0,
             popupIds: [],
@@ -115,6 +116,7 @@ class Marche extends React.Component {
             days,
             suppliers,
             supplierTotal,
+            supplierRealGain,
             missedPaymentsByDay,
             missedTransactionsByDay,
         } = await this._processDays();
@@ -122,6 +124,7 @@ class Marche extends React.Component {
             days,
             suppliers,
             supplierTotal,
+            supplierRealGain,
             missedPaymentsByDay,
             missedTransactionsByDay,
         });
@@ -166,6 +169,7 @@ class Marche extends React.Component {
         const days = [];
         let suppliers = {};
         let supplierTotal = 0;
+        let supplierRealGain = 0;
         let missedPaymentsByDay = this.state.missedPaymentsByDay;
         let missedTransactionsByDay = this.state.missedTransactionsByDay;
         for (const [dayName, dayRaw] of Object.entries(
@@ -178,8 +182,11 @@ class Marche extends React.Component {
             days.push(computedDay.day);
         }
         // computes the total gross sale revenue of the suppliers, across all days.
-        Object.values(suppliers).forEach((supplier) => (supplierTotal += supplier.total));
-        return { days, suppliers, supplierTotal, missedPaymentsByDay, missedTransactionsByDay };
+        Object.values(suppliers).forEach((supplier) => {
+            supplierTotal += supplier.total;
+            supplierRealGain += supplier.realGain;
+        });
+        return { days, suppliers, supplierTotal, supplierRealGain, missedPaymentsByDay, missedTransactionsByDay };
     };
     /**
      * Computes
@@ -203,7 +210,7 @@ class Marche extends React.Component {
          *   rawSuppliers[*][3] payment - item Price
          *
          *
-         * suppliers = { supplierId : { total } }
+         * suppliers = { supplierId : { total, realGain } }
          *
          */
         const rawCustomers = dayRaw.customers;
@@ -240,6 +247,12 @@ class Marche extends React.Component {
                     price: rawCustomer[3],
                     supplierId: rawCustomer[1],
                 });
+                // computes the total value of real gain by the supplier.
+                suppliers[rawCustomer[1]] = suppliers[rawCustomer[1]] || {
+                    total: 0,
+                    realGain: 0,
+                };
+                suppliers[rawCustomer[1]].realGain += Number(rawCustomer[3]) || 0;
             }
         }
         for (const rawSupplier of rawSuppliers) {
@@ -259,6 +272,7 @@ class Marche extends React.Component {
                 // computes the total value of supplied by the supplier.
                 suppliers[rawSupplier[0]] = suppliers[rawSupplier[0]] || {
                     total: 0,
+                    realGain: 0,
                 };
                 suppliers[rawSupplier[0]].total += Number(rawSupplier[3]) || 0;
             }
@@ -672,6 +686,7 @@ class Marche extends React.Component {
                         suppliers={this.state.suppliers}
                         openDay={this.state.showDayForm}
                         supplierTotal={this.state.supplierTotal}
+                        supplierRealGain={this.state.supplierRealGain}
                     />
                 )}
             </div>
