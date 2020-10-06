@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Accueil from "./components/Accueil/Accueil.js";
 import Marche from "./components/Marche/Marche.js";
 import "./App.css";
@@ -11,23 +11,15 @@ function App(props) {
         setState({ open: true });
     }
 
-    useEffect(() => {
-        setTimeout(async () => {
-            //setState({ open: true });
-        }, 15000);
-        // willMount
-        return () => {
-            // willUnMount
-        }
-    }, [setState]);
-
     return (
         <div className={'page ' + (clear ? 'clear' : 'dark')}>
             {state.open ? (
                 <Marche/>
             ) : (
                 <div className="page accueil-wrapper" >
-                    <i className={'light-icon clickable fa ' + (clear? 'fa-sun-o' : 'fa-moon-o')} onClick={() => setClear(!clear)}></i>
+                    <div className='light-icon-wrapper clickable noselect' onClick={() => setClear(!clear)}>
+                    <i className={'light-icon fa ' + (clear? 'fa-moon-o' : 'fa-sun-o')}></i>
+                    </div>
                     <Accueil callBack={openApp}/>
                 </div>
             )}

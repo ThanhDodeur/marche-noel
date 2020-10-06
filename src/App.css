@@ -7,11 +7,33 @@
   pointer-events: none;
 }
 
-.light-icon {
+.light-icon-wrapper {
+  border-radius: 50%;
+  background-color: rgb(17, 20, 68);
+  width: 25px;
+  padding: 5px;
+  height: 25px;
+  text-align: center;
   position: absolute;
   top: 0px;
   right: 0px;
   margin: 30px;
+}
+
+.light-icon-wrapper:active {
+  transform: translateY(1px) translateX(1px);
+}
+
+.light-icon {
+  margin-top: 4px;
+  color: white;
+}
+
+.dark .light-icon-wrapper {
+  background-color: rgb(255, 223, 162);
+}
+.dark .light-icon {
+  color: black;
 }
 
 @media (prefers-reduced-motion: no-preference) {
