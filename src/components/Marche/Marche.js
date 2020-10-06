@@ -551,7 +551,7 @@ class Marche extends React.Component {
         buttons.push({
             content: "Aide",
             fa: "fa-info-circle",
-            className: "blue order-2 ml-auto",
+            className: ("blue order-2 ml-auto " + (!!this.state.displayHelp && 'active')),
             callBack: this.toggleHelp,
         });
 
