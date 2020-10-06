@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/marche-noel/precache-manifest.36d5d585ad2ed520d9bca7a6dbf50c63.js"
+  "/marche-noel/precache-manifest.5a2a8fd016904b1dcde885be0329de43.js"
 );
 
 self.addEventListener('message', (event) => {
