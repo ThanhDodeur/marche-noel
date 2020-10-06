@@ -41,6 +41,10 @@
   transform: translateY(1px) translateX(1px);
 }
 
+.navbar .nav-button.active:active {
+  transform: translateY(6px) translateX(1px);
+}
+
 .navbar .nav-button:hover {
   filter: brightness(90%);
 }
@@ -70,6 +74,10 @@
     padding-right: 40px;
     border-radius: 3px;
     transform: translateX(-30px);
+  }
+
+  .navbar .nav-button.active:active {
+    transform: translateY(1px) translateX(-29px);
   }
 
   .nav-buttons.open {
