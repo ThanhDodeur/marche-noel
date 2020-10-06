@@ -7,6 +7,13 @@
   pointer-events: none;
 }
 
+.light-icon {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  margin: 30px;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -14,9 +21,22 @@
 }
 
 .page {
+  min-height: 100vh;
+}
+
+.accueil-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.page.dark {
   background-color: #282c34;
   color: white;
-  min-height: 100vh;
+}
+
+.page.clear {
+  background-color: #cac3bb;
+  color: black;
 }
 
 .ml-auto {

@@ -3,7 +3,11 @@
     display: inline-block;
 }
 
-.global-content {
+.clear .global-content {
+    background-color: #dfdfdf;
+}
+
+.dark .global-content {
     background-color: #1c1f25;
 }
 
@@ -12,12 +16,20 @@
     margin: 30px;
 }
 
-.global-stats > div {
+.dark .global-stats > div {
     border-top: 1px solid rgba(158, 158, 158, 0.575);
 }
 
-.global-stats > .separated {
+.clear .global-stats > div {
+    border-top: 1px solid rgba(31, 31, 31, 0.822);
+}
+
+.dark .global-stats > .separated {
     border-top: 3px solid rgb(255, 255, 255);
+}
+
+.clear .global-stats > .separated {
+    border-top: 3px solid rgb(0, 0, 0);
 }
 
 .global-stats > div > span > .icon {

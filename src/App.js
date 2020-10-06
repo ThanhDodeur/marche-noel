@@ -5,6 +5,7 @@ import "./App.css";
 
 function App(props) {
     const [state, setState] = useState({ open: false });
+    const [clear, setClear] = useState(false);
 
     function openApp() {
         setState({ open: true });
@@ -12,7 +13,7 @@ function App(props) {
 
     useEffect(() => {
         setTimeout(async () => {
-            setState({ open: true });
+            //setState({ open: true });
         }, 15000);
         // willMount
         return () => {
@@ -21,12 +22,13 @@ function App(props) {
     }, [setState]);
 
     return (
-        <div className="page">
+        <div className={'page ' + (clear ? 'clear' : 'dark')}>
             {state.open ? (
                 <Marche/>
             ) : (
-                <div className="page clickable" onClick={openApp}>
-                    <Accueil/>
+                <div className="page accueil-wrapper" >
+                    <i className={'light-icon clickable fa ' + (clear? 'fa-sun-o' : 'fa-moon-o')} onClick={() => setClear(!clear)}></i>
+                    <Accueil callBack={openApp}/>
                 </div>
             )}
         </div>
