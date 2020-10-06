@@ -730,24 +730,23 @@ class Marche extends React.Component {
                         }
                     />
                 )}
-                {!!this.state.showForm ? (
+                {!!this.state.showForm && (
                     <EventForm
                         eventExpenses={this.state.eventExpenses}
                         ticketPrice={this.state.ticketPrice}
                         save={this.onSaveEventForm}
                     />
-                ) : (
-                    <PageData
-                        days={this.state.days}
-                        dailyAccounting={this.state.dailyAccounting}
-                        ticketPrice={this.state.ticketPrice}
-                        costTotal={this.state.costTotal}
-                        suppliers={this.state.suppliers}
-                        openDay={this.state.showDayForm}
-                        supplierTotal={this.state.supplierTotal}
-                        supplierRealGain={this.state.supplierRealGain}
-                    />
                 )}
+                <PageData
+                    days={this.state.days}
+                    dailyAccounting={this.state.dailyAccounting}
+                    ticketPrice={this.state.ticketPrice}
+                    costTotal={this.state.costTotal}
+                    suppliers={this.state.suppliers}
+                    openDay={this.state.showDayForm}
+                    supplierTotal={this.state.supplierTotal}
+                    supplierRealGain={this.state.supplierRealGain}
+                />
             </div>
         );
     }

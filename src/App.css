@@ -25,7 +25,9 @@
 
 .content {
   padding-top: 70px;
+  padding-bottom: 10px;
   display: flex;
+  border-bottom: 10px solid rgba(255, 255, 255, 0.226);
   flex-wrap: wrap;
 }
 

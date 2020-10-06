@@ -9,7 +9,9 @@ function Popups({ messageIds, messages }) {
                 const message = messages[messageId];
                 return (
                     <div key={messageId} className={"popup " + message.type}>
-                        <span>{message.title}</span>
+                        {!!message.title &&
+                            <span>{message.title}</span>
+                        }
                         {message.content}
                     </div>
                 )

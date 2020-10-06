@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./EventForm.css";
 
 /*
@@ -12,22 +12,22 @@ function EventForm({ eventExpenses, ticketPrice, save }) {
     // the names are only relevant in this context, the parent component will just make a sum of all those expenses.
     const EXPENSE_TYPES = ['Salle', 'Transactions', 'Assurance', 'Papeterie', 'Timbres', 'Courses', 'Traiteur', 'Schmitz', 'Autre'];
 
-    useEffect(() => {
-        // willMount
-        return () => {
-            // willUnMount
-            save({
-                eventExpenses: eventExpensesState,
-                ticketPrice: ticketP,
-            });
-        }
-    }, [save, eventExpensesState, ticketP]);
-
-
-    function setExpense(expense, value) {
+    async function setExpense(expense, value) {
         const accountingState = Object.assign({}, eventExpensesState);
         accountingState[expense] = value;
-        setEventExpensesState(accountingState);
+        await setEventExpensesState(accountingState);
+        await save({
+            eventExpenses: accountingState,
+            ticketPrice: ticketP,
+        });
+    }
+
+    async function setTicketPrice(value) {
+        await setTicketP(Number(value));
+        await save({
+            eventExpenses: eventExpensesState,
+            ticketPrice: Number(value),
+        });
     }
 
     function getExpenseValue(expense) {
@@ -54,7 +54,7 @@ function EventForm({ eventExpenses, ticketPrice, save }) {
             <div className="input-grid right">
                 <div>
                     <span className="accounting-span"> Prix des tickets: </span>
-                    <input className="accounting-input" onChange={event => { setTicketP(Number(event.target.value)) }} pattern="[0-9]*" type="number" value={ticketP}/>€
+                    <input className="accounting-input" onChange={event => { setTicketPrice(event) }} pattern="[0-9]*" type="number" value={ticketP}/>€
                 </div>
             </div>
         )

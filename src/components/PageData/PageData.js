@@ -20,7 +20,7 @@ function PageData({ days, costTotal, suppliers, openDay, supplierTotal, supplier
             soldTickets += Number(value.tombolaTickets) || 0;
         }
         return(
-            <div className="content">
+            <div className="content global-content">
                 {getBenefices(soldTickets)}
                 {getStats(soldTickets)}
                 {!!supplierTuples.length && getSupplierLadder(supplierTuples)}
@@ -87,7 +87,7 @@ function PageData({ days, costTotal, suppliers, openDay, supplierTotal, supplier
             <div className="global-stats profits">
                 <h3><i className="fa fa-line-chart spaced"/> Bénéfices</h3>
                 <div><span>Bénéfices des vendeurs:</span> <span className="value-display">{rounded(supplierTotal, 3)}€</span></div>
-                <div><span>Payements manquants:</span> <span className="value-display">{rounded(-(supplierTotal-supplierRealGain), 3)}€</span></div>
+                <div><span>Paiements manquants:</span> <span className="value-display">{rounded(-(supplierTotal-supplierRealGain), 3)}€</span></div>
                 <div><span>Vente de tombola:</span></div>
                 <div><span>{soldTickets} x {ticketPrice}€: </span><span className="value-display">{rounded(ticketPrice * (soldTickets), 3)}€ </span></div>
                 <div><span>Total des frais: </span><span className="value-display">{rounded(-(costTotal), 3)}€</span></div>

@@ -3,6 +3,10 @@
     display: inline-block;
 }
 
+.global-content {
+    background-color: #1c1f25;
+}
+
 .global-stats {
     min-width: 300px;
     margin: 30px;
@@ -34,9 +38,6 @@
 .content .ladder-entry > .value {
     margin-left: auto;
 }
-
-
-
 
 .global-stats > .divider {
     padding: 30px;
