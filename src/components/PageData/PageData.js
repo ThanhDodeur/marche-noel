@@ -14,13 +14,7 @@ function PageData({ days, costTotal, suppliers, openDay, supplierTotal, supplier
         let soldTickets = 0;
         const supplierTuples = Object.entries(suppliers);
         supplierTuples.sort((a, b) => {
-            if (a[1].realGain < b[1].realGain) {
-                return 1;
-            }
-            if (a[1].realGain > b[1].realGain) {
-                return -1;
-            }
-            return 0;
+            return b[1].realGain - a[1].realGain;
         });
         for (const value of Object.values(dailyAccounting)) {
             soldTickets += Number(value.tombolaTickets) || 0;
