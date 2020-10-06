@@ -3,7 +3,7 @@ import "./NavBar.css";
 
 function NavBar({ buttons=[] }) {
 
-    const [burgerOpen, setBurgerOpen] = useState(false);
+    const [burgerOpen, setBurgerOpen] = useState(true);
 
 
     return (
