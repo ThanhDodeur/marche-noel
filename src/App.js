@@ -23,9 +23,7 @@ function App(props) {
     return (
         <div className="page">
             {state.open ? (
-                <div className="page">
-                    <Marche/>
-                </div>
+                <Marche/>
             ) : (
                 <div className="page clickable" onClick={openApp}>
                     <Accueil/>

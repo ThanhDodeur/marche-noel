@@ -51,10 +51,10 @@ function PageData({ days, costTotal, suppliers, openDay, supplierTotal, supplier
     function getSupplierLadder(supplierTuples) {
         return (
             <div className="global-stats">
-            <h3><i class="fa fa-trophy spaced"/> Classement des fournisseurs</h3>
+            <h3><i className="fa fa-trophy spaced"/> Classement des fournisseurs</h3>
                 {supplierTuples && supplierTuples.map((tuple, index) => {
                     return(
-                        <div className="ladder-entry">
+                        <div key={'ladder_'+index} className="ladder-entry">
                             <span>{index+1}.</span>
                             <span>[{tuple[0]}]</span>
                             <span className="value">{rounded(tuple[1].realGain, 3)}€</span>
@@ -77,7 +77,7 @@ function PageData({ days, costTotal, suppliers, openDay, supplierTotal, supplier
         }
         return (
             <div className="global-stats">
-                <h3><i class="fa fa-bar-chart spaced"/> Statistiques (sur {days.length} jour(s))</h3>
+                <h3><i className="fa fa-bar-chart spaced"/> Statistiques (sur {days.length} jour(s))</h3>
                 <div className="daily-stats">
                     <div><span>Moyenne payée par les clients:</span> <span className="value-display">{rounded((totalSpendings / (dailyArray.length || 1)), 3)}€</span></div>
                     <div><span>Moyenne des articles reçu:</span> <span className="value-display">{rounded((totalObtained / (dailyArray.length || 1)), 3)}€</span></div>
@@ -91,7 +91,7 @@ function PageData({ days, costTotal, suppliers, openDay, supplierTotal, supplier
     function getBenefices(soldTickets) {
         return (
             <div className="global-stats profits">
-                <h3><i class="fa fa-line-chart spaced"/> Bénéfices</h3>
+                <h3><i className="fa fa-line-chart spaced"/> Bénéfices</h3>
                 <div><span>Bénéfices des vendeurs:</span> <span className="value-display">{rounded(supplierTotal, 3)}€</span></div>
                 <div><span>Payements manquants:</span> <span className="value-display">{rounded(-(supplierTotal-supplierRealGain), 3)}€</span></div>
                 <div><span>Vente de tombola:</span></div>

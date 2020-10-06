@@ -290,7 +290,7 @@ function DayForm({
                     }}
                     value={dayAccounting.tombolaTickets}
                 />
-                <i class="fa fa-ticket spaced"/>
+                <i className="fa fa-ticket spaced"/>
             </div>
             <div className="area-container">
                 <div

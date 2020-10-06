@@ -18,24 +18,27 @@ class Marche extends React.Component {
             daysRawData: Object.fromEntries(
                 zip(this.DAYS, Array(3).fill({ customers: [], suppliers: [] }))
             ),
-            days: [], // { dayName, customers, missedPayments, missedTransactions, dailyLoss, customersAverage, obtainedAverage }
-            missedPaymentsByDay: {}, // the total amount missed by customers (negative meaning that they paid too much)
-            missedTransactionsByDay: {}, // { dayName: { customerId: { paidSurplus: [], suppliedSurplus: [] } } } unresolved payments.
-            suppliers: {}, // { supplierId : { total } }
-            resetRequested: false, // toggle for the confirm/cancel buttons for removing files
-            loadRequested: false,
-            saveRequested: false,
-            showForm: false, // toggle for the accounting/event input form
-            showDayForm: false, // false or this.DAYS[*]
-            displayHelp: false, // toggle the "help" box
-            eventExpenses: {}, // {expenseName: <int>amount}
             dailyAccounting: Object.fromEntries(
                 zip(this.DAYS, Array(3).fill({ tombolaTickets: 0 }))
             ), // { dayName: {valuesDict} }
+            days: [], // { dayName, customers, missedPayments, missedTransactions, dailyLoss, customersAverage, obtainedAverage }
+            eventExpenses: {}, // {expenseName: <int>amount}
+            suppliers: {}, // { supplierId : { total } }
+            missedPaymentsByDay: {}, // the total amount missed by customers (negative meaning that they paid too much)
+            missedTransactionsByDay: {}, // { dayName: { customerId: { paidSurplus: [], suppliedSurplus: [] } } } unresolved payments.
             supplierTotal: 0,
             supplierRealGain: 0,
             costTotal: 0,
             ticketPrice: 0,
+            // Buttons with confirm
+            resetRequested: false, // toggle for the confirm/cancel buttons for removing files
+            loadRequested: false,
+            saveRequested: false,
+            // Displays
+            showForm: false, // toggle for the accounting/event input form
+            showDayForm: false, // false or this.DAYS[*]
+            showHelp: false, // toggle the "help" box
+            // POPUPS
             popupIds: [],
             popups: {}, // {content, type}
         };
@@ -164,6 +167,40 @@ class Marche extends React.Component {
             });
         }, duration);
     };
+    /**
+     *
+     * @param {Blob} file
+     */
+    _openFile = async (file) => {
+        if (file.type !== 'application/json') {
+            this._addMessage(
+                "ERREUR",
+                "Le fichier n'est pas un de type .json",
+                "error"
+                );
+            return false;
+        }
+        const save = await this._readFile(file);
+        const saveObject = JSON.parse(save);
+        if (Object.keys(saveObject).includes('daysRawData')) {
+            await this.setState(saveObject);
+            await this._addMessage(
+                "Chargé",
+                "Le fichier a bien été chargé",
+                "info",
+                2000
+            );
+            await this._computeResults();
+            return true;
+        } else {
+            this._addMessage(
+                "ERREUR",
+                "Le fichier n'a pas pu être chargé",
+                "error"
+            );
+            return false;
+        }
+    }
     /**
      * Extracts values from day raw data (state.daysRawData).
      *
@@ -396,7 +433,7 @@ class Marche extends React.Component {
         download(
             data,
             `marche-de-noel-${formattedDate()}.json`,
-            'text/html'
+            'application/json'
         );
         await this.toggleSave();
     }
@@ -404,29 +441,30 @@ class Marche extends React.Component {
         await this._saveState('saved-state-auto');
     }
     /**
+     *
+     * @param {DropEvent} event
+     */
+    onDrop = async (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const dt = event.dataTransfer;
+        if (!dt || !dt.types.includes('Files')) {
+            return;
+        } else {
+            await this._openFile(dt.files[0]);
+        }
+        this.setState({ isDragHover: false });
+    }
+    /**
      * Handles the change in the file input that is used to load a saved .json file.
      *
      * @param {Blob} file
      */
-    onFileInputChange = async (file) => {
-        const save = await this._readFile(file[0]);
-        const saveObject = JSON.parse(save);
-        if (Object.keys(saveObject).includes('daysRawData')) {
-            await this.setState(saveObject);
-            await this._addMessage(
-                "Chargé",
-                "Le fichier a bien été chargé",
-                "info",
-                2000
-            );
-            await this._computeResults();
+    onFileInputChange = async (files) => {
+        const file = files[0];
+        const success = await this._openFile(file);
+        if (success) {
             await this.toggleLoad();
-        } else {
-            this._addMessage(
-                "ERREUR",
-                "Le fichier n'a pas pu être chargé",
-                "error"
-                );
         }
     }
     /**
@@ -492,7 +530,7 @@ class Marche extends React.Component {
         }
     };
     toggleHelp = async () => {
-        await this.setState({ displayHelp: !this.state.displayHelp });
+        await this.setState({ showHelp: !this.state.showHelp });
     };
     toggleLoad = async () => {
         await this.setState({ loadRequested: !this.state.loadRequested });
@@ -551,7 +589,7 @@ class Marche extends React.Component {
         buttons.push({
             content: "Aide",
             fa: "fa-info-circle",
-            className: ("blue order-2 ml-auto " + (!!this.state.displayHelp && 'active')),
+            className: ("blue order-2 ml-auto " + (!!this.state.showHelp && 'active')),
             callBack: this.toggleHelp,
         });
 
@@ -658,7 +696,16 @@ class Marche extends React.Component {
 
     render() {
         return (
-            <div>
+            <div
+                className='marche-page'
+                onDrop={(e) => this.onDrop(e)}
+                onDragOver={
+                    (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                }
+            >
                 <NavBar buttons={this._getButtons()} />
                 {!!this.state.popupIds.length && (
                     <Popups
@@ -666,7 +713,7 @@ class Marche extends React.Component {
                         messages={this.state.popups}
                     />
                 )}
-                {!!this.state.displayHelp && (
+                {!!this.state.showHelp && (
                     <HelpBox/>
                 )}
                 {!!this.DAYS.includes(this.state.showDayForm) && (
