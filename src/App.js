@@ -17,7 +17,7 @@ function App(props) {
                 <Marche/>
             ) : (
                 <div className="page accueil-wrapper" >
-                    <div className='light-icon-wrapper clickable noselect' onClick={() => setClear(!clear)}>
+                    <div role='button' className='light-icon-wrapper clickable noselect' onClick={() => setClear(!clear)}>
                     <i className={'light-icon fa ' + (clear? 'fa-moon-o' : 'fa-sun-o')}></i>
                     </div>
                     <Accueil callBack={openApp}/>
