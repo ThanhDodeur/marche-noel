@@ -15,21 +15,29 @@ class Marche extends React.Component {
         super();
         this.DAYS = ["Vendredi", "Samedi", "Dimanche"]; // const
         this.state = {
+            // ==== SAVED =====
+            // FROM DayForm save callback
             daysRawData: Object.fromEntries(
                 zip(this.DAYS, Array(3).fill({ customers: [], suppliers: [] }))
             ),
             dailyAccounting: Object.fromEntries(
                 zip(this.DAYS, Array(3).fill({ tombolaTickets: 0 }))
             ), // { dayName: {valuesDict} }
-            days: [], // { dayName, customers, missedPayments, missedTransactions, dailyLoss, customersAverage, obtainedAverage }
+            // FROM EventForm save callback
             eventExpenses: {}, // {expenseName: <int>amount}
+            costTotal: 0,
+            ticketPrice: 0,
+            // ==== ===== =====
+
+            // TODO useReducer for the following state entries:
+            days: [], // { dayName, customers, missedPayments, missedTransactions, dailyLoss, customersAverage, obtainedAverage }
             suppliers: {}, // { supplierId : { total } }
             missedPaymentsByDay: {}, // the total amount missed by customers (negative meaning that they paid too much)
             missedTransactionsByDay: {}, // { dayName: { customerId: { paidSurplus: [], suppliedSurplus: [] } } } unresolved payments.
             supplierTotal: 0,
             supplierRealGain: 0,
-            costTotal: 0,
-            ticketPrice: 0,
+            // end TODO
+
             // Buttons with confirm
             resetRequested: false, // toggle for the confirm/cancel buttons for removing files
             loadRequested: false,
