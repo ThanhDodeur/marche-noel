@@ -1,33 +1,26 @@
-import React, { useState } from "react";
+import React from "react";
+import { useSelector, useDispatch } from 'react-redux';
+import { saveAccounting, feedCompute } from "../../store/marche.js";
+import { EXPENSE_TYPES } from "../../utils/constants.js";
 import "./EventForm.css";
 
 /*
  * All the inputs to register the expenses of the event.
  */
-function EventForm({ eventExpenses, ticketPrice, save }) {
+function EventForm(props) {
 
-    const [eventExpensesState, setEventExpensesState] = useState(eventExpenses || {});
-    const [ticketP, setTicketP] = useState(ticketPrice || 0);
-
-    // the names are only relevant in this context, the parent component will just make a sum of all those expenses.
-    const EXPENSE_TYPES = ['Salle', 'Transactions', 'Assurance', 'Papeterie', 'Timbres', 'Courses', 'Traiteur', 'Schmitz', 'Autre'];
+    const eventExpensesState = useSelector(store => store.marche.eventExpenses);
+    const ticketP = useSelector(store => store.marche.ticketPrice);
+    const dispatch = useDispatch();
 
     async function setExpense(expense, value) {
-        const accountingState = Object.assign({}, eventExpensesState);
+        const accountingState = eventExpensesState;
         accountingState[expense] = value;
-        await setEventExpensesState(accountingState);
-        await save({
-            eventExpenses: accountingState,
-            ticketPrice: ticketP,
-        });
+        dispatch(saveAccounting(accountingState));
     }
 
     async function setTicketPrice(value) {
-        await setTicketP(Number(value));
-        await save({
-            eventExpenses: eventExpensesState,
-            ticketPrice: Number(value),
-        });
+        dispatch(feedCompute({ ticketPrice: Number(value) }));
     }
 
     function getExpenseValue(expense) {

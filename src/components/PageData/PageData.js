@@ -1,6 +1,7 @@
 import React from "react";
 import "./PageData.css";
 import { rounded } from "../../utils/utils.js";
+import { useSelector } from 'react-redux';
 
 import DayData from '../DayData/DayData.js';
 
@@ -8,7 +9,15 @@ import DayData from '../DayData/DayData.js';
  * Represents a whole page of data for all the uploaded days.
  *
  */
-function PageData({ days, costTotal, suppliers, openDay, supplierTotal, supplierRealGain, dailyAccounting, ticketPrice }) {
+function PageData({ openDay }) {
+
+    const dailyAccounting = useSelector(store => store.marche.dailyAccounting);
+    const days = useSelector(store => store.marche.days);
+    const supplierTotal = useSelector(store => store.marche.supplierTotal);
+    const supplierRealGain = useSelector(store => store.marche.supplierRealGain);
+    const suppliers = useSelector(store => store.marche.suppliers);
+    const ticketPrice = useSelector(store => store.marche.ticketPrice);
+    const costTotal = useSelector(store => store.marche.costTotal);
 
     function getContent() {
         let soldTickets = 0;

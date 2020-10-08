@@ -1,4 +1,6 @@
 import React, { useState, useRef } from "react";
+import { useSelector, useDispatch } from 'react-redux';
+import { saveDay } from "../../store/marche.js";
 import FileInput from "../FileInput/FileInput.js";
 import { times } from "../../utils/utils.js";
 import "./DayForm.css";
@@ -8,20 +10,22 @@ import "./DayForm.css";
  */
 function DayForm({
     day,
-    dayRawData = {},
-    save,
     addMessage,
-    dailyAccounting,
-    missedTransactions,
 }) {
-    const [customers, setCustomers] = useState([].concat(dayRawData.customers));
+
+    const dispatch = useDispatch();
+
+    const dailyAccounting = useSelector(store => store.marche.dailyAccounting[day] || { tombolaTickets: 0 });
+    const missedTransactions = useSelector(store => store.marche.missedTransactionsByDay[day] || {});
+    const dayRawData = useSelector(store => store.marche.daysRawData[day] || {});
     const [newCustomer, setNewCustomer] = useState([]);
-    const [suppliers, setSuppliers] = useState([].concat(dayRawData.suppliers));
     const [newSupplier, setNewSupplier] = useState([]);
     const [file, setFile] = useState(undefined);
-    const [dayAccounting, setDayAccounting] = useState(dailyAccounting);
     const customerFirstInput = useRef(null);
     const supplierFirstInput = useRef(null);
+
+    const customers = dayRawData.customers || [];
+    const suppliers = dayRawData.suppliers || [];
 
     ////////////////// //////// //////////////////
     ////////////////// PRIVATE ///////////////////
@@ -106,19 +110,26 @@ function DayForm({
 
         if (type === "customer") {
             const newCustomerlocal = newCustomer;
-            await setNewCustomer(["", "", "", ""]);
             local = customers;
             local.push(newCustomerlocal);
-            await setCustomers(local);
+            await dispatch(saveDay({
+                day,
+                data: { customers: local, suppliers },
+                dayAccounting: dailyAccounting,
+            }));
+            await setNewCustomer(["", "", "", ""]);
         }
         if (type === "supplier") {
             const newSupplierlocal = newSupplier;
-            await setNewSupplier(["", "", "", ""]);
             local = suppliers;
             local.push(newSupplierlocal);
-            await setSuppliers(local);
+            await dispatch(saveDay({
+                day,
+                data: { customers, suppliers: local },
+                dayAccounting: dailyAccounting,
+            }));
+            await setNewSupplier(["", "", "", ""]);
         }
-        await save(day, { customers, suppliers }, dayAccounting);
     };
 
     ////////////////// //////// //////////////////
@@ -160,13 +171,11 @@ function DayForm({
         const { newCustomerLines, newSupplierLines } = await _readPage(page);
         const newCustomerState = customers.concat(newCustomerLines);
         const newSupplierState = suppliers.concat(newSupplierLines)
-        setCustomers(newCustomerState);
-        setSuppliers(newSupplierState);
-        save(
+        await dispatch(saveDay({
             day,
-            { customers: newCustomerState, suppliers: newSupplierState },
-            dayAccounting
-        );
+            data: { customers: newCustomerState, suppliers: newSupplierState },
+            dayAccounting: dailyAccounting,
+        }));
     };
     /**
      *
@@ -207,7 +216,7 @@ function DayForm({
      * @param {Number} colIndex [0-3] the number within the row.
      * @param {*} value
      */
-    const setCustomerValue = (index, colIndex, value) => {
+    const setCustomerValue = async (index, colIndex, value) => {
         const localCustomers = customers || [];
 
         if (index === false) {
@@ -221,8 +230,11 @@ function DayForm({
             localCustomers[index] = [];
         }
         localCustomers[index][colIndex] = value;
-        setCustomers(localCustomers);
-        save(day, { customers, suppliers }, dayAccounting);
+        await dispatch(saveDay({
+            day,
+            data: { customers: localCustomers, suppliers },
+            dayAccounting: dailyAccounting,
+        }));
     };
     /**
      *
@@ -230,7 +242,7 @@ function DayForm({
      * @param {Number} colIndex [0-3] the number within the row.
      * @param {*} value
      */
-    const setSupplierValue = (index, colIndex, value) => {
+    const setSupplierValue = async (index, colIndex, value) => {
         const localSuppliers = suppliers || [];
 
         if (index === false) {
@@ -244,20 +256,22 @@ function DayForm({
             localSuppliers[index] = [];
         }
         localSuppliers[index][colIndex] = value;
-        setSuppliers(localSuppliers);
-        save(day, { customers, suppliers }, dayAccounting);
+        await dispatch(saveDay({
+            day,
+            data: { customers, suppliers: localSuppliers },
+            dayAccounting: dailyAccounting,
+        }));
     };
     /**
      *
      * @param {Number || String} val the value of the input
      */
     const setTombolaTicket = async (val) => {
-        await setDayAccounting({ tombolaTickets: Number(val) });
-        await save(
+        await dispatch(saveDay({
             day,
-            { customers, suppliers },
-            { tombolaTickets: Number(val) }
-        );
+            data: { customers, suppliers },
+            dayAccounting: { tombolaTickets: Number(val) }
+        }));
     };
 
     ////////////////// //////// //////////////////
@@ -290,7 +304,7 @@ function DayForm({
                     onChange={(event) => {
                         setTombolaTicket(event.target.value);
                     }}
-                    value={dayAccounting.tombolaTickets}
+                    value={dailyAccounting.tombolaTickets}
                 />
                 <i className="fa fa-ticket spaced"/>
             </div>
