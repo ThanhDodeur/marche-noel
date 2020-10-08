@@ -3,7 +3,7 @@
     display: inline-block;
 }
 
-.clear .global-content {
+.light .global-content {
     background-color: #dfdfdf;
 }
 
@@ -20,7 +20,7 @@
     border-top: 1px solid rgba(158, 158, 158, 0.575);
 }
 
-.clear .global-stats > div {
+.light .global-stats > div {
     border-top: 1px solid rgba(31, 31, 31, 0.822);
 }
 
@@ -28,7 +28,7 @@
     border-top: 3px solid rgb(255, 255, 255);
 }
 
-.clear .global-stats > .separated {
+.light .global-stats > .separated {
     border-top: 3px solid rgb(0, 0, 0);
 }
 

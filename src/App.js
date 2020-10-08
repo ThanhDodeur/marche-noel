@@ -5,20 +5,20 @@ import "./App.css";
 
 function App(props) {
     const [state, setState] = useState({ open: false });
-    const [clear, setClear] = useState(false);
+    const [light, setLight] = useState(false);
 
     function openApp() {
         setState({ open: true });
     }
 
     return (
-        <div className={'page ' + (clear ? 'clear' : 'dark')}>
+        <div className={'page ' + (light ? 'light' : 'dark')}>
             {state.open ? (
                 <Marche/>
             ) : (
                 <div className="page accueil-wrapper" >
-                    <div role='button' className='light-icon-wrapper clickable noselect' onClick={() => setClear(!clear)}>
-                    <i className={'light-icon fa ' + (clear? 'fa-moon-o' : 'fa-sun-o')}></i>
+                    <div role='button' className='light-icon-wrapper clickable noselect' onClick={() => setLight(!light)}>
+                    <i className={'light-icon fa ' + (light? 'fa-moon-o' : 'fa-sun-o')}></i>
                     </div>
                     <Accueil callBack={openApp}/>
                 </div>
