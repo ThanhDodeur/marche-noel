@@ -58,8 +58,8 @@ function DayForm({
         // colNames
         lines.shift().split(","); // removes and saves column titles.
 
-        const newCustomers = [];
-        const newSuppliers = [];
+        const newCustomerLines = [];
+        const newSupplierLines = [];
         while (lines.length) {
             const currentLine = lines.shift().split(",");
 
@@ -78,7 +78,7 @@ function DayForm({
 
             if (currentLine[0]) {
                 // CUSTOMER SIDE
-                newCustomers.push([
+                newCustomerLines.push([
                     Number(currentLine[0]),
                     Number(currentLine[1]),
                     currentLine[2],
@@ -87,7 +87,7 @@ function DayForm({
             }
             if (currentLine[4] && currentLine[5]) {
                 // SUPPLIER SIDE
-                newSuppliers.push([
+                newSupplierLines.push([
                     Number(currentLine[4]),
                     Number(currentLine[5]),
                     currentLine[6],
@@ -95,7 +95,7 @@ function DayForm({
                 ]);
             }
         }
-        return { newCustomers, newSuppliers };
+        return { newCustomerLines, newSupplierLines };
     };
     /**
      *
@@ -157,12 +157,14 @@ function DayForm({
         }
         await setFile(file);
         const page = await _readFile(file);
-        const { newCustomers, newSuppliers } = await _readPage(page);
-        setCustomers(newCustomers);
-        setSuppliers(newSuppliers);
+        const { newCustomerLines, newSupplierLines } = await _readPage(page);
+        const newCustomerState = customers.concat(newCustomerLines);
+        const newSupplierState = suppliers.concat(newSupplierLines)
+        setCustomers(newCustomerState);
+        setSuppliers(newSupplierState);
         save(
             day,
-            { customers: newCustomers, suppliers: newSuppliers },
+            { customers: newCustomerState, suppliers: newSupplierState },
             dayAccounting
         );
     };
