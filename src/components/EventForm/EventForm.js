@@ -54,7 +54,7 @@ function EventForm({ eventExpenses, ticketPrice, save }) {
             <div className="input-grid right">
                 <div>
                     <span className="accounting-span"> Prix des tickets: </span>
-                    <input className="accounting-input" onChange={event => { setTicketPrice(event) }} pattern="[0-9]*" type="number" value={ticketP}/>€
+                    <input className="accounting-input" onChange={event => { setTicketPrice(event.target.value) }} pattern="[0-9]*" type="number" value={ticketP}/>€
                 </div>
             </div>
         )
