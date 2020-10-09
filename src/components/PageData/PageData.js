@@ -96,11 +96,12 @@ function PageData({ openDay }) {
     }
 
     function getBenefices(soldTickets) {
+        const totalDiff = rounded(-(supplierTotal-supplierRealGain), 3);
         return (
             <div className="global-stats profits">
                 <h3><i className="fa fa-line-chart spaced"/> Bénéfices</h3>
                 <div><span>Bénéfices des vendeurs:</span> <span className="value-display">{rounded(supplierTotal, 3)}€</span></div>
-                <div><span>Paiements manquants:</span> <span className="value-display">{rounded(-(supplierTotal-supplierRealGain), 3)}€</span></div>
+                <div><span>{`Paiements ` + (totalDiff > 0 ? 'en excès' : 'manquants') + ':'}</span> <span className="value-display">{totalDiff}€</span></div>
                 <div><span>Vente de tombola:</span></div>
                 <div><span>{soldTickets} x {ticketPrice}€: </span><span className="value-display">{rounded(ticketPrice * (soldTickets), 3)}€ </span></div>
                 <div><span>Total des frais: </span><span className="value-display">{rounded(-(costTotal), 3)}€</span></div>
