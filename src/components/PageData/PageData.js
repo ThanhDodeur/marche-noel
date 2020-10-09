@@ -52,12 +52,17 @@ function PageData({ openDay }) {
     }
 
     function getSupplierLadder(supplierTuples) {
+        const max = supplierTuples[0] && supplierTuples[0][1] && supplierTuples[0][1].realGain;
+        const percent = (num=0) => {
+            return Math.floor((num / (max || 100)) * 100);
+        }
         return (
             <div className="global-stats">
             <h3><i className="fa fa-trophy spaced"/> Classement des fournisseurs</h3>
                 {supplierTuples && supplierTuples.map((tuple, index) => {
                     return(
                         <div key={'ladder_'+index} className="ladder-entry">
+                            <div className="progress-bar" style={{width: percent(tuple[1].realGain) + '%'}}/>
                             <span>{index+1}.</span>
                             <span>[{tuple[0]}]</span>
                             <span className="value">{rounded(tuple[1].realGain, 3)}€</span>

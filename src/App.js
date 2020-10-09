@@ -19,7 +19,7 @@ function App(props) {
             ) : (
                 <div className="page accueil-wrapper" >
                     <div role='button' className='light-icon-wrapper clickable noselect' onClick={() => setMode(mode === 'light' ? 'dark' : 'light')}>
-                    <i className={'light-icon fa ' + (mode === 'light' ? 'fa-moon-o' : 'fa-sun-o')}></i>
+                    <i className={'light-icon fa ' + (mode === 'light' ? 'fa-sun-o' : 'fa-moon-o')}></i>
                     </div>
                     <Accueil callBack={openApp}/>
                 </div>
