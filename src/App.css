@@ -141,6 +141,14 @@
   margin-left: 10px;
 }
 
+.page.light {
+  background: radial-gradient(farthest-corner at 90vw 10vh,#e6e6e6 1%,#dbcaa9 100%);
+}
+
+.page.dark {
+  background: radial-gradient(farthest-corner at 95vw 1vh,#0a224d 1%,#000000 100%);
+}
+
 .accueil-wrapper {
   display: flex;
   justify-content: center;

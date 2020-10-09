@@ -8,6 +8,10 @@ const SET_STORE = 'SET_STORE';
 const SAVE_DAY = 'SAVE_DAY';
 const COMPUTE = 'COMPUTE';
 
+    ////////////////// //////// //////////////////
+    ////////////////// PRIVATE ///////////////////
+    ////////////////// //////// //////////////////
+
 const loadState = () => {
     const saved = localStorage.getItem('saved-store-auto');
     let savedObject = {};
@@ -215,6 +219,10 @@ const _computeDailyStats = (customers) => {
         obtainedAverage,
     };
 };
+
+    ////////////////// //////// //////////////////
+    ////////////////// REDUCER ///////////////////
+    ////////////////// //////// //////////////////
 
 const marcheReducer = (state=loadState(), action) => {
     let computeResults = {};

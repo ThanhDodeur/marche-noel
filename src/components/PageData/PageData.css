@@ -1,14 +1,10 @@
+.global-content {
+    box-shadow: inset -6px 7px 13px 1px #000000ad;
+}
+
 .global-stats.profits > div > span:first-of-type {
     min-width: 250px;
     display: inline-block;
-}
-
-.light .global-content {
-    background-color: #dfdfdf;
-}
-
-.dark .global-content {
-    background-color: #1c1f25;
 }
 
 .global-stats {
@@ -58,6 +54,7 @@
 .content .ladder-entry > span {
     display: inline-block;
     margin: 0px 5px;
+    z-index: 1;
 }
 
 .content .ladder-entry > .value {
