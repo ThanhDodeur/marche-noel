@@ -1,23 +1,23 @@
 {
   "files": {
-    "main.css": "/marche-noel/static/css/main.12ee9dcc.chunk.css",
-    "main.js": "/marche-noel/static/js/main.bb703c78.chunk.js",
-    "main.js.map": "/marche-noel/static/js/main.bb703c78.chunk.js.map",
+    "main.css": "/marche-noel/static/css/main.84b6f8c2.chunk.css",
+    "main.js": "/marche-noel/static/js/main.caccb307.chunk.js",
+    "main.js.map": "/marche-noel/static/js/main.caccb307.chunk.js.map",
     "runtime-main.js": "/marche-noel/static/js/runtime-main.29242d5b.js",
     "runtime-main.js.map": "/marche-noel/static/js/runtime-main.29242d5b.js.map",
     "static/js/2.e218ff53.chunk.js": "/marche-noel/static/js/2.e218ff53.chunk.js",
     "static/js/2.e218ff53.chunk.js.map": "/marche-noel/static/js/2.e218ff53.chunk.js.map",
     "index.html": "/marche-noel/index.html",
-    "precache-manifest.096b938d83212d845c5a191b45c90e87.js": "/marche-noel/precache-manifest.096b938d83212d845c5a191b45c90e87.js",
+    "precache-manifest.4855a09d553894cd2de99b99a746487e.js": "/marche-noel/precache-manifest.4855a09d553894cd2de99b99a746487e.js",
     "service-worker.js": "/marche-noel/service-worker.js",
-    "static/css/main.12ee9dcc.chunk.css.map": "/marche-noel/static/css/main.12ee9dcc.chunk.css.map",
+    "static/css/main.84b6f8c2.chunk.css.map": "/marche-noel/static/css/main.84b6f8c2.chunk.css.map",
     "static/js/2.e218ff53.chunk.js.LICENSE.txt": "/marche-noel/static/js/2.e218ff53.chunk.js.LICENSE.txt",
     "static/media/snowflake.svg": "/marche-noel/static/media/snowflake.c1c98c92.svg"
   },
   "entrypoints": [
     "static/js/runtime-main.29242d5b.js",
     "static/js/2.e218ff53.chunk.js",
-    "static/css/main.12ee9dcc.chunk.css",
-    "static/js/main.bb703c78.chunk.js"
+    "static/css/main.84b6f8c2.chunk.css",
+    "static/js/main.caccb307.chunk.js"
   ]
 }
