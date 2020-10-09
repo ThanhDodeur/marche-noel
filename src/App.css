@@ -177,7 +177,7 @@
 
 .light-icon {
   margin-top: 4px;
-  color: white;
+  color: black;
 }
 
 .dark .light-icon-wrapper {
@@ -190,5 +190,5 @@
 }
 
 .dark .light-icon {
-  color: black;
+  color: white;
 }
