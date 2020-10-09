@@ -78,7 +78,7 @@ function PageData({ openDay }) {
         for (const day of dailyArray) {
             totalSpendings += day.customersAverage || 0;
             totalObtained += day.obtainedAverage || 0;
-            totalCustomers += Object.keys(day.customers).length;
+            totalCustomers += Object.values(day.customers).filter(customer => customer.paidTotal > 0).length;
         }
         let obtainedPercentage = percent(totalSpendings, totalObtained);
         return (
