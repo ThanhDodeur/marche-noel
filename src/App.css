@@ -169,6 +169,8 @@
 
 .light-icon-wrapper:hover {
   background-color:  rgb(17, 20, 68);
+  box-shadow: -9px 6px 14px -5px #3f3f3fec;
+  color: white;
 }
 
 .light-icon-wrapper:active {
@@ -182,13 +184,12 @@
 
 .dark .light-icon-wrapper {
   background-color:  rgb(17, 20, 68);
-  box-shadow: -9px 6px 14px -5px #00000086
+  box-shadow: -9px 6px 14px -5px #00000086;
+  color: white;
 }
 
 .dark .light-icon-wrapper:hover {
   background-color:  rgb(255, 223, 162);
-}
-
-.dark .light-icon {
-  color: white;
+  box-shadow: -9px 6px 14px -5px #faf8a3ec;
+  color: black;
 }
