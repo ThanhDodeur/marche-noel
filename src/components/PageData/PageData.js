@@ -1,6 +1,6 @@
 import React from "react";
 import "./PageData.css";
-import { rounded } from "../../utils/utils.js";
+import { rounded, percent } from "../../utils/utils.js";
 import { useSelector } from 'react-redux';
 
 import DayData from '../DayData/DayData.js';
@@ -53,16 +53,13 @@ function PageData({ openDay }) {
 
     function getSupplierLadder(supplierTuples) {
         const max = supplierTuples[0] && supplierTuples[0][1] && supplierTuples[0][1].realGain;
-        const percent = (num=0) => {
-            return Math.floor((num / (max || 100)) * 100);
-        }
         return (
             <div className="global-stats">
             <h3><i className="fa fa-trophy spaced"/> Classement des fournisseurs</h3>
                 {supplierTuples && supplierTuples.map((tuple, index) => {
                     return(
                         <div key={'ladder_'+index} className="ladder-entry">
-                            <div className="progress-bar" style={{width: percent(tuple[1].realGain) + '%'}}/>
+                            <div className="progress-bar" style={{width: percent(tuple[1].realGain, max) + '%'}}/>
                             <span>{index+1}.</span>
                             <span>[{tuple[0]}]</span>
                             <span className="value">{rounded(tuple[1].realGain, 3)}€</span>
@@ -83,12 +80,14 @@ function PageData({ openDay }) {
             totalObtained += day.obtainedAverage || 0;
             totalCustomers += Object.keys(day.customers).length;
         }
+        let obtainedPercentage = percent(totalSpendings, totalObtained);
         return (
             <div className="global-stats">
                 <h3><i className="fa fa-bar-chart spaced"/> Statistiques (sur {days.length} jour(s))</h3>
                 <div className="daily-stats">
                     <div><span>Moyenne payée par les clients:</span> <span className="value-display">{rounded((totalSpendings / (dailyArray.length || 1)), 3)}€</span></div>
                     <div><span>Moyenne des articles reçu:</span> <span className="value-display">{rounded((totalObtained / (dailyArray.length || 1)), 3)}€</span></div>
+                    <div><span>Taux de paiement:</span> <span className="value-display">{obtainedPercentage}%</span></div>
                     <div><span>Tickets de tombola Vendus:</span> <span className="value-display">{soldTickets}</span></div>
                     <div><span>Quantité de fiches payées:</span> <span className="value-display">{totalCustomers}</span></div>
                 </div>

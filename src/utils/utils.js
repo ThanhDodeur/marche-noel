@@ -1,6 +1,6 @@
 let lastId = 0;
 
-export { newId, times, zip, rounded, cancelArrays, download, formattedDate }
+export { newId, times, zip, rounded, percent, cancelArrays, download, formattedDate }
 
 /**
  * generates a unique new id combining the prefix with a new <Number>, numbers are consecutive.
@@ -50,6 +50,15 @@ function rounded(num, decimal=3) {
     num = Number(num);
     const exp = Math.abs(decimal);
     return Math.round((num + Number.EPSILON) * Math.pow(10, exp)) / Math.pow(10, exp);
+}
+/**
+ *
+ * @param {Number} num
+ * @param {Number} max
+ * @returns {Number} percentage
+ */
+const percent = (num=0, max) => {
+    return Math.floor((num / (max || 100)) * 100);
 }
 /**
  * function used to cancel two arrays, the values uniquely in common between the two arrays are removed from both arrays.
