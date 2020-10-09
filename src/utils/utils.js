@@ -57,7 +57,7 @@ function rounded(num, decimal=3) {
  * @param {Number} max
  * @returns {Number} percentage
  */
-const percent = (num=0, max) => {
+function percent(num=0, max) {
     return Math.floor((num / (max || 100)) * 100);
 }
 /**
