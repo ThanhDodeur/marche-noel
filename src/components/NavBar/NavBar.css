@@ -73,6 +73,8 @@
     position: fixed;
     display: none;
     border: none;
+    box-shadow: none;
+    backdrop-filter: none;
     background-color: transparent;
   }
 
