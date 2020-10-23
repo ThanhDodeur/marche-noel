@@ -12,6 +12,14 @@ It is also possible to manually save, either in the localStorage or as a JSON fi
 
 The app uses a serviceWorker to allow a total offline usage of the App, as long as it was loaded at least once.
 
+### Checkout reconciliation
+
+If an inconsistent purchase is detected between the supliers and the customers checkout data, the problematic line will be highlhted
+
+### Statistics overview
+
+An overview of the loss/benefits and statistics on every aspects of the sales and purchases.
+
 ## Available Scripts
 
 In the project directory, you can run:
