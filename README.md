@@ -1,22 +1,16 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Single page react app to manage the accounting and operations of a Cristmas market.
 
-## App:
+## Features
 
-### `Save`
+### (auto) Save
 
 The relevant elements of the state are automatically saved to the localStorage when closing the app. And restored when opening it again.
 
-There is a save and a load button that can also be used to save the relevant parts of the state, on a different save.
+It is also possible to manually save, either in the localStorage or as a JSON file that can later be reuploaded.
 
-### `Offline`
+### Offline
 
 The app uses a serviceWorker to allow a total offline usage of the App, as long as it was loaded at least once.
-
-### `Accepted format`
-
-Instead of using the in-app inputs to add data entries, it is also possible to import .csv version of the tables.
-
-CSV export of [this sheet](https://docs.google.com/spreadsheets/d/1UKT38_RUa3MQ_HEGtWgaPKvedD35wYksaj7-T0sc9N8/edit?usp=sharing).
 
 ## Available Scripts
 
