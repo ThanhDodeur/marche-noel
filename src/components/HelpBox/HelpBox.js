@@ -16,8 +16,8 @@ function HelpBox({ loadDemo }) {
                 {!!promptDemo ? (
                         <span>
                             Vos entrées non sauvegardées seront perdues:
-                            <i className="fa clickable fa-check" onClick={() => { setPromptDemo(false); loadDemo(); }}>V</i>
-                            <i className="fa clickable fa-times" onClick={() => setPromptDemo(false)}>X</i>
+                            <i className="fa clickable fa-check" onClick={() => { setPromptDemo(false); loadDemo(); }}></i>
+                            <i className="fa clickable fa-times" onClick={() => setPromptDemo(false)}></i>
                         </span>
                     ) : (
                         <span className="clickable" onClick={() => setPromptDemo(true)}>Charger démo</span>
