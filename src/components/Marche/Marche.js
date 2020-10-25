@@ -12,6 +12,7 @@ import DayForm from "../DayForm/DayForm.js";
 import EventForm from "../EventForm/EventForm.js";
 import HelpBox from "../HelpBox/HelpBox.js";
 import FileInput from "../FileInput/FileInput.js";
+import demoFile from "../../description/demo.json";
 
 class Marche extends React.Component {
     constructor(props) {
@@ -142,7 +143,7 @@ class Marche extends React.Component {
         if (file.type !== 'application/json') {
             this._addMessage(
                 "ERREUR",
-                "Le fichier n'est pas un de type .json",
+                "Le fichier n'est pas un fichier de type .json",
                 "error"
                 );
             return false;
@@ -173,6 +174,26 @@ class Marche extends React.Component {
     ////////////////// HANDLERS //////////////////
     ////////////////// //////// //////////////////
 
+    loadDemo = async () => {
+        if (Object.keys(demoFile).includes('daysRawData')) {
+            await this.props.setStore(demoFile);
+            await this._addMessage(
+                "Chargé",
+                "La démo a bien été chargé",
+                "info",
+                2000
+            );
+            await this.props.compute();
+            return true;
+        } else {
+            this._addMessage(
+                "ERREUR",
+                "La démo n'a pas pu être chargé",
+                "error"
+            );
+            return false;
+        }
+    };
     /**
      *
      */
@@ -216,7 +237,7 @@ class Marche extends React.Component {
         this.toggleSave();
     }
     onClose = () => {
-        this._saveState('saved-store-auto');
+        this._saveState('auto-store-save');
     }
     /**
      *
@@ -456,7 +477,7 @@ class Marche extends React.Component {
                     />
                 )}
                 {!!this.state.showHelp && (
-                    <HelpBox/>
+                    <HelpBox loadDemo={this.loadDemo}/>
                 )}
                 {!!DAYS.includes(this.state.showDayForm) && (
                     <DayForm

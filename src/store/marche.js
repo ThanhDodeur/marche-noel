@@ -13,7 +13,7 @@ const COMPUTE = 'COMPUTE';
     ////////////////// //////// //////////////////
 
 const loadState = () => {
-    const saved = localStorage.getItem('saved-store-auto');
+    const saved = localStorage.getItem('auto-store-save');
     let savedObject = {};
     if (saved) {
         savedObject = JSON.parse(saved) || savedObject;

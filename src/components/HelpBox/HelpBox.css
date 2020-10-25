@@ -1,3 +1,5 @@
+@import "../../constants.css";
+
 .help {
     flex-direction: column;
     text-align: right;
@@ -12,17 +14,21 @@
     font-weight: bold;
 }
 
-.help-link {
-    cursor: pointer;
+.help i {
+    margin: 5px;
+
+}
+
+.help-button .fa-check {
+    color: var(--green);
+}
+
+.help-button .fa-times {
+    color: var(--red);
 }
 
 .help-link > a {
     color: white;
-}
-
-.help-link > i {
-    margin: 5px;
-
 }
 
 iframe {

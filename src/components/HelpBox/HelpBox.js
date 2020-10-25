@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import "./HelpBox.css";
 
-function HelpBox() {
+function HelpBox({ loadDemo }) {
 
     const [showVideo, setShowVideo] = useState(false);
+    const [promptDemo, setPromptDemo] = useState(false);
 
     const toggleVideo = () => {
         setShowVideo(!showVideo);
@@ -11,17 +12,30 @@ function HelpBox() {
 
     return (
         <div className="help noselect">
-            <div className="help-link ml-auto">
+            <div className="help-button ml-auto">
+                {!!promptDemo ? (
+                        <span>
+                            Vos entrées non sauvegardées seront perdues:
+                            <i className="fa clickable fa-check" onClick={() => { setPromptDemo(false); loadDemo(); }}>V</i>
+                            <i className="fa clickable fa-times" onClick={() => setPromptDemo(false)}>X</i>
+                        </span>
+                    ) : (
+                        <span className="clickable" onClick={() => setPromptDemo(true)}>Charger démo</span>
+                    )
+                }
+                <i className="fa fa-desktop" />
+            </div>
+            <div className="help-link clickable ml-auto">
                 <a
                     className="help-text"
                     target="new"
                     href="https://docs.google.com/spreadsheets/d/1UKT38_RUa3MQ_HEGtWgaPKvedD35wYksaj7-T0sc9N8/edit?usp=sharing"
                 >
-                    Format accepté
+                    Table pour csv
                 </a>
                 <i className="fa fa-file-excel-o" />
             </div>
-            <div className="help-link ml-auto" onClick={toggleVideo}>
+            <div className="help-link clickable ml-auto" onClick={toggleVideo}>
                 <u>Vidéo d'explication</u>
                 <i className="fa fa-play" />
             </div>

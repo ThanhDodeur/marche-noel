@@ -1,3 +1,5 @@
+@import "constants.css";
+
 .App {
   text-align: center;
 }
@@ -91,7 +93,7 @@
 }
 
 .green {
-  background-color: #72b352;
+  background-color:var(--green);
 }
 
 .blue {
@@ -107,7 +109,7 @@
 }
 
 .alert {
-  background-color:#bd483b;
+  background-color:var(--red);
 }
 
 .darker {
